@@ -597,6 +597,101 @@ textarea {
   background: #000;
 }
 
+.dashboard-panels,
+.center-grid,
+.notifications-list {
+  display: grid;
+  gap: 16px;
+}
+
+.dashboard-panels {
+  grid-template-columns: minmax(0, 1.25fr) minmax(320px, 0.75fr);
+  margin-top: 16px;
+}
+
+.bar-chart,
+.insight-list {
+  display: grid;
+  gap: 12px;
+}
+
+.chart-row {
+  display: grid;
+  grid-template-columns: 90px minmax(0, 1fr) 52px;
+  gap: 10px;
+  align-items: center;
+}
+
+.chart-row span,
+.chart-row b {
+  color: var(--gold-soft);
+}
+
+.chart-row i {
+  display: block;
+  height: 14px;
+  border-radius: 999px;
+  background: linear-gradient(90deg, #80611d, var(--gold-soft));
+  transition: width 600ms ease;
+}
+
+.center-grid {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  margin: 18px 0;
+}
+
+.glass-panel {
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 14px;
+  background: rgba(255, 255, 255, 0.06);
+  backdrop-filter: blur(16px);
+}
+
+.shimmer {
+  position: relative;
+  overflow: hidden;
+}
+
+.shimmer::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  transform: translateX(120%);
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.12), transparent);
+  animation: shimmer 2.4s infinite;
+}
+
+@keyframes shimmer {
+  to {
+    transform: translateX(-120%);
+  }
+}
+
+.notifications-list article {
+  display: grid;
+  grid-template-columns: 180px minmax(0, 1fr) 220px;
+  gap: 12px;
+  align-items: center;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 14px;
+  background: rgba(255, 255, 255, 0.035);
+}
+
+.notifications-list span,
+.notifications-list em {
+  color: var(--muted);
+}
+
+.qr-preview img {
+  width: min(420px, 100%);
+  border-radius: 8px;
+  border: 1px solid var(--line);
+  display: block;
+  margin-inline: auto;
+}
+
 .platform-picker {
   display: flex;
   flex-wrap: wrap;
@@ -665,11 +760,14 @@ th {
   .stats-grid,
   .two-cols,
   .report-header,
+  .dashboard-panels,
   .timeline article,
   .split-panel,
   .channel-grid,
   .platform-summary,
   .engagement-grid,
+  .center-grid,
+  .notifications-list article,
   .table-list article,
   .comment-card,
   .post-card,

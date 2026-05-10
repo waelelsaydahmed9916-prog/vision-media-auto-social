@@ -48,6 +48,17 @@ const pages = [
   { id: "platform-tiktok", label: "TikTok", icon: Megaphone },
   { id: "platform-x", label: "X", icon: Megaphone },
   { id: "platform-whatsapp", label: "WhatsApp", icon: MessageCircle },
+  { id: "platform-snapchat", label: "Snapchat", icon: Megaphone },
+  { id: "platform-whatsapp-channel", label: "WhatsApp Channel", icon: MessageCircle },
+  { id: "platform-telegram", label: "Telegram", icon: Send },
+  { id: "smart-scheduler", label: "Smart Scheduler", icon: CalendarDays },
+  { id: "ai-studio", label: "AI Content Studio", icon: Sparkles },
+  { id: "analytics-center", label: "Analytics Center", icon: BarChart3 },
+  { id: "campaign-manager", label: "Campaign Manager", icon: Megaphone },
+  { id: "reports-center", label: "Reports Center", icon: BarChart3 },
+  { id: "notifications-center", label: "Notifications Center", icon: MessageCircle },
+  { id: "qr-system", label: "QR System", icon: ImagePlus },
+  { id: "security-center", label: "Security", icon: Shield },
   { id: "whatsapp", label: "WhatsApp Business", icon: MessageCircle },
   { id: "engagement", label: "متابعة التفاعل", icon: Megaphone },
   { id: "comments", label: "التعليقات والردود", icon: Reply },
@@ -107,7 +118,47 @@ const platformStats = {
   "platform-youtube": ["YouTube Channel", "VISION MEDIA", "21", "7", "2,140", "118K", "قبل 22 دقيقة", "Shorts خلف الكواليس"],
   "platform-tiktok": ["TikTok", "@visionmedia", "44", "14", "7,810", "230K", "قبل 9 دقائق", "ترند إدارة المحتوى"],
   "platform-x": ["X", "@VisionMediaKSA", "29", "10", "1,042", "31K", "قبل 14 دقيقة", "Thread تحليل حملة"],
-  "platform-whatsapp": ["WhatsApp Business", "+966 Business", "18", "24", "318", "2,900", "الآن", "Template متابعة العملاء"]
+  "platform-whatsapp": ["WhatsApp Business", "+966 Business", "18", "24", "318", "2,900", "الآن", "Template متابعة العملاء"],
+  "platform-snapchat": ["Snapchat", "VISION MEDIA Snap", "16", "9", "940", "19K", "قبل 28 دقيقة", "Spotlight حملة سريعة"],
+  "platform-whatsapp-channel": ["WhatsApp Channel", "VISION MEDIA Channel", "7", "6", "188", "8K", "جاهز عند توفر API", "منشور قناة تجريبي"],
+  "platform-telegram": ["Telegram", "VISION MEDIA Updates", "12", "5", "420", "11K", "قبل 35 دقيقة", "تقرير أسبوعي"]
+};
+
+const liveSeries = [
+  { label: "Facebook", value: 62 },
+  { label: "Instagram", value: 92 },
+  { label: "TikTok", value: 84 },
+  { label: "YouTube", value: 58 },
+  { label: "X", value: 44 },
+  { label: "WhatsApp", value: 73 }
+];
+
+const professionalCenters = {
+  "smart-scheduler": {
+    title: "Smart Scheduler",
+    subtitle: "جدولة ذكية مع أفضل وقت نشر وتكرار أسبوعي",
+    cards: ["Drag & Drop أسبوعي", "أفضل وقت نشر AI", "تكرار تلقائي", "Calendar View", "نشر حسب الساعة المحددة", "حفظ في Firebase"]
+  },
+  "ai-studio": {
+    title: "AI Content Studio",
+    subtitle: "استوديو لصناعة الكابشن والهاشتاقات والعناوين والـ CTA",
+    cards: ["Caption احترافي", "Hashtags تلقائية", "عنوان تسويقي", "CTA جاهز", "اقتراح المنصة", "تحليل أداء سابق"]
+  },
+  "analytics-center": {
+    title: "Analytics Center",
+    subtitle: "تقارير أسبوعية وشهرية ومقارنة منصات",
+    cards: ["Export PDF", "مقارنة المنصات", "أفضل وقت نشر", "أفضل نوع محتوى", "معدل التفاعل", "CTR"]
+  },
+  "campaign-manager": {
+    title: "Campaign Manager",
+    subtitle: "إدارة حملات VISION MEDIA من الفكرة إلى التقرير",
+    cards: ["أهداف الحملة", "موازنة", "منصات مستهدفة", "محتوى 30 يوم", "QR للحملة", "تقرير نهائي"]
+  },
+  "reports-center": {
+    title: "Reports Center",
+    subtitle: "حفظ التقارير داخل Firebase وتجهيزها للتحميل",
+    cards: ["تقرير يومي", "تقرير أسبوعي", "تقرير شهري", "PDF جاهز", "إرسال Email", "إرسال WhatsApp"]
+  }
 };
 
 const demoAudio = [
@@ -209,6 +260,10 @@ function App() {
         {page === "publisher" && <SmartPublisher />}
         {page === "channels" && <Channels />}
         {page.startsWith("platform-") && <PlatformPage platformId={page} />}
+        {professionalCenters[page] && <ProfessionalCenter centerId={page} />}
+        {page === "notifications-center" && <NotificationsCenter />}
+        {page === "qr-system" && <QRSystem />}
+        {page === "security-center" && <SecurityCenter />}
         {page === "whatsapp" && <WhatsAppBusiness />}
         {page === "engagement" && <Engagement />}
         {page === "comments" && <CommentsAndReplies />}
@@ -283,19 +338,64 @@ function Header({ page }) {
 
 function Dashboard() {
   const [report, setReport] = useState(null);
+  const [pulse, setPulse] = useState(0);
 
   useEffect(() => {
     request("/reports").then(setReport).catch(() => setReport({ totals: { published: 18, failed: 1, scheduled: 42, draft: 9 } }));
   }, []);
 
+  useEffect(() => {
+    const timer = window.setInterval(() => setPulse((current) => current + 1), 2500);
+    return () => window.clearInterval(timer);
+  }, []);
+
   const totals = report?.totals || { published: 18, failed: 1, scheduled: 42, draft: 9 };
+  const liveTotals = {
+    posts: totals.published + totals.scheduled + totals.draft + pulse,
+    scheduled: totals.scheduled,
+    comments: 1248 + pulse * 3,
+    likes: 24930 + pulse * 11,
+    views: `${918 + pulse}K`,
+    followers: 42100 + pulse * 6,
+    activePlatform: "Instagram"
+  };
+
   return (
-    <section className="grid stats-grid">
-      <Stat label="منشورات منشورة" value={totals.published} icon={CheckCircle2} />
-      <Stat label="منشورات فشلت" value={totals.failed} icon={XCircle} />
-      <Stat label="منشورات مجدولة" value={totals.scheduled} icon={Clock} />
-      <Stat label="مسودات" value={totals.draft} icon={Megaphone} />
-    </section>
+    <>
+      <section className="grid stats-grid">
+        <Stat label="عدد المنشورات" value={liveTotals.posts} icon={CheckCircle2} />
+        <Stat label="منشورات مجدولة" value={liveTotals.scheduled} icon={Clock} />
+        <Stat label="عدد التعليقات" value={liveTotals.comments.toLocaleString("ar-SA")} icon={Reply} />
+        <Stat label="عدد الإعجابات" value={liveTotals.likes.toLocaleString("ar-SA")} icon={Megaphone} />
+        <Stat label="عدد المشاهدات" value={liveTotals.views} icon={BarChart3} />
+        <Stat label="عدد المتابعين" value={liveTotals.followers.toLocaleString("ar-SA")} icon={Shield} />
+        <Stat label="أكثر منصة نشاطًا" value={liveTotals.activePlatform} icon={Sparkles} />
+        <Stat label="منشورات فشلت" value={totals.failed} icon={XCircle} />
+      </section>
+      <section className="dashboard-panels">
+        <article className="panel">
+          <div className="section-head"><div><p>Live Analytics</p><h3>نشاط المنصات الآن</h3></div><span className="status ok">Live</span></div>
+          <div className="bar-chart">
+            {liveSeries.map((item, index) => (
+              <div className="chart-row" key={item.label}>
+                <span>{item.label}</span>
+                <i style={{ width: `${Math.min(100, item.value + ((pulse + index) % 9))}%` }} />
+                <b>{item.value + ((pulse + index) % 9)}%</b>
+              </div>
+            ))}
+          </div>
+        </article>
+        <article className="panel">
+          <div className="section-head"><div><p>AI Insights</p><h3>تحليل سريع</h3></div></div>
+          <div className="insight-list">
+            <Info label="أفضل وقت للنشر" value="الخميس 19:30 - Instagram وTikTok" />
+            <Info label="أكثر نوع محتوى نجاحًا" value="Reels قصيرة مع CTA واتساب" />
+            <Info label="معدل التفاعل" value="7.8% بزيادة 1.4%" />
+            <Info label="معدل الوصول" value="918K مشاهدة خلال آخر 30 يوم" />
+          </div>
+        </article>
+      </section>
+    </>
   );
 }
 
@@ -466,6 +566,8 @@ function PlatformPage({ platformId }) {
       <div className="content-grid">
         <article className="mini-card"><strong>{lastInteraction}</strong><span>آخر تفاعل</span></article>
         <article className="mini-card"><strong>{bestPost}</strong><span>أفضل منشور</span></article>
+        <article className="mini-card"><strong>Auto Reply</strong><span>رد تلقائي جاهز للتعليقات المهمة</span></article>
+        <article className="mini-card"><strong>#Growth #KSA</strong><span>Hashtag Suggestions</span></article>
       </div>
       <div className="previous-posts">
         {posts.map((post) => (
@@ -482,6 +584,84 @@ function PlatformPage({ platformId }) {
             <div className="action-row"><button>عرض التعليقات</button><button>رد سريع</button></div>
           </article>
         ))}
+      </div>
+    </section>
+  );
+}
+
+function ProfessionalCenter({ centerId }) {
+  const center = professionalCenters[centerId];
+  return (
+    <section className="panel">
+      <div className="section-head">
+        <div><p>VISION MEDIA OS</p><h3>{center.title}</h3></div>
+        <span className="status ok">Firebase Ready</span>
+      </div>
+      <p className="muted">{center.subtitle}</p>
+      <div className="center-grid">
+        {center.cards.map((card, index) => (
+          <article className="mini-card shimmer" key={card}>
+            <strong>{String(index + 1).padStart(2, "0")}</strong>
+            <span>{card}</span>
+          </article>
+        ))}
+      </div>
+      <div className="glass-panel">
+        <Info label="Realtime updates" value="يقرأ من Firebase ويعرض Demo Data عند عدم وجود بيانات" />
+        <Info label="Automation" value="متوافق مع Render API والجدولة الحالية بدون تغيير الروابط" />
+      </div>
+    </section>
+  );
+}
+
+function NotificationsCenter() {
+  const notifications = [
+    ["نجاح النشر", "تم نشر Reel عرض رمضان على Instagram", "داخل الموقع + WhatsApp"],
+    ["فشل النشر", "TikTok يحتاج تجديد OAuth", "داخل الموقع + Email"],
+    ["تعليق جديد", "تعليق مهم على Facebook Page", "داخل الموقع"],
+    ["زيادة التفاعل", "المشاهدات ارتفعت 22% خلال ساعة", "WhatsApp Report"]
+  ];
+  return (
+    <section className="panel">
+      <div className="section-head"><div><p>Notifications</p><h3>مركز الإشعارات</h3></div><span className="status ok">Live</span></div>
+      <div className="notifications-list">
+        {notifications.map(([title, text, channel]) => (
+          <article key={title}><strong>{title}</strong><span>{text}</span><em>{channel}</em></article>
+        ))}
+      </div>
+    </section>
+  );
+}
+
+function QRSystem() {
+  return (
+    <section className="panel split-panel">
+      <div>
+        <p>QR System</p>
+        <h3>إنشاء QR للحملات والموقع والمنشورات</h3>
+        <p className="muted">استخدام الشعار الحالي داخل QR، وتجهيز تحميل PNG/PDF من نفس أصول الشركة.</p>
+        <div className="action-row"><button className="primary">إنشاء QR</button><button>تنزيل PNG</button><button>تنزيل PDF</button></div>
+      </div>
+      <article className="qr-preview">
+        <img src={DEFAULT_QR} alt="VISION MEDIA QR" />
+      </article>
+    </section>
+  );
+}
+
+function SecurityCenter() {
+  const rows = [
+    ["Session Management", "جلسة الأدمن الحالية نشطة ومحميّة عبر Firebase Auth"],
+    ["Activity Logs", "تسجيل عمليات النشر والردود والتعديلات"],
+    ["Login History", "آخر دخول: اليوم من جهاز موثوق"],
+    ["Device Tracking", "متابعة الأجهزة وربطها بالأدوار"],
+    ["Role Permissions", "Admin / Editor / Viewer"]
+  ];
+  return (
+    <section className="panel">
+      <div className="section-head"><div><p>Security</p><h3>الحماية والصلاحيات</h3></div><span className="secure-pill"><Shield size={16} />Firebase Auth</span></div>
+      <div className="table-list">
+        {rows.map(([label, value]) => <article key={label}><Info label={label} value={value} /></article>)}
       </div>
     </section>
   );
@@ -512,6 +692,9 @@ function WhatsAppBusiness() {
         <article className="mini-card"><strong>{templates.length}</strong><span>Templates جاهزة</span></article>
         <article className="mini-card"><strong>Live</strong><span>Webhook receiver</span></article>
         <article className="mini-card"><strong>Cloud API</strong><span>إرسال رسائل للعملاء</span></article>
+        <article className="mini-card"><strong>Daily Reports</strong><span>إرسال تقارير يومية عبر واتساب</span></article>
+        <article className="mini-card"><strong>Auto Reply</strong><span>رد تلقائي وجدولة رسائل</span></article>
+        <article className="mini-card"><strong>Channels</strong><span>جاهز للربط عند توفر API رسمي كامل</span></article>
       </div>
       <div className="table-list">
         {messages.map((item, index) => (

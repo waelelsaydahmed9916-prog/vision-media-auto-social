@@ -3,6 +3,7 @@ import cors from "cors";
 import { authRouter } from "./routes/auth.js";
 import { mediaRouter } from "./routes/media.js";
 import { oauthRouter } from "./routes/oauth.js";
+import { operationsRouter } from "./routes/operations.js";
 import { postsRouter } from "./routes/posts.js";
 import { reportsRouter } from "./routes/reports.js";
 import { autoGenerateRouter } from "./routes/autoGenerate.js";
@@ -26,6 +27,7 @@ app.get("/api/health", (_req, res) => {
 
 app.use("/api/auth", authRouter);
 app.use("/api/oauth", oauthRouter);
+app.use("/api/operations", operationsRouter);
 app.use("/api/media", mediaRouter);
 app.use("/api/posts", postsRouter);
 app.use("/api/reports", reportsRouter);
@@ -39,6 +41,7 @@ app.use("/api/scheduler", schedulerRouter);
 
 app.use("/channels", channelsRouter);
 app.use("/company-settings", companySettingsRouter);
+app.use("/operations", operationsRouter);
 app.use("/weekly-plan", weeklyPlanRouter);
 app.use("/auto-generate", autoGenerateRouter);
 app.use("/engagement", engagementRouter);

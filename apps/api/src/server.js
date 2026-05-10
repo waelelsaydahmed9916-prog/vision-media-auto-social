@@ -12,6 +12,7 @@ import { engagementRouter } from "./routes/engagement.js";
 import { schedulerRouter } from "./routes/scheduler.js";
 import { weeklyPlanRouter } from "./routes/weeklyPlan.js";
 import { whatsappRouter } from "./routes/whatsapp.js";
+import { systemHealthRouter } from "./routes/systemHealth.js";
 import { env } from "./config/env.js";
 import { startScheduler } from "./jobs/scheduler.js";
 
@@ -36,6 +37,7 @@ app.use("/api/auto-generate", autoGenerateRouter);
 app.use("/api/engagement", engagementRouter);
 app.use("/api/whatsapp", whatsappRouter);
 app.use("/api/scheduler", schedulerRouter);
+app.use("/api/system-health", systemHealthRouter);
 
 app.use("/channels", channelsRouter);
 app.use("/company-settings", companySettingsRouter);
@@ -44,6 +46,7 @@ app.use("/auto-generate", autoGenerateRouter);
 app.use("/engagement", engagementRouter);
 app.use("/whatsapp", whatsappRouter);
 app.use("/scheduler", schedulerRouter);
+app.use("/system-health", systemHealthRouter);
 
 app.use((error, _req, res, _next) => {
   console.error(error);

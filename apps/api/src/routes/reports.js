@@ -24,8 +24,7 @@ reportsRouter.get("/", requireAdmin, async (_req, res) => {
       published: posts.filter((post) => post.status === "published").length,
       failed: posts.filter((post) => post.status === "failed").length,
       scheduled: posts.filter((post) => post.status === "scheduled").length,
-      draft: posts.filter((post) => post.status === "draft").length,
-      processing: posts.filter((post) => post.status === "processing").length
+      draft: posts.filter((post) => post.status === "draft").length
     },
     posts
   });

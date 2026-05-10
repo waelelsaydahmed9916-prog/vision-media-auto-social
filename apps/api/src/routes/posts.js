@@ -66,21 +66,6 @@ postsRouter.get("/calendar", requireAdmin, async (req, res) => {
   res.json(snapshot.docs.map(serializePost));
 });
 
-postsRouter.post("/:id/publish-now", requireAdmin, async (req, res) => {
-  const ref = db.collection("posts").doc(req.params.id);
-  const doc = await ref.get();
-  if (!doc.exists) return res.status(404).json({ message: "Post not found." });
-
-  await ref.update({
-    status: "scheduled",
-    scheduledAt: admin.firestore.Timestamp.now(),
-    failureReason: null
-  });
-
-  const results = await publishDuePosts();
-  res.json({ results });
-});
-
 postsRouter.post("/run-due", requireAdmin, async (_req, res) => {
   const results = await publishDuePosts();
   res.json({ results });

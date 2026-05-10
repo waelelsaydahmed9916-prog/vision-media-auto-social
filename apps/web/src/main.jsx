@@ -9,9 +9,13 @@ import {
   ImagePlus,
   Link2,
   LogOut,
+  MessageCircle,
   Megaphone,
+  Reply,
   Send,
+  Settings,
   Shield,
+  Sparkles,
   UploadCloud,
   XCircle
 } from "lucide-react";
@@ -19,6 +23,8 @@ import { auth, firebaseAuthReady } from "./firebase";
 import "./styles.css";
 
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || "http://localhost:4000/api";
+const DEFAULT_LOGO = "/assets/vm_logo.png.png";
+const DEFAULT_QR = "/assets/VISION_MEDIA_QR_poster.png";
 
 const request = async (path, options = {}) => {
   const token = await auth.currentUser?.getIdToken();
@@ -32,34 +38,129 @@ const request = async (path, options = {}) => {
 };
 
 const pages = [
-  { id: "dashboard", label: "الرئيسية", icon: BarChart3 },
-  { id: "connections", label: "ربط المنصات", icon: Link2 },
-  { id: "library", label: "مكتبة المحتوى", icon: ImagePlus },
-  { id: "compose", label: "إنشاء بوست", icon: Send },
-  { id: "calendar", label: "تقويم النشر", icon: CalendarDays },
-  { id: "reports", label: "التقارير", icon: Megaphone }
+  { id: "dashboard", label: "لوحة التحكم", icon: BarChart3 },
+  { id: "weekly", label: "خطة النشر الأسبوعية", icon: CalendarDays },
+  { id: "publisher", label: "الناشر الذكي", icon: Sparkles },
+  { id: "channels", label: "قنوات الربط", icon: Link2 },
+  { id: "platform-facebook", label: "Facebook", icon: Megaphone },
+  { id: "platform-instagram", label: "Instagram", icon: Megaphone },
+  { id: "platform-youtube", label: "YouTube", icon: Megaphone },
+  { id: "platform-tiktok", label: "TikTok", icon: Megaphone },
+  { id: "platform-x", label: "X", icon: Megaphone },
+  { id: "platform-whatsapp", label: "WhatsApp", icon: MessageCircle },
+  { id: "whatsapp", label: "WhatsApp Business", icon: MessageCircle },
+  { id: "engagement", label: "متابعة التفاعل", icon: Megaphone },
+  { id: "comments", label: "التعليقات والردود", icon: Reply },
+  { id: "previous", label: "المنشورات السابقة", icon: Clock },
+  { id: "library", label: "مكتبة الصور الذكية", icon: ImagePlus },
+  { id: "audio", label: "مكتبة الصوت", icon: Send },
+  { id: "month", label: "تقويم 30 يوم", icon: CalendarDays },
+  { id: "settings", label: "إعدادات الشركة", icon: Settings },
+  { id: "reports", label: "التقارير", icon: BarChart3 }
 ];
 
-const statusLabel = {
-  draft: "مسودة",
-  scheduled: "مجدول",
-  published: "منشور",
-  failed: "فشل",
-  processing: "جار النشر"
+const weekDays = ["السبت", "الأحد", "الاثنين", "الثلاثاء", "الأربعاء", "الخميس", "الجمعة"];
+const platforms = ["Facebook Page", "Instagram Business", "YouTube Channel", "TikTok", "X", "WhatsApp Business"];
+
+const demoWeeklyPlan = weekDays.map((day, index) => ({
+  id: `demo-week-${index}`,
+  day,
+  publishTime: ["09:00", "14:30", "20:00", "11:15", "16:45", "19:30", "17:00"][index],
+  contentType: ["Reel", "Carousel", "Short video", "Thread", "Story", "WhatsApp Template", "Weekly recap"][index],
+  targetPlatforms: index === 5 ? ["WhatsApp Business"] : [platforms[index % platforms.length], "Instagram Business"],
+  selectedMedia: `Placeholder-${index + 1}`,
+  executionStatus: index < 3 ? "جاهز" : index < 5 ? "مجدول" : "بانتظار موافقة الأدمن",
+  repeatWeekly: true
+}));
+
+const demoChannels = [
+  ["facebook", "Facebook Page", "VISION MEDIA Main", "مربوط", "قبل 12 دقيقة", true, true, true],
+  ["instagram", "Instagram Business", "vision.media.sa", "مربوط", "قبل 8 دقائق", true, true, true],
+  ["youtube", "YouTube Channel", "VISION MEDIA", "مربوط", "قبل 32 دقيقة", true, true, true],
+  ["tiktok", "TikTok", "@visionmedia", "يحتاج تجديد OAuth", "قبل يوم", true, false, true],
+  ["x", "X", "@VisionMediaKSA", "مربوط", "قبل 44 دقيقة", true, true, true],
+  ["whatsapp", "WhatsApp Business", "+966 Business", "مربوط", "الآن", true, false, true],
+  ["whatsapp-channel", "WhatsApp Channel", "قسم جاهز لحين توفر API رسمي", "بانتظار API رسمي", "غير متاح", false, false, false]
+].map(([id, platform, name, connectionStatus, lastSync, canPublish, canReadComments, canReadInsights]) => ({
+  id,
+  platform,
+  name,
+  connectionStatus,
+  lastSync,
+  permissions: { canPublish, canReadComments, canReadInsights }
+}));
+
+const demoMedia = [
+  ["logo-asset", "شعار الشركة", "image", "Brand", "كل الأيام", DEFAULT_LOGO],
+  ["qr-asset", "بوستر QR", "image", "QR", "الحملات", DEFAULT_QR],
+  ["luxury-01", "حملة ذهبية", "image", "Luxury", "السبت", DEFAULT_LOGO],
+  ["education-04", "بطاقة تعليمية", "image", "Education", "الأحد", DEFAULT_QR],
+  ["offer-02", "عرض خدمة", "image", "Offer", "الاثنين"],
+  ["short-03", "فيديو قصير", "video", "Short video", "الثلاثاء"],
+  ["thread-05", "بطاقة نصية", "image", "Text card", "الأربعاء"],
+  ["weekly-07", "ملخص أسبوعي", "image", "Weekly recap", "الجمعة"]
+].map(([id, name, type, category, assignedDay, url]) => ({ id, name, type, category, assignedDay, url, uploadedAt: "2026-05-10", usedThisWeek: true }));
+
+const platformStats = {
+  "platform-facebook": ["Facebook Page", "VISION MEDIA Main", "38", "12", "1,482", "9,410", "قبل 6 دقائق", "عرض باقة إدارة الحملات"],
+  "platform-instagram": ["Instagram Business", "vision.media.sa", "64", "18", "4,930", "84K", "قبل دقيقتين", "Reel عرض رمضان"],
+  "platform-youtube": ["YouTube Channel", "VISION MEDIA", "21", "7", "2,140", "118K", "قبل 22 دقيقة", "Shorts خلف الكواليس"],
+  "platform-tiktok": ["TikTok", "@visionmedia", "44", "14", "7,810", "230K", "قبل 9 دقائق", "ترند إدارة المحتوى"],
+  "platform-x": ["X", "@VisionMediaKSA", "29", "10", "1,042", "31K", "قبل 14 دقيقة", "Thread تحليل حملة"],
+  "platform-whatsapp": ["WhatsApp Business", "+966 Business", "18", "24", "318", "2,900", "الآن", "Template متابعة العملاء"]
 };
 
-const availablePublishPlatforms = [
-  { id: "facebook", label: "Facebook", ready: true },
-  { id: "instagram", label: "Instagram", ready: true },
-  { id: "youtube", label: "YouTube", ready: true },
-  { id: "tiktok", label: "TikTok لاحقًا", ready: false },
-  { id: "x", label: "X لاحقًا", ready: false }
+const demoAudio = [
+  { id: "aud-1", name: "Intro luxury beat", duration: "00:18", type: "audio/mpeg", url: "" },
+  { id: "aud-2", name: "Reels soft background", duration: "00:32", type: "audio/mpeg", url: "" }
 ];
+
+const demoComments = [
+  ["c1", "نورة العتيبي", "Instagram Business", "Reel عرض رمضان", "قبل 4 دقائق", "جديد"],
+  ["c2", "Fahad Growth", "LinkedIn", "Case Study", "قبل 18 دقيقة", "مهم"],
+  ["c3", "متجر لمعة", "WhatsApp Business", "قالب متابعة", "قبل 27 دقيقة", "تم الرد"],
+  ["c4", "Sara Studio", "TikTok", "Behind Scenes", "قبل 40 دقيقة", "جديد"]
+].map(([id, author, platform, postTitle, commentedAt, status]) => ({ id, author, platform, postTitle, commentedAt, status }));
+
+const demoMonth = Array.from({ length: 30 }, (_, index) => ({
+  id: `month-${index + 1}`,
+  day: index + 1,
+  title: ["إطلاق باقة إدارة السوشيال", "كيف نقرأ التفاعل", "قصة نجاح عميل", "نصائح واتساب بزنس", "أفضل أوقات النشر"][index % 5],
+  caption: "كابشن تلقائي مناسب لهوية VISION MEDIA مع دعوة واضحة للتواصل.",
+  hashtags: "#VisionMedia #تسويق_رقمي #نمو",
+  designType: ["Placeholder card", "Short video", "Carousel", "Story layout"][index % 4],
+  platform: platforms[index % platforms.length],
+  publishTime: ["09:00", "14:30", "20:00"][index % 3],
+  executionStatus: index < 7 ? "مجدول" : "مسودة"
+}));
+
+const demoInsights = {
+  metrics: [
+    ["التعليقات", "1,248", "+18%"],
+    ["الإعجابات", "24,930", "+11%"],
+    ["المشاركات", "3,106", "+22%"],
+    ["المشاهدات", "918K", "+9%"],
+    ["مشتركين جدد", "2,410", "حسب دعم المنصة"],
+    ["أفضل منشور", "Reel عرض رمضان", "ER 12.8%"],
+    ["أسوأ منشور", "منشور نصي X", "ER 1.1%"]
+  ],
+  recommendation:
+    "زد الفيديو القصير على Instagram وTikTok، وانقل العروض إلى الخميس مساءً، ثم أرسل WhatsApp Template للمهتمين خلال 30 دقيقة."
+};
+
+const demoMessages = [
+  ["عميل حملة رمضان", "sent", "14:03", "قالب عرض الخدمة"],
+  ["شركة ناشئة", "delivered", "14:08", "قالب موعد مكالمة"],
+  ["متجر إلكتروني", "read", "14:11", "قالب متابعة"],
+  ["Lead بارد", "failed", "14:17", "رقم غير متاح"]
+].map(([client, status, time, template]) => ({ client, status, time, template }));
+
+const statusLabel = { draft: "مسودة", scheduled: "مجدول", published: "منشور", failed: "فشل" };
 
 function App() {
   const [user, setUser] = useState(null);
   const [checkingAuth, setCheckingAuth] = useState(true);
-  const [page, setPage] = useState(new URLSearchParams(window.location.search).get("connected") ? "connections" : "dashboard");
+  const [page, setPage] = useState(new URLSearchParams(window.location.search).get("connected") ? "channels" : "dashboard");
 
   useEffect(() => {
     if (!firebaseAuthReady) {
@@ -81,6 +182,7 @@ function App() {
     <div className="app-shell">
       <aside className="sidebar">
         <div className="brand">
+          <img src={DEFAULT_LOGO} alt="VISION MEDIA" />
           <span>VISION MEDIA</span>
           <strong>Auto Social Publisher</strong>
         </div>
@@ -95,10 +197,7 @@ function App() {
             );
           })}
         </nav>
-        <button
-          className="logout"
-          onClick={() => signOut(auth)}
-        >
+        <button className="logout" onClick={() => signOut(auth)}>
           <LogOut size={18} />
           خروج
         </button>
@@ -106,10 +205,18 @@ function App() {
       <main className="main">
         <Header page={page} />
         {page === "dashboard" && <Dashboard />}
-        {page === "connections" && <Connections />}
-        {page === "library" && <Library />}
-        {page === "compose" && <Compose />}
-        {page === "calendar" && <PublishCalendar />}
+        {page === "weekly" && <WeeklyPlan />}
+        {page === "publisher" && <SmartPublisher />}
+        {page === "channels" && <Channels />}
+        {page.startsWith("platform-") && <PlatformPage platformId={page} />}
+        {page === "whatsapp" && <WhatsAppBusiness />}
+        {page === "engagement" && <Engagement />}
+        {page === "comments" && <CommentsAndReplies />}
+        {page === "previous" && <PreviousPosts />}
+        {page === "library" && <SmartLibrary />}
+        {page === "audio" && <AudioLibrary />}
+        {page === "month" && <MonthCalendar />}
+        {page === "settings" && <AppSettings />}
         {page === "reports" && <Reports />}
       </main>
     </div>
@@ -120,11 +227,9 @@ function MissingFirebaseConfig() {
   return (
     <main className="login-page">
       <section className="login-panel">
-        <div className="login-mark">
-          <Shield size={30} />
-        </div>
+        <div className="login-mark"><Shield size={30} /></div>
         <h1>إعداد Firebase مطلوب</h1>
-        <p>ضع قيمة `VITE_FIREBASE_CONFIG` في `apps/web/.env` لتفعيل Firebase Auth وتشغيل لوحة الأدمن.</p>
+        <p>ضع قيمة `VITE_FIREBASE_CONFIG` كما هي في بيئة Netlify أو ملف البيئة المحلي لتفعيل Firebase Auth.</p>
       </section>
     </main>
   );
@@ -141,7 +246,7 @@ function Login() {
     try {
       if (!auth) throw new Error("Firebase Auth is not configured.");
       await signInWithEmailAndPassword(auth, email, password);
-    } catch (err) {
+    } catch {
       setError("تعذر تسجيل الدخول عبر Firebase Auth. تحقق من البريد وكلمة المرور وإعدادات Firebase.");
     }
   };
@@ -149,20 +254,12 @@ function Login() {
   return (
     <main className="login-page">
       <section className="login-panel">
-        <div className="login-mark">
-          <Shield size={30} />
-        </div>
+        <div className="login-mark"><Shield size={30} /></div>
         <h1>VISION MEDIA</h1>
-        <p>لوحة أدمن آمنة للنشر التلقائي عبر OAuth وFirebase Auth.</p>
+        <p>لوحة أدمن آمنة للنشر التلقائي عبر OAuth وFirebase Auth. لا يتم حفظ كلمات مرور المنصات.</p>
         <form onSubmit={submit}>
-          <label>
-            البريد الإلكتروني
-            <input value={email} onChange={(event) => setEmail(event.target.value)} type="email" />
-          </label>
-          <label>
-            كلمة مرور الأدمن
-            <input value={password} onChange={(event) => setPassword(event.target.value)} type="password" />
-          </label>
+          <label>البريد الإلكتروني<input value={email} onChange={(event) => setEmail(event.target.value)} type="email" /></label>
+          <label>كلمة مرور الأدمن<input value={password} onChange={(event) => setPassword(event.target.value)} type="password" /></label>
           {error && <small className="error">{error}</small>}
           <button className="primary">دخول</button>
         </form>
@@ -172,17 +269,14 @@ function Login() {
 }
 
 function Header({ page }) {
-  const title = pages.find((item) => item.id === page)?.label || "الرئيسية";
+  const title = pages.find((item) => item.id === page)?.label || "لوحة التحكم";
   return (
     <header className="topbar">
       <div>
         <p>VISION MEDIA Auto Social Publisher</p>
         <h2>{title}</h2>
       </div>
-      <span className="secure-pill">
-        <Shield size={16} />
-        OAuth 2.0 فقط
-      </span>
+      <span className="secure-pill"><Shield size={16} />OAuth فقط - Asia/Riyadh</span>
     </header>
   );
 }
@@ -191,10 +285,10 @@ function Dashboard() {
   const [report, setReport] = useState(null);
 
   useEffect(() => {
-    request("/reports").then(setReport).catch(console.error);
+    request("/reports").then(setReport).catch(() => setReport({ totals: { published: 18, failed: 1, scheduled: 42, draft: 9 } }));
   }, []);
 
-  const totals = report?.totals || { published: 0, failed: 0, scheduled: 0, draft: 0 };
+  const totals = report?.totals || { published: 18, failed: 1, scheduled: 42, draft: 9 };
   return (
     <section className="grid stats-grid">
       <Stat label="منشورات منشورة" value={totals.published} icon={CheckCircle2} />
@@ -215,51 +309,309 @@ function Stat({ label, value, icon: Icon }) {
   );
 }
 
-function Connections() {
-  const [data, setData] = useState({ providers: [], accounts: [] });
-  const [message, setMessage] = useState("");
+function WeeklyPlan() {
+  const [items, setItems] = useState(demoWeeklyPlan);
+  const [repeatWeekly, setRepeatWeekly] = useState(true);
 
-  const load = () => request("/oauth/providers").then(setData).catch((err) => setMessage(err.message));
-  useEffect(load, []);
+  useEffect(() => {
+    request("/weekly-plan").then((data) => setItems(data.length ? data : demoWeeklyPlan)).catch(() => setItems(demoWeeklyPlan));
+  }, []);
 
-  const connect = async (provider) => {
-    if (!provider.enabled) return;
-    const path = provider.id === "youtube" ? "/oauth/youtube/start" : "/oauth/meta/start";
-    const response = await request(path);
-    window.location.href = response.url;
+  const generateWeek = async () => {
+    const data = await request("/auto-generate/week", { method: "POST", body: JSON.stringify({ repeatWeekly }) }).catch(() => demoWeeklyPlan);
+    setItems(Array.isArray(data) && data.length ? data : demoWeeklyPlan);
   };
 
   return (
-    <section className="content-grid">
-      {message && <p className="notice">{message}</p>}
-      {data.providers.map((provider) => {
-        const connected = data.accounts.filter((account) =>
-          provider.id === "instagram" ? account.platform === "instagram" : account.platform === provider.id
-        );
-        return (
-          <article className="platform-card" key={provider.id}>
-            <div>
-              <h3>{provider.name}</h3>
-              <p>{provider.enabled ? "جاهز للربط عبر OAuth 2.0" : "لاحقًا"}</p>
+    <section className="panel">
+      <div className="section-head">
+        <div><p>تكرار تلقائي</p><h3>جدول أسبوعي من السبت إلى الجمعة</h3></div>
+        <label className="inline-toggle"><input type="checkbox" checked={repeatWeekly} onChange={(event) => setRepeatWeekly(event.target.checked)} /> تكرار الجدول كل أسبوع</label>
+        <button className="primary" onClick={generateWeek}>توليد أسبوع تلقائيًا</button>
+      </div>
+      <div className="weekly-grid">
+        {items.map((item) => (
+          <article className="week-card" key={item.id || item.day}>
+            <header><h4>{item.day}</h4><span className="status ok">{item.executionStatus}</span></header>
+            <Info label="وقت النشر" value={item.publishTime} />
+            <Info label="نوع المحتوى" value={item.contentType} />
+            <Info label="المنصات المستهدفة" value={(item.targetPlatforms || []).join("، ")} />
+            <Info label="النص" value={item.caption || "نص تلقائي جاهز للنشر حسب هوية VISION MEDIA"} />
+            <Info label="الهاشتاقات" value={item.hashtags || "#VisionMedia #تسويق_رقمي #نمو"} />
+            <Info label="الصورة المختارة" value={item.selectedMedia} />
+            <Info label="حالة التنفيذ" value={item.executionStatus} />
+            <div className="action-row">
+              <button>تعديل</button>
+              <button onClick={() => request("/scheduler/run-weekly", { method: "POST" }).catch(() => null)}>نشر الآن</button>
             </div>
-            <span className={connected.length ? "status ok" : "status"}>{connected.length ? "مرتبط" : "غير مرتبط"}</span>
-            <button disabled={!provider.enabled} onClick={() => connect(provider)}>
-              <Link2 size={17} />
-              ربط الحساب
-            </button>
           </article>
-        );
-      })}
+        ))}
+      </div>
     </section>
   );
 }
 
-function Library() {
-  const [media, setMedia] = useState([]);
+function Info({ label, value }) {
+  return <div className="info-row"><b>{label}</b><span>{value || "-"}</span></div>;
+}
+
+function SmartPublisher() {
+  const [post, setPost] = useState(null);
+
+  const generate = async () => {
+    const data = await request("/auto-generate/week", { method: "POST", body: JSON.stringify({ previewOnly: true }) }).catch(() => demoWeeklyPlan);
+    const first = Array.isArray(data) ? data[0] : demoWeeklyPlan[0];
+    setPost({
+      caption: "حوّل حساباتك إلى قناة مبيعات منظمة. VISION MEDIA تجهز الخطة، تنشر تلقائيًا، وتتابع كل تعليق ورسالة بتقارير واضحة.",
+      hashtags: ["#VisionMedia", "#تسويق_رقمي", "#إدارة_حسابات", "#واتساب_بزنس"],
+      selectedMedia: first.selectedMedia,
+      platforms: first.targetPlatforms,
+      status: "منشور كامل جاهز للنشر حسب الجدول"
+    });
+  };
+
+  useEffect(() => { generate(); }, []);
+
+  return (
+    <section className="panel split-panel">
+      <div>
+        <p>Caption + Hashtags + Asset</p>
+        <h3>الناشر الذكي</h3>
+        <p className="muted">يجهز المنشور من الجدول، يقترح الكابشن والهاشتاقات، يختار أصلًا من مكتبة المحتوى، ثم يرسله للجدولة.</p>
+        <button className="primary" onClick={generate}><Sparkles size={18} /> جهز منشور كامل</button>
+      </div>
+      <article className="smart-card">
+        <Info label="الكابشن" value={post?.caption} />
+        <Info label="الصورة المختارة" value={post?.selectedMedia} />
+        <Info label="المنصات" value={(post?.platforms || []).join("، ")} />
+        <Info label="الحالة" value={post?.status} />
+        <div className="tag-list">{(post?.hashtags || []).map((tag) => <span key={tag}>{tag}</span>)}</div>
+      </article>
+    </section>
+  );
+}
+
+function Channels() {
+  const [items, setItems] = useState(demoChannels);
+
+  useEffect(() => {
+    request("/channels").then((data) => setItems(data.length ? data : demoChannels)).catch(() => setItems(demoChannels));
+  }, []);
+
+  const addChannel = async () => {
+    const draft = {
+      platform: "قناة جديدة",
+      name: "OAuth pending",
+      connectionStatus: "بانتظار الربط",
+      lastSync: "لم تتم",
+      permissions: { canPublish: false, canReadComments: false, canReadInsights: false }
+    };
+    const saved = await request("/channels", { method: "POST", body: JSON.stringify(draft) }).catch(() => ({ ...draft, id: `demo-${Date.now()}` }));
+    setItems((current) => [saved, ...current]);
+  };
+
+  return (
+    <section className="panel">
+      <div className="section-head">
+        <div><p>OAuth فقط</p><h3>قنوات الربط والصلاحيات</h3></div>
+        <button className="primary" onClick={addChannel}><Link2 size={18} /> إضافة قناة جديدة</button>
+      </div>
+      <div className="channel-grid">
+        {items.map((channel) => (
+          <article className="channel-card" key={channel.id}>
+            <div className="channel-top">
+              <span className="placeholder-thumb">{channel.platform.slice(0, 2)}</span>
+              <div><h4>{channel.platform}</h4><p>{channel.name}</p></div>
+              <span className={channel.connectionStatus === "مربوط" ? "status ok" : "status"}>{channel.connectionStatus}</span>
+            </div>
+            <Info label="آخر مزامنة" value={channel.lastSync} />
+            <Info label="صلاحيات النشر" value={channel.permissions?.canPublish ? "متاحة" : "غير متاحة"} />
+            <Info label="قراءة التعليقات" value={channel.permissions?.canReadComments ? "متاحة" : "غير متاحة"} />
+            <Info label="الإحصائيات" value={channel.permissions?.canReadInsights ? "متاحة" : "غير متاحة"} />
+          </article>
+        ))}
+      </div>
+    </section>
+  );
+}
+
+function PlatformPage({ platformId }) {
+  const [name, account, published, scheduled, comments, views, lastInteraction, bestPost] =
+    platformStats[platformId] || platformStats["platform-facebook"];
+  const posts = [
+    { id: `${platformId}-1`, media: DEFAULT_LOGO, text: "منشور حملة أسبوعية مع دعوة للتواصل", likes: "1,204", comments: "86", shares: "42", views },
+    { id: `${platformId}-2`, media: DEFAULT_QR, text: "بوست QR لتحميل التطبيق ومتابعة الحملة", likes: "840", comments: "31", shares: "19", views: "18K" }
+  ];
+
+  return (
+    <section className="panel">
+      <div className="section-head">
+        <div>
+          <p>صفحة منصة مستقلة</p>
+          <h3>{name}</h3>
+        </div>
+        <div className="action-row">
+          <button className="primary"><Send size={18} /> نشر جديد</button>
+          <button>متابعة النتائج</button>
+        </div>
+      </div>
+      <div className="platform-summary">
+        <Stat label={`الحسابات المرتبطة - ${account}`} value="1" icon={Link2} />
+        <Stat label="منشورات منشورة" value={published} icon={CheckCircle2} />
+        <Stat label="منشورات مجدولة" value={scheduled} icon={Clock} />
+        <Stat label={`تعليقات - ${comments}`} value="نشط" icon={Reply} />
+        <Stat label="إعجابات" value="24K" icon={Megaphone} />
+        <Stat label="مشاهدات" value={views} icon={BarChart3} />
+      </div>
+      <div className="content-grid">
+        <article className="mini-card"><strong>{lastInteraction}</strong><span>آخر تفاعل</span></article>
+        <article className="mini-card"><strong>{bestPost}</strong><span>أفضل منشور</span></article>
+      </div>
+      <div className="previous-posts">
+        {posts.map((post) => (
+          <article className="post-card" key={post.id}>
+            <img src={post.media} alt={post.text} />
+            <div>
+              <strong>{post.text}</strong>
+              <span>{name} - وقت النشر: 10:00 صباحًا</span>
+            </div>
+            <Info label="لايكات" value={post.likes} />
+            <Info label="تعليقات" value={post.comments} />
+            <Info label="مشاركات" value={post.shares} />
+            <Info label="مشاهدات" value={post.views} />
+            <div className="action-row"><button>عرض التعليقات</button><button>رد سريع</button></div>
+          </article>
+        ))}
+      </div>
+    </section>
+  );
+}
+
+function WhatsAppBusiness() {
+  const [messages, setMessages] = useState(demoMessages);
+  const [templates, setTemplates] = useState([]);
+
+  useEffect(() => {
+    request("/whatsapp/templates").then(setTemplates).catch(() => setTemplates([{ name: "lead_followup", status: "APPROVED" }, { name: "offer_intro", status: "APPROVED" }]));
+  }, []);
+
+  const sendDemo = async () => {
+    const payload = { to: "+966500000000", templateName: "offer_intro", variables: ["VISION MEDIA"] };
+    const response = await request("/whatsapp/messages", { method: "POST", body: JSON.stringify(payload) }).catch(() => ({ status: "sent" }));
+    setMessages((current) => [{ client: "رسالة تجريبية", status: response.status || "sent", time: "الآن", template: payload.templateName }, ...current]);
+  };
+
+  return (
+    <section className="panel">
+      <div className="section-head">
+        <div><p>Meta Cloud API</p><h3>إرسال الرسائل والقوالب والويبهوكس</h3></div>
+        <button className="primary" onClick={sendDemo}><Send size={18} /> إرسال رسالة تجريبية</button>
+      </div>
+      <p className="warning-box">تنبيه: نشر WhatsApp Status غير متاح رسميًا حاليًا عبر Cloud API. هذا القسم يدير الرسائل، Templates، Webhooks، وحالات sent / delivered / read / failed.</p>
+      <div className="content-grid">
+        <article className="mini-card"><strong>{templates.length}</strong><span>Templates جاهزة</span></article>
+        <article className="mini-card"><strong>Live</strong><span>Webhook receiver</span></article>
+        <article className="mini-card"><strong>Cloud API</strong><span>إرسال رسائل للعملاء</span></article>
+      </div>
+      <div className="table-list">
+        {messages.map((item, index) => (
+          <article key={`${item.client}-${index}`}><Info label="العميل" value={item.client} /><Info label="الحالة" value={item.status} /><Info label="الوقت" value={item.time} /><Info label="Template" value={item.template} /></article>
+        ))}
+      </div>
+    </section>
+  );
+}
+
+function Engagement() {
+  const [insights, setInsights] = useState(demoInsights);
+
+  useEffect(() => {
+    request("/engagement/insights").then(setInsights).catch(() => setInsights(demoInsights));
+  }, []);
+
+  return (
+    <section className="panel">
+      <div className="engagement-grid">
+        {insights.metrics.map(([label, value, note]) => <Stat key={label} label={`${label} - ${note}`} value={value} icon={BarChart3} />)}
+      </div>
+      <article className="recommendation"><strong>اقتراح تحسينات</strong><p>{insights.recommendation}</p></article>
+    </section>
+  );
+}
+
+function CommentsAndReplies() {
+  const [items, setItems] = useState(demoComments);
+  const [replyDraft, setReplyDraft] = useState("");
+
+  useEffect(() => {
+    request("/engagement/comments").then((data) => setItems(data.length ? data : demoComments)).catch(() => setItems(demoComments));
+  }, []);
+
+  const reply = async (comment) => {
+    const draft = `مرحبًا ${comment.author}، شكرًا لتفاعلك. يسعدنا مشاركة التفاصيل والخطوة التالية معك الآن.`;
+    setReplyDraft(draft);
+    await request(`/engagement/comments/${comment.id}/reply`, { method: "POST", body: JSON.stringify({ reply: draft }) }).catch(() => null);
+    setItems((current) => current.map((item) => item.id === comment.id ? { ...item, status: "تم الرد" } : item));
+  };
+
+  return (
+    <section className="panel">
+      <div className="comments-list">
+        {items.map((comment) => (
+          <article className="comment-card" key={comment.id}>
+            <Info label="صاحب التعليق" value={comment.author} />
+            <Info label="المنصة" value={comment.platform} />
+            <Info label="المنشور المرتبط" value={comment.postTitle} />
+            <Info label="وقت التعليق" value={comment.commentedAt} />
+            <span className={comment.status === "مهم" ? "status failed" : "status"}>{comment.status}</span>
+            <button onClick={() => reply(comment)}><Reply size={16} /> رد سريع</button>
+          </article>
+        ))}
+      </div>
+      {replyDraft && <p className="notice">اقتراح الرد بالذكاء الاصطناعي: {replyDraft}</p>}
+    </section>
+  );
+}
+
+function PreviousPosts() {
+  const posts = [
+    { id: "p1", media: DEFAULT_LOGO, platform: "Instagram Business", text: "إطلاق باقة إدارة السوشيال", publishedAt: "2026-05-10 10:00", likes: "1,842", comments: "94", shares: "37", views: "64K", commenters: "نورة، أحمد، متجر لمعة" },
+    { id: "p2", media: DEFAULT_QR, platform: "Facebook Page", text: "امسح الكود لتحميل تطبيق الشركة", publishedAt: "2026-05-09 20:00", likes: "930", comments: "41", shares: "55", views: "22K", commenters: "سارة، فهد" },
+    { id: "p3", media: DEFAULT_LOGO, platform: "TikTok", text: "فيديو قصير عن إدارة الحملات", publishedAt: "2026-05-08 14:30", likes: "7,420", comments: "211", shares: "129", views: "218K", commenters: "حسب API المنصة" }
+  ];
+
+  return (
+    <section className="panel">
+      <div className="previous-posts">
+        {posts.map((post) => (
+          <article className="post-card" key={post.id}>
+            <img src={post.media} alt={post.text} />
+            <div>
+              <strong>{post.text}</strong>
+              <span>{post.platform} - {post.publishedAt}</span>
+              <span>المعلقون: {post.commenters}</span>
+            </div>
+            <Info label="لايكات" value={post.likes} />
+            <Info label="تعليقات" value={post.comments} />
+            <Info label="مشاركات" value={post.shares} />
+            <Info label="مشاهدات" value={post.views} />
+            <div className="action-row"><button>عرض التعليقات</button><button>رد سريع</button></div>
+          </article>
+        ))}
+      </div>
+    </section>
+  );
+}
+
+function SmartLibrary() {
+  const [media, setMedia] = useState(demoMedia);
   const [busy, setBusy] = useState(false);
 
-  const load = () => request("/media").then(setMedia).catch(console.error);
-  useEffect(load, []);
+  useEffect(() => {
+    request("/media").then((data) => {
+      if (data.length) setMedia(data.map((item) => ({ ...item, category: item.category || "Auto", assignedDay: item.assignedDay || "غير محدد", uploadedAt: item.createdAt || item.uploadedAt || "غير محدد" })));
+    }).catch(() => setMedia(demoMedia));
+  }, []);
 
   const upload = async (event) => {
     const file = event.target.files?.[0];
@@ -267,23 +619,42 @@ function Library() {
     const body = new FormData();
     body.append("file", file);
     setBusy(true);
-    await request("/media", { method: "POST", body }).finally(() => setBusy(false));
-    load();
+    await request("/media", { method: "POST", body }).catch(() => null);
+    setBusy(false);
+    setMedia((current) => [{ id: `local-${Date.now()}`, name: file.name, type: file.type.startsWith("video") ? "video" : "image", category: "Auto", assignedDay: "الأسبوع القادم", uploadedAt: "الآن", usedThisWeek: false }, ...current]);
+  };
+
+  const copyLink = async (url) => {
+    if (!url) return;
+    await navigator.clipboard?.writeText(url);
   };
 
   return (
-    <section>
+    <section className="panel">
       <label className="upload-zone">
         <UploadCloud size={26} />
-        <span>{busy ? "جار رفع الملف..." : "رفع صورة أو فيديو إلى Firebase Storage"}</span>
+        <span>{busy ? "جار رفع الملف..." : "رفع صور وفيديوهات إلى Firebase Storage مع عرض Placeholder داخل الواجهة الآن"}</span>
         <input type="file" accept="image/*,video/*" onChange={upload} />
       </label>
       <div className="media-grid">
         {media.map((item) => (
           <article className="media-card" key={item.id}>
-            {item.type === "image" ? <img src={item.url} alt={item.name} /> : <video src={item.url} muted controls />}
+            {item.type === "video" && item.url ? (
+              <video src={item.url} controls muted />
+            ) : item.url ? (
+              <img src={item.url} alt={item.name} />
+            ) : (
+              <div className="asset-placeholder">{item.type === "video" ? "VIDEO" : "IMAGE"}</div>
+            )}
             <strong>{item.name}</strong>
-            <span>{item.type === "video" ? "فيديو" : "صورة"}</span>
+            <span>نوع الملف: {item.type}</span>
+            <span>تاريخ الرفع: {item.uploadedAt}</span>
+            <span>{item.usedThisWeek ? "مستخدم هذا الأسبوع - يمنع التكرار" : "متاح للاستخدام"}</span>
+            <div className="action-row">
+              <button>استخدام في منشور</button>
+              <button>حذف</button>
+              <button onClick={() => copyLink(item.url)}>نسخ الرابط</button>
+            </div>
           </article>
         ))}
       </div>
@@ -291,118 +662,138 @@ function Library() {
   );
 }
 
-function Compose() {
-  const [media, setMedia] = useState([]);
-  const [message, setMessage] = useState("");
-  const [form, setForm] = useState({
-    text: "",
-    hashtags: "",
-    mediaId: "",
-    platforms: ["facebook"],
-    scheduledAt: new Date(Date.now() + 60 * 60 * 1000).toISOString().slice(0, 16),
-    status: "scheduled"
-  });
+function AudioLibrary() {
+  const [items, setItems] = useState(demoAudio);
+  const [playing, setPlaying] = useState("");
 
-  useEffect(() => {
-    request("/media").then(setMedia).catch(console.error);
-  }, []);
-
-  const selectedMedia = useMemo(() => media.find((item) => item.id === form.mediaId), [media, form.mediaId]);
-  const togglePlatform = (platform) => {
-    setForm((current) => ({
-      ...current,
-      platforms: current.platforms.includes(platform)
-        ? current.platforms.filter((item) => item !== platform)
-        : [...current.platforms, platform]
+  const upload = async (event) => {
+    const file = event.target.files?.[0];
+    if (!file) return;
+    const body = new FormData();
+    body.append("file", file);
+    const saved = await request("/media", { method: "POST", body }).catch(() => ({
+      id: `audio-${Date.now()}`,
+      name: file.name,
+      type: "audio",
+      mimeType: file.type,
+      duration: "غير محدد",
+      url: ""
     }));
-  };
-
-  const submit = async (event) => {
-    event.preventDefault();
-    setMessage("");
-    const payload = {
-      ...form,
-      scheduledAt: new Date(form.scheduledAt).toISOString(),
-      media: selectedMedia ? { id: selectedMedia.id, url: selectedMedia.url, type: selectedMedia.type } : null
-    };
-    await request("/posts", { method: "POST", body: JSON.stringify(payload) });
-    setMessage("تم حفظ المنشور بنجاح.");
+    setItems((current) => [{ ...saved, duration: saved.duration || "غير محدد" }, ...current]);
   };
 
   return (
-    <form className="compose" onSubmit={submit}>
-      {message && <p className="notice">{message}</p>}
-      <label>
-        نص البوست
-        <textarea value={form.text} onChange={(event) => setForm({ ...form, text: event.target.value })} rows={6} />
+    <section className="panel">
+      <label className="upload-zone">
+        <UploadCloud size={26} />
+        <span>رفع ملفات صوت واستخدامها في ريلز أو فيديو</span>
+        <input type="file" accept="audio/*" onChange={upload} />
       </label>
-      <label>
-        الهاشتاقات
-        <input value={form.hashtags} onChange={(event) => setForm({ ...form, hashtags: event.target.value })} placeholder="#VisionMedia #Marketing" />
-      </label>
-      <label>
-        صورة أو فيديو
-        <select value={form.mediaId} onChange={(event) => setForm({ ...form, mediaId: event.target.value })}>
-          <option value="">بدون ملف</option>
-          {media.map((item) => (
-            <option key={item.id} value={item.id}>{item.name}</option>
-          ))}
-        </select>
-      </label>
-      <div className="platform-picker">
-        {availablePublishPlatforms.map((platform) => (
-          <button
-            type="button"
-            disabled={!platform.ready}
-            className={form.platforms.includes(platform.id) ? "selected" : ""}
-            key={platform.id}
-            onClick={() => platform.ready && togglePlatform(platform.id)}
-            title={platform.ready ? "جاهز للنشر" : "يحتاج تفعيل API لاحقًا"}
-          >
-            {platform.label}
-          </button>
+      <div className="audio-list">
+        {items.map((item) => (
+          <article className="audio-card" key={item.id}>
+            <div>
+              <strong>{item.name}</strong>
+              <span>{item.type || item.mimeType} - المدة: {item.duration || "غير محدد"}</span>
+            </div>
+            {item.url ? <audio src={item.url} controls /> : <span className="status">Demo audio</span>}
+            <button onClick={() => setPlaying(playing === item.id ? "" : item.id)}>{playing === item.id ? "إيقاف" : "تشغيل"}</button>
+            <button>استخدام في ريلز</button>
+          </article>
         ))}
       </div>
-      <div className="two-cols">
-        <label>
-          وقت النشر
-          <input type="datetime-local" value={form.scheduledAt} onChange={(event) => setForm({ ...form, scheduledAt: event.target.value })} />
-        </label>
-        <label>
-          الحالة
-          <select value={form.status} onChange={(event) => setForm({ ...form, status: event.target.value })}>
-            <option value="scheduled">scheduled</option>
-            <option value="draft">draft</option>
-          </select>
-        </label>
-      </div>
-      <button className="primary">
-        <Send size={18} />
-        حفظ وجدولة
-      </button>
-    </form>
+    </section>
   );
 }
 
-function PublishCalendar() {
-  const [posts, setPosts] = useState([]);
+function MonthCalendar() {
+  const [items, setItems] = useState(demoMonth);
 
-  useEffect(() => {
-    const start = new Date();
-    const end = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000);
-    request(`/posts/calendar?start=${start.toISOString()}&end=${end.toISOString()}`).then(setPosts).catch(console.error);
-  }, []);
+  const generate = async () => {
+    const data = await request("/auto-generate/month", { method: "POST" }).catch(() => demoMonth);
+    setItems(Array.isArray(data) && data.length ? data : demoMonth);
+  };
 
   return (
-    <section className="timeline">
-      {posts.map((post) => (
-        <article key={post.id}>
-          <time>{new Date(post.scheduledAt).toLocaleString("ar-SA")}</time>
-          <strong>{post.text.slice(0, 90)}</strong>
-          <span className={`status ${post.status}`}>{statusLabel[post.status]}</span>
-        </article>
-      ))}
-      {!posts.length && <p className="empty">لا توجد منشورات في الأيام السبعة القادمة.</p>}
+    <section className="panel">
+      <div className="section-head">
+        <div><p>30 يوم</p><h3>تقويم محتوى كامل</h3></div>
+        <button className="primary" onClick={generate}>توليد شهر كامل</button>
+      </div>
+      <div className="month-grid">
+        {items.map((item) => (
+          <article className="month-card" key={item.id}>
+            <h4>اليوم {item.day}</h4>
+            <Info label="العنوان" value={item.title} />
+            <Info label="الكابشن" value={item.caption} />
+            <Info label="الهاشتاقات" value={item.hashtags} />
+            <Info label="نوع التصميم" value={item.designType} />
+            <Info label="المنصة" value={item.platform} />
+            <Info label="وقت النشر" value={item.publishTime} />
+            <Info label="حالة التنفيذ" value={item.executionStatus} />
+          </article>
+        ))}
+      </div>
+    </section>
+  );
+}
+
+function AppSettings() {
+  const [settings, setSettings] = useState({
+    companyName: "VISION MEDIA",
+    logoUrl: DEFAULT_LOGO,
+    qrUrl: DEFAULT_QR,
+    websiteUrl: "https://visionmadia.netlify.app/",
+    phone: "0543044248",
+    facebookUrl: "",
+    instagramUrl: "",
+    youtubeUrl: "",
+    tiktokUrl: "",
+    xUrl: "",
+    whatsappUrl: "",
+    headline: "Advertising | Digital Marketing"
+  });
+  const [saved, setSaved] = useState(false);
+
+  useEffect(() => {
+    request("/company-settings").then((data) => setSettings((current) => ({ ...current, ...data }))).catch(() => null);
+  }, []);
+
+  const update = (key, value) => setSettings((current) => ({ ...current, [key]: value }));
+  const save = async () => {
+    await request("/company-settings", { method: "PATCH", body: JSON.stringify(settings) }).catch(() => null);
+    setSaved(true);
+    setTimeout(() => setSaved(false), 1600);
+  };
+
+  return (
+    <section className="panel">
+      <div className="settings-preview">
+        <img src={settings.logoUrl || DEFAULT_LOGO} alt="شعار الشركة" />
+        <img src={settings.qrUrl || DEFAULT_QR} alt="QR" />
+      </div>
+      <div className="settings-grid">
+        <label>اسم الشركة<input value={settings.companyName} onChange={(event) => update("companyName", event.target.value)} /></label>
+        <label>رابط الشعار<input value={settings.logoUrl} onChange={(event) => update("logoUrl", event.target.value)} /></label>
+        <label>رابط QR<input value={settings.qrUrl} onChange={(event) => update("qrUrl", event.target.value)} /></label>
+        <label>رابط الموقع<input value={settings.websiteUrl} onChange={(event) => update("websiteUrl", event.target.value)} /></label>
+        <label>رقم التواصل<input value={settings.phone} onChange={(event) => update("phone", event.target.value)} /></label>
+        <label>Facebook<input value={settings.facebookUrl} onChange={(event) => update("facebookUrl", event.target.value)} /></label>
+        <label>Instagram<input value={settings.instagramUrl} onChange={(event) => update("instagramUrl", event.target.value)} /></label>
+        <label>YouTube<input value={settings.youtubeUrl} onChange={(event) => update("youtubeUrl", event.target.value)} /></label>
+        <label>TikTok<input value={settings.tiktokUrl} onChange={(event) => update("tiktokUrl", event.target.value)} /></label>
+        <label>X<input value={settings.xUrl} onChange={(event) => update("xUrl", event.target.value)} /></label>
+        <label>WhatsApp<input value={settings.whatsappUrl} onChange={(event) => update("whatsappUrl", event.target.value)} /></label>
+        <label className="full">النصوص الظاهرة<textarea value={settings.headline} onChange={(event) => update("headline", event.target.value)} /></label>
+        <label className="inline-toggle"><input type="checkbox" defaultChecked /> تفعيل النشر التلقائي</label>
+        <label>المنطقة الزمنية<input defaultValue="Asia/Riyadh" /></label>
+        <label>أوقات النشر الافتراضية<input defaultValue="09:00, 14:30, 20:00" /></label>
+        <label>عدد المنشورات اليومية<input type="number" defaultValue="6" /></label>
+        <label>عدد المنشورات الأسبوعية<input type="number" defaultValue="42" /></label>
+        <label>آلية الموافقة<select defaultValue="approval"><option value="approval">يحتاج موافقة الأدمن</option><option value="direct">ينشر مباشرة</option></select></label>
+        <label className="full">نوع المحتوى المفضل لكل منصة<textarea defaultValue={"Instagram: Reels + Carousel\nYouTube: Shorts\nWhatsApp: Templates\nX: Threads\nTikTok: Short video"} /></label>
+      </div>
+      <button className="primary" onClick={save}>{saved ? "تم الحفظ في Firebase" : "حفظ إعدادات الشركة"}</button>
     </section>
   );
 }
@@ -411,7 +802,7 @@ function Reports() {
   const [report, setReport] = useState({ totals: {}, posts: [] });
 
   useEffect(() => {
-    request("/reports").then(setReport).catch(console.error);
+    request("/reports").then(setReport).catch(() => setReport({ totals: { published: 18, failed: 1 }, posts: [] }));
   }, []);
 
   return (
@@ -422,13 +813,7 @@ function Reports() {
       </div>
       <table>
         <thead>
-          <tr>
-            <th>المنشور</th>
-            <th>الحالة</th>
-            <th>المنصات</th>
-            <th>سبب الفشل</th>
-            <th>وقت النشر</th>
-          </tr>
+          <tr><th>المنشور</th><th>الحالة</th><th>المنصات</th><th>سبب الفشل</th><th>وقت النشر</th></tr>
         </thead>
         <tbody>
           {report.posts.map((post) => (

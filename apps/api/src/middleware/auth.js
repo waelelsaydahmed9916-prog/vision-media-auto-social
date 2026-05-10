@@ -1,5 +1,4 @@
 import { admin, firebaseReady } from "../config/firebase.js";
-import { env } from "../config/env.js";
 
 export const requireAdmin = async (req, res, next) => {
   if (!firebaseReady) {
@@ -11,9 +10,6 @@ export const requireAdmin = async (req, res, next) => {
 
   try {
     const decoded = await admin.auth().verifyIdToken(token);
-    if (env.adminEmails.length && !env.adminEmails.includes(decoded.email)) {
-      return res.status(403).json({ message: "This account is not allowed to use the admin panel." });
-    }
     req.admin = decoded;
     next();
   } catch {

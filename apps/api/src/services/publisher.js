@@ -1,35 +1,18 @@
 import { admin, db } from "../config/firebase.js";
 import { providers } from "./socialProviders.js";
 
-const serializeError = (error) =>
-  error?.response?.data?.error?.message || error?.response?.data?.message || error?.message || "Unknown publish error";
-
 export const publishDuePosts = async () => {
   const now = admin.firestore.Timestamp.now();
   const snapshot = await db
     .collection("posts")
     .where("status", "==", "scheduled")
     .where("scheduledAt", "<=", now)
-    .limit(25)
     .get();
 
   const results = [];
 
   for (const doc of snapshot.docs) {
-    const locked = await db.runTransaction(async (transaction) => {
-      const fresh = await transaction.get(doc.ref);
-      if (!fresh.exists || fresh.data().status !== "scheduled") return false;
-      transaction.update(doc.ref, {
-        status: "processing",
-        processingAt: admin.firestore.FieldValue.serverTimestamp()
-      });
-      return true;
-    });
-
-    if (!locked) continue;
-
-    const postSnapshot = await doc.ref.get();
-    const post = { id: doc.id, ...postSnapshot.data() };
+    const post = { id: doc.id, ...doc.data() };
     const platformResults = [];
 
     try {
@@ -52,18 +35,13 @@ export const publishDuePosts = async () => {
           continue;
         }
 
-        try {
-          const response = await provider.publish({ account: accountSnapshot.docs[0].data(), post });
-          platformResults.push({ platform, status: "published", providerId: response?.data?.id || response?.data?.data?.id || null, reason: null });
-        } catch (error) {
-          platformResults.push({ platform, status: "failed", reason: serializeError(error) });
-        }
+        await provider.publish({ account: accountSnapshot.docs[0].data(), post });
+        platformResults.push({ platform, status: "published", reason: null });
       }
 
       const failed = platformResults.some((item) => item.status === "failed");
-      const finalStatus = failed ? "failed" : "published";
       await doc.ref.update({
-        status: finalStatus,
+        status: failed ? "failed" : "published",
         publishedAt: admin.firestore.FieldValue.serverTimestamp(),
         publishResults: platformResults,
         failureReason: failed ? platformResults.filter((item) => item.status === "failed").map((item) => `${item.platform}: ${item.reason}`).join("; ") : null
@@ -71,27 +49,27 @@ export const publishDuePosts = async () => {
 
       await db.collection("publishLogs").add({
         postId: doc.id,
-        status: finalStatus,
+        status: failed ? "failed" : "published",
         results: platformResults,
         createdAt: admin.firestore.FieldValue.serverTimestamp()
       });
 
-      results.push({ postId: doc.id, status: finalStatus, results: platformResults });
+      results.push({ postId: doc.id, status: failed ? "failed" : "published" });
     } catch (error) {
       await doc.ref.update({
         status: "failed",
-        failureReason: serializeError(error),
+        failureReason: error.message,
         publishedAt: admin.firestore.FieldValue.serverTimestamp()
       });
 
       await db.collection("publishLogs").add({
         postId: doc.id,
         status: "failed",
-        reason: serializeError(error),
+        reason: error.message,
         createdAt: admin.firestore.FieldValue.serverTimestamp()
       });
 
-      results.push({ postId: doc.id, status: "failed", reason: serializeError(error) });
+      results.push({ postId: doc.id, status: "failed", reason: error.message });
     }
   }
 

@@ -3,8 +3,6 @@ import { google } from "googleapis";
 import { env } from "../config/env.js";
 import { decryptToken } from "../utils/crypto.js";
 
-const buildMessage = (post) => [post.text, post.hashtags].filter(Boolean).join("\n\n");
-
 export const providers = {
   facebook: {
     label: "Facebook Pages",
@@ -12,26 +10,10 @@ export const providers = {
     async publish({ account, post }) {
       const accessToken = decryptToken(account.tokens.accessToken);
       const pageId = account.externalId;
-      const message = buildMessage(post);
+      const endpoint = `https://graph.facebook.com/v19.0/${pageId}/feed`;
 
-      if (post.media?.type === "image" && post.media.url) {
-        return axios.post(`https://graph.facebook.com/v19.0/${pageId}/photos`, {
-          url: post.media.url,
-          caption: message,
-          access_token: accessToken
-        });
-      }
-
-      if (post.media?.type === "video" && post.media.url) {
-        return axios.post(`https://graph.facebook.com/v19.0/${pageId}/videos`, {
-          file_url: post.media.url,
-          description: message,
-          access_token: accessToken
-        });
-      }
-
-      return axios.post(`https://graph.facebook.com/v19.0/${pageId}/feed`, {
-        message,
+      return axios.post(endpoint, {
+        message: [post.text, post.hashtags].filter(Boolean).join("\n\n"),
         access_token: accessToken
       });
     }
@@ -42,24 +24,18 @@ export const providers = {
     async publish({ account, post }) {
       const accessToken = decryptToken(account.tokens.accessToken);
       const igUserId = account.externalId;
-      const caption = buildMessage(post);
-      const mediaUrl = post.media?.url;
+      const caption = [post.text, post.hashtags].filter(Boolean).join("\n\n");
 
-      if (!mediaUrl) throw new Error("Instagram publishing requires an image or video URL.");
-
-      const payload = {
-        caption,
-        access_token: accessToken
-      };
-
-      if (post.media.type === "image") {
-        payload.image_url = mediaUrl;
-      } else {
-        payload.video_url = mediaUrl;
-        payload.media_type = "REELS";
+      if (!post.media?.url || post.media.placeholderOnly) {
+        throw new Error("Instagram publishing is prepared only. Real media publishing is disabled while placeholders are active.");
       }
 
-      const container = await axios.post(`https://graph.facebook.com/v19.0/${igUserId}/media`, payload);
+      const mediaField = post.media.type === "video" ? "video_url" : "media_url";
+      const container = await axios.post(`https://graph.facebook.com/v19.0/${igUserId}/media`, {
+        [mediaField]: post.media.url,
+        caption,
+        access_token: accessToken
+      });
 
       return axios.post(`https://graph.facebook.com/v19.0/${igUserId}/media_publish`, {
         creation_id: container.data.id,
@@ -93,10 +69,10 @@ export const providers = {
         requestBody: {
           snippet: {
             title: post.text.slice(0, 90) || "VISION MEDIA scheduled video",
-            description: buildMessage(post)
+            description: [post.text, post.hashtags].filter(Boolean).join("\n\n")
           },
           status: {
-            privacyStatus: post.youtubePrivacyStatus || "public"
+            privacyStatus: "public"
           }
         },
         media: {
@@ -109,14 +85,14 @@ export const providers = {
     label: "TikTok",
     status: "coming_soon",
     async publish() {
-      throw new Error("TikTok publishing needs developer approval for Content Posting API before activation.");
+      throw new Error("TikTok publishing is marked for later integration.");
     }
   },
   x: {
     label: "X",
     status: "coming_soon",
     async publish() {
-      throw new Error("X publishing needs an active X API plan and write permissions before activation.");
+      throw new Error("X publishing is marked for later integration.");
     }
   }
 };

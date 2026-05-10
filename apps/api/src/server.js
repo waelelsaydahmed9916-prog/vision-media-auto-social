@@ -5,18 +5,19 @@ import { mediaRouter } from "./routes/media.js";
 import { oauthRouter } from "./routes/oauth.js";
 import { postsRouter } from "./routes/posts.js";
 import { reportsRouter } from "./routes/reports.js";
+import { autoGenerateRouter } from "./routes/autoGenerate.js";
+import { channelsRouter } from "./routes/channels.js";
+import { companySettingsRouter } from "./routes/companySettings.js";
+import { engagementRouter } from "./routes/engagement.js";
+import { schedulerRouter } from "./routes/scheduler.js";
+import { weeklyPlanRouter } from "./routes/weeklyPlan.js";
+import { whatsappRouter } from "./routes/whatsapp.js";
 import { env } from "./config/env.js";
 import { startScheduler } from "./jobs/scheduler.js";
 
 const app = express();
 
-app.use(cors({
-  credentials: true,
-  origin(origin, callback) {
-    if (!origin || env.allowedOrigins.includes(origin)) return callback(null, true);
-    return callback(new Error(`CORS blocked origin: ${origin}`));
-  }
-}));
+app.use(cors({ origin: env.appBaseUrl, credentials: true }));
 app.use(express.json({ limit: "2mb" }));
 
 app.get("/api/health", (_req, res) => {
@@ -28,6 +29,21 @@ app.use("/api/oauth", oauthRouter);
 app.use("/api/media", mediaRouter);
 app.use("/api/posts", postsRouter);
 app.use("/api/reports", reportsRouter);
+app.use("/api/channels", channelsRouter);
+app.use("/api/company-settings", companySettingsRouter);
+app.use("/api/weekly-plan", weeklyPlanRouter);
+app.use("/api/auto-generate", autoGenerateRouter);
+app.use("/api/engagement", engagementRouter);
+app.use("/api/whatsapp", whatsappRouter);
+app.use("/api/scheduler", schedulerRouter);
+
+app.use("/channels", channelsRouter);
+app.use("/company-settings", companySettingsRouter);
+app.use("/weekly-plan", weeklyPlanRouter);
+app.use("/auto-generate", autoGenerateRouter);
+app.use("/engagement", engagementRouter);
+app.use("/whatsapp", whatsappRouter);
+app.use("/scheduler", schedulerRouter);
 
 app.use((error, _req, res, _next) => {
   console.error(error);

@@ -8,13 +8,24 @@ const upload = multer({ storage: multer.memoryStorage(), limits: { fileSize: 250
 
 mediaRouter.get("/", requireAdmin, async (_req, res) => {
   const snapshot = await db.collection("media").orderBy("createdAt", "desc").limit(100).get();
-  res.json(snapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() })));
+  res.json(snapshot.docs.map((doc) => {
+    const data = doc.data();
+    return {
+      id: doc.id,
+      ...data,
+      createdAt: data.createdAt?.toDate?.().toISOString?.() || data.createdAt
+    };
+  }));
 });
 
 mediaRouter.post("/", requireAdmin, upload.single("file"), async (req, res) => {
   if (!req.file) return res.status(400).json({ message: "File is required." });
 
-  const type = req.file.mimetype.startsWith("video") ? "video" : "image";
+  const type = req.file.mimetype.startsWith("video")
+    ? "video"
+    : req.file.mimetype.startsWith("audio")
+      ? "audio"
+      : "image";
   const path = `media/${Date.now()}-${req.file.originalname}`;
   const file = bucket.file(path);
 

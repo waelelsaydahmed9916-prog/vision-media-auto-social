@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>دخول الأدمن | VISION MEDIA</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<script src="admin-auth.js"></script>
+<style>
+*{box-sizing:border-box}body{margin:0;min-height:100vh;display:grid;place-items:center;background:radial-gradient(circle at 50% 0,#153a63,#07111e 62%);font-family:Tahoma,Arial;color:#fff;direction:rtl}.box{width:min(92vw,430px);background:rgba(255,255,255,.10);border:1px solid rgba(255,255,255,.18);backdrop-filter:blur(18px);border-radius:28px;padding:34px;box-shadow:0 30px 100px rgba(0,0,0,.35)}.logo{font-size:28px;font-weight:900;text-align:center}.logo span{color:#50a6ff}.sub{text-align:center;color:#c9d5e4;margin:10px 0 28px}.field{margin-bottom:16px}.field label{display:block;margin-bottom:8px;font-weight:800;color:#fff}.field input{width:100%;padding:16px;border-radius:16px;border:1px solid rgba(255,255,255,.25);background:rgba(255,255,255,.12);color:#fff;font-size:16px;outline:none}.field input::placeholder{color:#a9b6c5}.btn{width:100%;border:0;border-radius:16px;background:linear-gradient(135deg,#1a73e8,#020814);color:#fff;padding:16px 18px;font-weight:900;font-size:16px;cursor:pointer}.hint{margin-top:18px;text-align:center;color:#c9d5e4;font-size:13px}.err{display:none;background:#ff4d4d22;color:#ffd2d2;border:1px solid #ff8a8a55;border-radius:14px;padding:12px;margin-bottom:15px;text-align:center}.back{display:block;text-align:center;color:#fff;margin-top:16px;text-decoration:none}
+</style>
+  <link rel="stylesheet" href="enterprise-security-forms-notifications.css">
+  <link rel="stylesheet" href="all-pages-organization-fix.css">
+</head>
+<body>
+<main class="box">
+<div class="logo">VISION <span>MEDIA</span></div>
+<div class="sub">لوحة إدارة مستقلة وسرية</div>
+<div class="err" id="err">بيانات الأدمن غير صحيحة</div>
+<form id="f" novalidate>
+<div class="field"><label for="u">اسم المستخدم</label><input id="u" name="username" autocomplete="username" placeholder="admin" required></div>
+<div class="field"><label for="pw">كلمة المرور</label><input id="pw" name="password" type="password" inputmode="numeric" autocomplete="current-password" placeholder="0543944248" required></div>
+<button class="btn" type="submit"><i class="fa-solid fa-shield-halved"></i> دخول لوحة الأدمن</button>
+</form>
+<div class="hint">هذه الصفحة للأدمن فقط ولا يوجد إنشاء حساب.</div>
+<a class="back" href="index.html">العودة للموقع</a>
+</main>
+<script>
+(function(){
+  var f=document.getElementById('f'), u=document.getElementById('u'), p=document.getElementById('pw'), err=document.getElementById('err');
+  f.addEventListener('submit',function(e){
+    e.preventDefault();
+    if(window.VMAdminAuth && VMAdminAuth.login(u.value,p.value)){
+      location.href='admin-dashboard.html?vmAdmin=1';
+    }else{
+      err.style.display='block';
+      err.textContent='بيانات الدخول غير صحيحة. اكتب admin وكلمة المرور 0543944248';
+    }
+  });
+})();
+</script>
+<script src="enterprise-security-forms-notifications.js"></script>
+</body>
+</html>

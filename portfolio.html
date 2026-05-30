@@ -1,0 +1,461 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>VISION MEDIA | أعمالنا</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;500;600;700;800;900&family=Tajawal:wght@300;400;500;700;800;900&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+  <link rel="stylesheet" href="style.css" />
+  <link rel="stylesheet" href="vip-upgrade.css">
+  <link rel="stylesheet" href="legal-system.css">
+  <link rel="stylesheet" href="final-layout-fixes.css">
+  <link rel="stylesheet" href="enterprise-security-forms-notifications.css">
+  <link rel="stylesheet" href="all-pages-organization-fix.css">
+</head>
+<body>
+<style>
+  :root { --primary: #0d1b2e; --accent: #c9a227; }
+
+  /* ─── Page Hero ─── */
+  .page-hero {
+    background: linear-gradient(135deg, #0d1b2e 0%, #1a2f4e 100%);
+    padding: 110px 0 65px;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+  }
+  .page-hero::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none'%3E%3Cg fill='%23c9a227' fill-opacity='0.05'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+  }
+  .page-hero h1 { font-size: clamp(2rem,5vw,3.2rem); color:#fff; font-weight:800; margin-bottom:14px; position:relative; }
+  .page-hero h1 span { color:#c9a227; }
+  .breadcrumb { display:flex; align-items:center; justify-content:center; gap:8px; font-size:.9rem; color:rgba(255,255,255,.65); position:relative; flex-wrap:wrap; }
+  .breadcrumb a { color:#c9a227; text-decoration:none; }
+  .breadcrumb a:hover { text-decoration:underline; }
+  .breadcrumb i { font-size:.7rem; color:rgba(255,255,255,.4); }
+
+  /* ─── Portfolio Section ─── */
+  .portfolio-section { padding: 70px 0; background: #f8f9fc; }
+
+  .filter-wrapper { display:flex; flex-wrap:wrap; gap:10px; justify-content:center; margin-bottom:48px; }
+  .filter-btn { padding:9px 22px; border:2px solid #dde1ea; background:#fff; color:#555; border-radius:30px; cursor:pointer; font-size:.92rem; font-weight:600; transition:all .25s; font-family:inherit; }
+  .filter-btn:hover, .filter-btn.active { background:#c9a227; border-color:#c9a227; color:#fff; }
+
+  .portfolio-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:28px; }
+  @media(max-width:900px){.portfolio-grid{grid-template-columns:repeat(2,1fr);}}
+  @media(max-width:580px){.portfolio-grid{grid-template-columns:1fr;}}
+
+  .portfolio-card { border-radius:16px; overflow:hidden; background:#fff; box-shadow:0 4px 20px rgba(13,27,46,.08); transition:transform .3s,box-shadow .3s; }
+  .portfolio-card:hover { transform:translateY(-6px); box-shadow:0 12px 36px rgba(13,27,46,.14); }
+
+  .card-image { position:relative; height:220px; display:flex; align-items:center; justify-content:center; overflow:hidden; }
+  .card-image .placeholder-icon { font-size:3.5rem; color:rgba(255,255,255,.45); transition:transform .35s; }
+  .portfolio-card:hover .placeholder-icon { transform:scale(1.15); }
+
+  .card-overlay { position:absolute; inset:0; background:rgba(13,27,46,.82); display:flex; flex-direction:column; align-items:center; justify-content:center; gap:10px; padding:20px; text-align:center; opacity:0; transition:opacity .35s; }
+  .portfolio-card:hover .card-overlay { opacity:1; }
+  .card-overlay h3 { color:#fff; font-size:1.1rem; font-weight:700; margin:0; }
+  .card-overlay .client-name { color:#c9a227; font-size:.85rem; }
+  .card-overlay .overlay-cat { color:rgba(255,255,255,.7); font-size:.8rem; }
+  .card-overlay .btn-detail { margin-top:8px; padding:7px 18px; background:#c9a227; color:#0d1b2e; border-radius:20px; font-size:.82rem; font-weight:700; text-decoration:none; transition:background .2s; }
+  .card-overlay .btn-detail:hover { background:#e8bb2d; }
+
+  .card-badge { position:absolute; top:14px; right:14px; background:rgba(13,27,46,.75); color:#c9a227; font-size:.76rem; font-weight:700; padding:4px 12px; border-radius:20px; backdrop-filter:blur(4px); }
+
+  .card-body { padding:18px 20px; }
+  .card-body h3 { font-size:1rem; font-weight:700; color:#0d1b2e; margin:0 0 6px; }
+  .card-body .card-meta { font-size:.82rem; color:#888; display:flex; align-items:center; gap:6px; }
+  .card-body .card-meta i { color:#c9a227; }
+
+  /* ─── CTA ─── */
+  .vm-cta { background:linear-gradient(135deg,#0d1b2e 0%,#1a2f4e 100%); padding:80px 0; text-align:center; }
+  .vm-cta h2 { color:#fff; font-size:clamp(1.6rem,3.5vw,2.4rem); font-weight:800; margin-bottom:14px; }
+  .vm-cta p { color:rgba(255,255,255,.72); font-size:1.05rem; max-width:520px; margin:0 auto 32px; }
+  .btn-vm-gold { display:inline-flex; align-items:center; gap:8px; padding:13px 30px; background:#c9a227; color:#0d1b2e; border-radius:30px; font-weight:700; font-size:1rem; text-decoration:none; transition:background .2s,transform .2s; }
+  .btn-vm-gold:hover { background:#e8bb2d; transform:translateY(-2px); }
+  .btn-vm-outline { display:inline-flex; align-items:center; gap:8px; padding:12px 28px; border:2px solid rgba(255,255,255,.35); color:#fff; border-radius:30px; font-weight:700; font-size:1rem; text-decoration:none; transition:border-color .2s; }
+  .btn-vm-outline:hover { border-color:#c9a227; }
+
+  .portfolio-card.vm-hidden { display:none; }
+</style>
+
+<!-- ══════════ HEADER ══════════ -->
+<header class="header" id="header">
+  <nav class="nav container">
+    <a href="index.html" class="nav-logo">VISION <span class="accent">MEDIA</span></a>
+    <ul class="nav-menu" id="navMenu">
+      <li><a href="index.html" class="nav-link">الرئيسية</a></li>
+      <li><a href="about.html" class="nav-link">من نحن</a></li>
+      <li class="nav-dropdown">
+        <a href="services.html" class="nav-link">خدماتنا <i class="fas fa-chevron-down"></i></a>
+        <div class="dropdown-menu">
+          <div class="dropdown-grid">
+            <a href="service-detail.html?id=1" class="dropdown-item">التسويق الإلكتروني</a>
+            <a href="service-detail.html?id=2" class="dropdown-item">إدارة السوشيال ميديا</a>
+            <a href="service-detail.html?id=3" class="dropdown-item">الإعلانات الممولة</a>
+            <a href="service-detail.html?id=4" class="dropdown-item">تصميم الجرافيك</a>
+            <a href="service-detail.html?id=5" class="dropdown-item">تصميم الهوية التجارية</a>
+            <a href="service-detail.html?id=6" class="dropdown-item">تصميم المواقع</a>
+            <a href="service-detail.html?id=7" class="dropdown-item">المتاجر الإلكترونية</a>
+            <a href="service-detail.html?id=8" class="dropdown-item">إنتاج الفيديو</a>
+            <a href="service-detail.html?id=9" class="dropdown-item">الموشن جرافيك</a>
+            <a href="service-detail.html?id=10" class="dropdown-item">التصوير الاحترافي</a>
+            <a href="service-detail.html?id=11" class="dropdown-item">صور الذكاء الاصطناعي</a>
+            <a href="service-detail.html?id=12" class="dropdown-item">فيديو الذكاء الاصطناعي</a>
+            <a href="service-detail.html?id=13" class="dropdown-item">إدارة الحملات</a>
+            <a href="service-detail.html?id=14" class="dropdown-item">كتابة المحتوى</a>
+            <a href="service-detail.html?id=15" class="dropdown-item">تحسين SEO</a>
+          </div>
+          <div class="dropdown-footer"><a href="services.html" class="btn btn-gold btn-sm">عرض جميع الخدمات</a></div>
+        </div>
+      </li>
+      <li><a href="portfolio.html" class="nav-link active">أعمالنا</a></li>
+      <li><a href="clients.html" class="nav-link">عملاؤنا</a></li>
+      <li><a href="blog.html" class="nav-link">المقالات</a></li>
+      <li><a href="pricing.html" class="nav-link">التسعيرة</a></li>
+      <li><a href="contact.html" class="nav-link">تواصل معنا</a></li>
+    </ul>
+    <div class="nav-actions">
+      <a href="request-service.html" class="btn btn-gold btn-sm">طلب خدمة</a>
+      <a href="login.html" class="btn btn-outline-white btn-sm" id="loginBtn">دخول</a>
+      <button class="nav-toggle" id="navToggle"><span></span><span></span><span></span></button>
+    </div>
+  </nav>
+</header>
+
+<!-- ══════════ PAGE HERO ══════════ -->
+<section class="page-hero">
+  <div class="container">
+    <h1>أعمالنا <span>المميزة</span></h1>
+    <nav class="breadcrumb" aria-label="breadcrumb">
+      <a href="index.html"><i class="fas fa-home"></i> الرئيسية</a>
+      <i class="fas fa-chevron-left"></i>
+      <span>أعمالنا</span>
+    </nav>
+  </div>
+</section>
+
+<!-- ══════════ PORTFOLIO SECTION ══════════ -->
+<section class="portfolio-section">
+  <div class="container">
+
+    <!-- Filter Tabs -->
+    <div class="filter-wrapper" id="filterWrapper">
+      <button class="filter-btn active" data-filter="all">الكل</button>
+      <button class="filter-btn" data-filter="هوية-تجارية">هوية تجارية</button>
+      <button class="filter-btn" data-filter="مواقع">مواقع</button>
+      <button class="filter-btn" data-filter="فيديو">فيديو</button>
+      <button class="filter-btn" data-filter="جرافيك">جرافيك</button>
+      <button class="filter-btn" data-filter="سوشيال-ميديا">سوشيال ميديا</button>
+    </div>
+
+    <!-- Grid -->
+    <div class="portfolio-grid" id="portfolioGrid">
+
+      <!-- 1 -->
+      <div class="portfolio-card" data-category="هوية-تجارية">
+        <div class="card-image" style="background:linear-gradient(135deg,#1a3a5c,#2d6a9f);">
+          <i class="fas fa-utensils placeholder-icon"></i>
+          <div class="card-overlay">
+            <h3>هوية بصرية مطعم الأصيل</h3>
+            <span class="client-name">مطعم الأصيل</span>
+            <span class="overlay-cat">هوية تجارية</span>
+            <a href="service-detail.html?id=5" class="btn-detail">عرض التفاصيل</a>
+          </div>
+          <span class="card-badge">هوية تجارية</span>
+        </div>
+        <div class="card-body">
+          <h3>هوية بصرية مطعم الأصيل</h3>
+          <div class="card-meta"><i class="fas fa-building"></i> مطعم الأصيل</div>
+        </div>
+      </div>
+
+      <!-- 2 -->
+      <div class="portfolio-card" data-category="مواقع">
+        <div class="card-image" style="background:linear-gradient(135deg,#9c27b0,#6a0080);">
+          <i class="fas fa-home placeholder-icon"></i>
+          <div class="card-overlay">
+            <h3>موقع عقارات الواحة</h3>
+            <span class="client-name">شركة عقارات الواحة</span>
+            <span class="overlay-cat">مواقع</span>
+            <a href="service-detail.html?id=6" class="btn-detail">عرض التفاصيل</a>
+          </div>
+          <span class="card-badge">مواقع</span>
+        </div>
+        <div class="card-body">
+          <h3>موقع عقارات الواحة</h3>
+          <div class="card-meta"><i class="fas fa-building"></i> شركة عقارات الواحة</div>
+        </div>
+      </div>
+
+      <!-- 3 -->
+      <div class="portfolio-card" data-category="فيديو">
+        <div class="card-image" style="background:linear-gradient(135deg,#c62828,#8b0000);">
+          <i class="fas fa-video placeholder-icon"></i>
+          <div class="card-overlay">
+            <h3>فيديو إعلاني برج النخيل</h3>
+            <span class="client-name">عقار برج النخيل</span>
+            <span class="overlay-cat">فيديو</span>
+            <a href="service-detail.html?id=8" class="btn-detail">عرض التفاصيل</a>
+          </div>
+          <span class="card-badge">فيديو</span>
+        </div>
+        <div class="card-body">
+          <h3>فيديو إعلاني برج النخيل</h3>
+          <div class="card-meta"><i class="fas fa-building"></i> عقار برج النخيل</div>
+        </div>
+      </div>
+
+      <!-- 4 -->
+      <div class="portfolio-card" data-category="هوية-تجارية">
+        <div class="card-image" style="background:linear-gradient(135deg,#ff6d00,#e65100);">
+          <i class="fas fa-briefcase placeholder-icon"></i>
+          <div class="card-overlay">
+            <h3>هوية شركة الريادة التجارية</h3>
+            <span class="client-name">الريادة للتجارة</span>
+            <span class="overlay-cat">هوية تجارية</span>
+            <a href="service-detail.html?id=5" class="btn-detail">عرض التفاصيل</a>
+          </div>
+          <span class="card-badge">هوية تجارية</span>
+        </div>
+        <div class="card-body">
+          <h3>هوية شركة الريادة التجارية</h3>
+          <div class="card-meta"><i class="fas fa-building"></i> الريادة للتجارة</div>
+        </div>
+      </div>
+
+      <!-- 5 -->
+      <div class="portfolio-card" data-category="مواقع">
+        <div class="card-image" style="background:linear-gradient(135deg,#2e7d32,#1b5e20);">
+          <i class="fas fa-shopping-bag placeholder-icon"></i>
+          <div class="card-overlay">
+            <h3>متجر الأناقة الإلكتروني</h3>
+            <span class="client-name">متجر الأناقة</span>
+            <span class="overlay-cat">مواقع</span>
+            <a href="service-detail.html?id=7" class="btn-detail">عرض التفاصيل</a>
+          </div>
+          <span class="card-badge">مواقع</span>
+        </div>
+        <div class="card-body">
+          <h3>متجر الأناقة الإلكتروني</h3>
+          <div class="card-meta"><i class="fas fa-building"></i> متجر الأناقة</div>
+        </div>
+      </div>
+
+      <!-- 6 -->
+      <div class="portfolio-card" data-category="سوشيال-ميديا">
+        <div class="card-image" style="background:linear-gradient(135deg,#e1306c,#c13584);">
+          <i class="fab fa-instagram placeholder-icon"></i>
+          <div class="card-overlay">
+            <h3>حملة سوشيال ميديا مقهى الشمس</h3>
+            <span class="client-name">مقهى الشمس</span>
+            <span class="overlay-cat">سوشيال ميديا</span>
+            <a href="service-detail.html?id=2" class="btn-detail">عرض التفاصيل</a>
+          </div>
+          <span class="card-badge">سوشيال ميديا</span>
+        </div>
+        <div class="card-body">
+          <h3>حملة سوشيال ميديا مقهى الشمس</h3>
+          <div class="card-meta"><i class="fas fa-building"></i> مقهى الشمس</div>
+        </div>
+      </div>
+
+      <!-- 7 -->
+      <div class="portfolio-card" data-category="فيديو">
+        <div class="card-image" style="background:linear-gradient(135deg,#6a1b9a,#4a148c);">
+          <i class="fas fa-film placeholder-icon"></i>
+          <div class="card-overlay">
+            <h3>موشن جرافيك بنك التميز</h3>
+            <span class="client-name">بنك التميز</span>
+            <span class="overlay-cat">فيديو</span>
+            <a href="service-detail.html?id=9" class="btn-detail">عرض التفاصيل</a>
+          </div>
+          <span class="card-badge">فيديو</span>
+        </div>
+        <div class="card-body">
+          <h3>موشن جرافيك بنك التميز</h3>
+          <div class="card-meta"><i class="fas fa-building"></i> بنك التميز</div>
+        </div>
+      </div>
+
+      <!-- 8 -->
+      <div class="portfolio-card" data-category="جرافيك">
+        <div class="card-image" style="background:linear-gradient(135deg,#1565c0,#0d47a1);">
+          <i class="fas fa-book-open placeholder-icon"></i>
+          <div class="card-overlay">
+            <h3>تصميم كتالوج منتجات الفاخرة</h3>
+            <span class="client-name">مجموعة الفاخرة</span>
+            <span class="overlay-cat">جرافيك</span>
+            <a href="service-detail.html?id=4" class="btn-detail">عرض التفاصيل</a>
+          </div>
+          <span class="card-badge">جرافيك</span>
+        </div>
+        <div class="card-body">
+          <h3>تصميم كتالوج منتجات الفاخرة</h3>
+          <div class="card-meta"><i class="fas fa-building"></i> مجموعة الفاخرة</div>
+        </div>
+      </div>
+
+      <!-- 9 -->
+      <div class="portfolio-card" data-category="جرافيك">
+        <div class="card-image" style="background:linear-gradient(135deg,#f57f17,#e65100);">
+          <i class="fas fa-star-and-crescent placeholder-icon"></i>
+          <div class="card-overlay">
+            <h3>بوستات رمضان مطاعم السلطان</h3>
+            <span class="client-name">مطاعم السلطان</span>
+            <span class="overlay-cat">جرافيك</span>
+            <a href="service-detail.html?id=4" class="btn-detail">عرض التفاصيل</a>
+          </div>
+          <span class="card-badge">جرافيك</span>
+        </div>
+        <div class="card-body">
+          <h3>بوستات رمضان مطاعم السلطان</h3>
+          <div class="card-meta"><i class="fas fa-building"></i> مطاعم السلطان</div>
+        </div>
+      </div>
+
+      <!-- 10 -->
+      <div class="portfolio-card" data-category="مواقع">
+        <div class="card-image" style="background:linear-gradient(135deg,#00695c,#004d40);">
+          <i class="fas fa-tooth placeholder-icon"></i>
+          <div class="card-overlay">
+            <h3>موقع عيادة البسمة الطبية</h3>
+            <span class="client-name">عيادة البسمة</span>
+            <span class="overlay-cat">مواقع</span>
+            <a href="service-detail.html?id=6" class="btn-detail">عرض التفاصيل</a>
+          </div>
+          <span class="card-badge">مواقع</span>
+        </div>
+        <div class="card-body">
+          <h3>موقع عيادة البسمة الطبية</h3>
+          <div class="card-meta"><i class="fas fa-building"></i> عيادة البسمة</div>
+        </div>
+      </div>
+
+      <!-- 11 -->
+      <div class="portfolio-card" data-category="هوية-تجارية">
+        <div class="card-image" style="background:linear-gradient(135deg,#1a237e,#0d1b6e);">
+          <i class="fas fa-graduation-cap placeholder-icon"></i>
+          <div class="card-overlay">
+            <h3>هوية أكاديمية المعرفة</h3>
+            <span class="client-name">أكاديمية المعرفة</span>
+            <span class="overlay-cat">هوية تجارية</span>
+            <a href="service-detail.html?id=5" class="btn-detail">عرض التفاصيل</a>
+          </div>
+          <span class="card-badge">هوية تجارية</span>
+        </div>
+        <div class="card-body">
+          <h3>هوية أكاديمية المعرفة</h3>
+          <div class="card-meta"><i class="fas fa-building"></i> أكاديمية المعرفة</div>
+        </div>
+      </div>
+
+      <!-- 12 -->
+      <div class="portfolio-card" data-category="فيديو">
+        <div class="card-image" style="background:linear-gradient(135deg,#bf360c,#7f2300);">
+          <i class="fas fa-play-circle placeholder-icon"></i>
+          <div class="card-overlay">
+            <h3>فيديو تعريفي شركة الأمجاد</h3>
+            <span class="client-name">شركة الأمجاد</span>
+            <span class="overlay-cat">فيديو</span>
+            <a href="service-detail.html?id=8" class="btn-detail">عرض التفاصيل</a>
+          </div>
+          <span class="card-badge">فيديو</span>
+        </div>
+        <div class="card-body">
+          <h3>فيديو تعريفي شركة الأمجاد</h3>
+          <div class="card-meta"><i class="fas fa-building"></i> شركة الأمجاد</div>
+        </div>
+      </div>
+
+    </div><!-- /portfolio-grid -->
+  </div><!-- /container -->
+</section>
+
+<!-- ══════════ CTA ══════════ -->
+<section class="vm-cta">
+  <div class="container">
+    <h2>احصل على مشروع <span style="color:#c9a227">مميز</span> الآن</h2>
+    <p>فريقنا الإبداعي مستعد لتحويل أفكارك إلى واقع بصري يترك أثراً لا يُنسى.</p>
+    <div style="display:flex;gap:16px;justify-content:center;flex-wrap:wrap;">
+      <a href="request-service.html" class="btn-vm-gold"><i class="fas fa-rocket"></i> ابدأ مشروعك</a>
+      <a href="contact.html" class="btn-vm-outline"><i class="fas fa-phone"></i> تواصل معنا</a>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════ FOOTER ══════════ -->
+<footer class="footer">
+  <div class="footer-top"><div class="container"><div class="footer-grid">
+    <div class="footer-brand">
+      <a href="index.html" class="footer-logo">VISION <span class="accent">MEDIA</span></a>
+      <p>شركة متخصصة في الدعاية والإعلان وحلول التسويق الرقمي الشاملة.</p>
+      <div class="social-links">
+        <a href="https://www.instagram.com/advertisement_portal.46" target="_blank"><i class="fab fa-instagram"></i></a>
+        <a href="https://www.facebook.com/share/1DszbP1nTB/" target="_blank"><i class="fab fa-facebook-f"></i></a>
+        <a href="https://www.snapchat.com/add/wael_elsayd2026" target="_blank"><i class="fab fa-snapchat-ghost"></i></a>
+        <a href="https://www.tiktok.com/@waelelsayd3" target="_blank"><i class="fab fa-tiktok"></i></a>
+        <a href="https://youtube.com/channel/UCA0-OJ461Na9MkTZMmgM48A" target="_blank"><i class="fab fa-youtube"></i></a>
+        <a href="https://x.com/Adverti556" target="_blank"><i class="fab fa-x-twitter"></i></a>
+      </div>
+    </div>
+    <div class="footer-links"><h4>روابط سريعة</h4><ul>
+      <li><a href="index.html">الرئيسية</a></li><li><a href="about.html">من نحن</a></li>
+      <li><a href="services.html">خدماتنا</a></li><li><a href="portfolio.html">أعمالنا</a></li>
+      <li><a href="pricing.html">التسعيرة</a></li><li><a href="contact.html">تواصل معنا</a></li>
+    </ul></div>
+    <div class="footer-links"><h4>خدماتنا</h4><ul>
+      <li><a href="service-detail.html?id=1">التسويق الإلكتروني</a></li>
+      <li><a href="service-detail.html?id=4">تصميم الجرافيك</a></li>
+      <li><a href="service-detail.html?id=6">تصميم المواقع</a></li>
+      <li><a href="service-detail.html?id=8">إنتاج الفيديو</a></li>
+      <li><a href="service-detail.html?id=15">تحسين SEO</a></li>
+    </ul></div>
+    <div class="footer-contact"><h4>تواصل معنا</h4><ul>
+      <li><i class="fab fa-whatsapp"></i> <a href="https://wa.me/966543944248">0543944248</a></li>
+      <li><i class="fas fa-phone"></i> <a href="tel:+966538862064">0538862064</a></li>
+      <li><i class="fas fa-envelope"></i> <a href="mailto:waelelsaydahmed@gmail.com">waelelsaydahmed@gmail.com</a></li>
+    </ul>
+    <a href="request-service.html" class="btn btn-gold btn-sm" style="margin-top:12px;">طلب خدمة</a>
+    </div>
+  </div></div></div>
+  <div class="footer-bottom"><div class="container"><div class="footer-bottom-inner">
+    <p>&copy; 2025 VISION MEDIA. جميع الحقوق محفوظة</p>
+    <div class="footer-legal"><a href="terms.html">الشروط والأحكام</a><a href="privacy.html">سياسة الخصوصية</a></div>
+  </div></div></div>
+</footer>
+<a href="https://wa.me/966543944248" class="whatsapp-float" target="_blank"><i class="fab fa-whatsapp"></i></a>
+<script src="core.js"></script>
+<script>
+  // ── Portfolio Filter ──
+  (function () {
+    const btns  = document.querySelectorAll('.filter-btn');
+    const cards = document.querySelectorAll('.portfolio-card');
+    btns.forEach(btn => {
+      btn.addEventListener('click', () => {
+        btns.forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        const filter = btn.dataset.filter;
+        cards.forEach(card => {
+          if (filter === 'all' || card.dataset.category === filter) {
+            card.classList.remove('vm-hidden');
+          } else {
+            card.classList.add('vm-hidden');
+          }
+        });
+      });
+    });
+  })();
+</script>
+<script src="vip-upgrade.js"></script>
+<script src="legal-system.js"></script>
+<script src="final-layout-fixes.js"></script>
+<script src="enterprise-security-forms-notifications.js"></script>
+</body>
+</html>

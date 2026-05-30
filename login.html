@@ -1,0 +1,369 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>VISION MEDIA | تسجيل الدخول</title>
+  <link rel="stylesheet" href="style.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+  <style>
+    /* ── Auth page layout ── */
+    .auth-page { min-height: 100vh; display: flex; flex-direction: column; background: var(--bg-dark, #0d1b2e); }
+    .auth-main  { flex: 1; display: flex; align-items: stretch; }
+
+    /* Left decorative column */
+    .auth-left {
+      flex: 1;
+      background: linear-gradient(135deg, #0d1b2e 0%, #112240 50%, #1a3060 100%);
+      display: flex; flex-direction: column; justify-content: center; align-items: center;
+      padding: 3rem 2.5rem; position: relative; overflow: hidden;
+    }
+    .auth-left::before {
+      content: ''; position: absolute; inset: 0;
+      background: radial-gradient(ellipse at 70% 30%, rgba(201,162,39,.18) 0%, transparent 65%);
+    }
+    .auth-deco-shape {
+      position: absolute; border-radius: 50%; opacity: .07;
+      animation: floatShape 6s ease-in-out infinite alternate;
+    }
+    .auth-deco-shape:nth-child(1){ width:320px;height:320px;top:-80px;left:-100px;background:#c9a227;animation-delay:0s; }
+    .auth-deco-shape:nth-child(2){ width:200px;height:200px;bottom:-60px;right:-60px;background:#c9a227;animation-delay:2s; }
+    .auth-deco-shape:nth-child(3){ width:120px;height:120px;top:55%;left:10%;background:#fff;animation-delay:4s; }
+    @keyframes floatShape { from{transform:translateY(0) rotate(0deg);}to{transform:translateY(-20px) rotate(15deg);} }
+
+    .auth-left-inner { position: relative; z-index: 1; text-align: center; color: #fff; max-width: 420px; }
+    .auth-big-logo { font-size: 2.6rem; font-weight: 800; letter-spacing: 2px; margin-bottom: .4rem; }
+    .auth-big-logo .accent { color: #c9a227; }
+    .auth-tagline { color: rgba(255,255,255,.7); font-size: 1.05rem; margin-bottom: 2.5rem; }
+    .auth-benefits { list-style: none; padding: 0; margin: 0; text-align: right; }
+    .auth-benefits li { display: flex; align-items: center; gap: .75rem; padding: .65rem 0; color: rgba(255,255,255,.85); font-size: .97rem; border-bottom: 1px solid rgba(255,255,255,.07); }
+    .auth-benefits li:last-child { border-bottom: none; }
+    .auth-benefits li i { color: #c9a227; font-size: 1rem; flex-shrink: 0; }
+
+    /* Right form column */
+    .auth-right {
+      flex: 1; display: flex; align-items: center; justify-content: center;
+      padding: 2.5rem 2rem; background: #f5f7fa;
+    }
+    .auth-card {
+      background: #fff; border-radius: 16px; padding: 2.5rem 2.2rem;
+      width: 100%; max-width: 440px;
+      box-shadow: 0 8px 40px rgba(13,27,46,.12);
+    }
+    .auth-card-logo { text-align: center; font-size: 1.6rem; font-weight: 800; letter-spacing: 1px; color: #0d1b2e; margin-bottom: 1.2rem; }
+    .auth-card-logo .accent { color: #c9a227; }
+    .auth-card h2 { font-size: 1.5rem; font-weight: 700; color: #0d1b2e; text-align: center; margin-bottom: .3rem; }
+    .auth-card .auth-subtitle { text-align: center; color: #667; font-size: .95rem; margin-bottom: 1.6rem; }
+
+    /* Social login buttons */
+    .social-login-btn {
+      display: flex; align-items: center; justify-content: center; gap: .75rem;
+      width: 100%; padding: .75rem 1rem; border-radius: 10px;
+      border: 1.5px solid #e0e0e0; font-size: .95rem; font-weight: 600;
+      cursor: pointer; transition: box-shadow .2s, transform .15s;
+      margin-bottom: .85rem; text-decoration: none;
+    }
+    .social-login-btn:hover { box-shadow: 0 4px 16px rgba(0,0,0,.1); transform: translateY(-1px); }
+    .social-login-btn.google { background: #fff; color: #333; }
+    .social-login-btn.apple  { background: #111; color: #fff; border-color: #111; }
+    .social-login-btn img { width: 20px; height: 20px; }
+    .social-login-btn i { font-size: 1.15rem; }
+
+    /* Divider */
+    .auth-divider { display: flex; align-items: center; gap: .8rem; margin: 1rem 0; }
+    .auth-divider span { color: #aaa; font-size: .85rem; white-space: nowrap; }
+    .auth-divider::before,.auth-divider::after { content:''; flex:1; height:1px; background:#e5e5e5; }
+
+    /* Form fields */
+    .form-group { margin-bottom: 1.1rem; }
+    .form-group label { display: block; font-size: .88rem; font-weight: 600; color: #444; margin-bottom: .4rem; }
+    .form-group input {
+      width: 100%; padding: .75rem 1rem; border: 1.5px solid #ddd; border-radius: 9px;
+      font-size: .95rem; font-family: inherit; transition: border-color .2s;
+      background: #fafafa; color: #222; box-sizing: border-box;
+    }
+    .form-group input:focus { outline: none; border-color: #c9a227; background: #fff; }
+    .form-group.password-wrap { position: relative; }
+    .form-group.password-wrap input { padding-left: 2.8rem; }
+    .toggle-pass {
+      position: absolute; left: .85rem; top: 50%; transform: translateY(-50%);
+      background: none; border: none; cursor: pointer; color: #888; font-size: .95rem;
+      padding: 0; margin-top: 1.1rem;
+    }
+    .toggle-pass:hover { color: #c9a227; }
+
+    /* Remember + forgot */
+    .form-row-between { display: flex; align-items: center; justify-content: space-between; margin-bottom: 1.3rem; flex-wrap: wrap; gap: .4rem; }
+    .remember-label { display: flex; align-items: center; gap: .4rem; font-size: .88rem; color: #555; cursor: pointer; }
+    .remember-label input[type="checkbox"] { accent-color: #c9a227; width: 15px; height: 15px; }
+    .forgot-link { font-size: .88rem; color: #c9a227; text-decoration: none; font-weight: 600; }
+    .forgot-link:hover { text-decoration: underline; }
+
+    /* Main submit btn */
+    .btn-auth { width: 100%; padding: .85rem; border: none; border-radius: 10px; font-size: 1rem; font-weight: 700; cursor: pointer; transition: background .2s, transform .15s; }
+    .btn-auth.gold { background: linear-gradient(135deg, #c9a227, #e6b830); color: #0d1b2e; }
+    .btn-auth.gold:hover { transform: translateY(-1px); box-shadow: 0 6px 20px rgba(201,162,39,.35); }
+
+    /* Footer link */
+    .auth-footer-link { text-align: center; margin-top: 1.3rem; font-size: .9rem; color: #666; }
+    .auth-footer-link a { color: #c9a227; font-weight: 600; text-decoration: none; }
+    .auth-footer-link a:hover { text-decoration: underline; }
+
+    /* Test credentials note */
+    .test-note {
+      margin-top: 1.1rem; padding: .7rem 1rem; background: #f0f7ff;
+      border-radius: 8px; border-right: 3px solid #3b82f6;
+      font-size: .82rem; color: #334; line-height: 1.6;
+    }
+    .test-note strong { color: #0d1b2e; }
+
+    /* Responsive */
+    @media(max-width: 768px){
+      .auth-main { flex-direction: column; }
+      .auth-left { padding: 2.5rem 1.5rem; }
+      .auth-big-logo { font-size: 2rem; }
+      .auth-right { padding: 2rem 1rem; }
+      .auth-card { padding: 2rem 1.3rem; }
+    }
+  </style>
+  <link rel="stylesheet" href="vip-upgrade.css">
+  <link rel="stylesheet" href="legal-system.css">
+  <link rel="stylesheet" href="final-layout-fixes.css">
+  <link rel="stylesheet" href="enterprise-security-forms-notifications.css">
+  <link rel="stylesheet" href="all-pages-organization-fix.css">
+</head>
+<body>
+
+  <!-- SHARED HEADER -->
+  <header class="header" id="header">
+    <nav class="nav container">
+      <a href="index.html" class="nav-logo">VISION <span class="accent">MEDIA</span></a>
+      <ul class="nav-menu" id="navMenu">
+        <li><a href="index.html" class="nav-link">الرئيسية</a></li>
+        <li><a href="about.html" class="nav-link">من نحن</a></li>
+        <li class="nav-dropdown">
+          <a href="services.html" class="nav-link">خدماتنا <i class="fas fa-chevron-down"></i></a>
+          <div class="dropdown-menu">
+            <div class="dropdown-grid">
+              <a href="service-detail.html?id=1" class="dropdown-item">التسويق الإلكتروني</a>
+              <a href="service-detail.html?id=4" class="dropdown-item">تصميم الجرافيك</a>
+              <a href="service-detail.html?id=6" class="dropdown-item">تصميم المواقع</a>
+              <a href="service-detail.html?id=8" class="dropdown-item">إنتاج الفيديو</a>
+              <a href="service-detail.html?id=15" class="dropdown-item">تحسين SEO</a>
+            </div>
+            <div class="dropdown-footer"><a href="services.html" class="btn btn-gold btn-sm">عرض جميع الخدمات</a></div>
+          </div>
+        </li>
+        <li><a href="portfolio.html" class="nav-link">أعمالنا</a></li>
+        <li><a href="pricing.html" class="nav-link">التسعيرة</a></li>
+        <li><a href="contact.html" class="nav-link">تواصل معنا</a></li>
+      </ul>
+      <div class="nav-actions">
+        <a href="request-service.html" class="btn btn-gold btn-sm">طلب خدمة</a>
+        <a href="login.html" class="btn btn-outline-white btn-sm" id="loginBtn">دخول</a>
+        <button class="nav-toggle" id="navToggle"><span></span><span></span><span></span></button>
+      </div>
+    </nav>
+  </header>
+
+  <!-- MAIN AUTH CONTENT -->
+  <main class="auth-main">
+
+    <!-- Left decorative column -->
+    <div class="auth-left">
+      <div class="auth-deco-shape"></div>
+      <div class="auth-deco-shape"></div>
+      <div class="auth-deco-shape"></div>
+      <div class="auth-left-inner">
+        <div class="auth-big-logo">VISION <span class="accent">MEDIA</span></div>
+        <p class="auth-tagline">شريكك في النجاح الرقمي</p>
+        <ul class="auth-benefits">
+          <li><i class="fas fa-check-circle"></i> متابعة طلباتك ومشاريعك بلحظة فورية</li>
+          <li><i class="fas fa-check-circle"></i> التواصل المباشر مع فريق العمل</li>
+          <li><i class="fas fa-check-circle"></i> تحميل ملفاتك وتقاريرك بسهولة</li>
+          <li><i class="fas fa-check-circle"></i> إدارة فواتيرك ومدفوعاتك</li>
+          <li><i class="fas fa-check-circle"></i> عروض وخصومات حصرية للأعضاء</li>
+          <li><i class="fas fa-check-circle"></i> الاطلاع على سير العمل وتقدم المشاريع</li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- Right form column -->
+    <div class="auth-right">
+      <div class="auth-card">
+        <div class="auth-card-logo">VISION <span class="accent">MEDIA</span></div>
+        <h2>تسجيل الدخول</h2>
+        <p class="auth-subtitle">مرحباً بعودتك</p>
+
+        <!-- Social login -->
+        <button class="social-login-btn google" id="googleLoginBtn" type="button">
+          <svg width="20" height="20" viewBox="0 0 48 48" aria-hidden="true"><path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/><path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/><path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"/><path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.18 1.48-4.97 2.3-8.16 2.3-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/><path fill="none" d="M0 0h48v48H0z"/></svg>
+          المتابعة بحساب Google
+        </button>
+
+        <button class="social-login-btn apple" id="appleLoginBtn" type="button">
+          <i class="fab fa-apple"></i>
+          المتابعة بحساب Apple
+        </button>
+
+        <div class="auth-divider"><span>أو</span></div>
+
+        <!-- Login form -->
+        <form id="loginForm" novalidate>
+          <div class="form-group">
+            <label for="loginEmail">البريد الإلكتروني</label>
+            <input type="email" id="loginEmail" name="email" placeholder="example@email.com" autocomplete="email" required />
+          </div>
+          <div class="form-group password-wrap">
+            <label for="loginPass">كلمة المرور</label>
+            <input type="password" id="loginPass" name="password" placeholder="••••••••" autocomplete="current-password" required />
+            <button type="button" class="toggle-pass" id="togglePass" aria-label="إظهار/إخفاء كلمة المرور">
+              <i class="fas fa-eye" id="togglePassIcon"></i>
+            </button>
+          </div>
+
+          <div class="form-row-between">
+            <label class="remember-label">
+              <input type="checkbox" id="rememberMe" /> تذكرني
+            </label>
+            <a href="#" class="forgot-link" id="forgotPassLink">نسيت كلمة المرور؟</a>
+          </div>
+
+          <button type="submit" class="btn-auth gold" id="loginSubmit">
+            <span id="loginBtnText">تسجيل الدخول</span>
+          </button>
+        </form>
+
+        <p class="auth-footer-link">
+          ليس لديك حساب؟ <a href="register.html">إنشاء حساب جديد</a>
+        </p>
+
+      </div>
+    </div>
+  </main>
+
+  <!-- SHARED FOOTER -->
+  <footer class="footer">
+    <div class="footer-top"><div class="container"><div class="footer-grid">
+      <div class="footer-brand">
+        <a href="index.html" class="footer-logo">VISION <span class="accent">MEDIA</span></a>
+        <p>شركة متخصصة في الدعاية والإعلان وحلول التسويق الرقمي الشاملة.</p>
+        <div class="social-links">
+          <a href="https://www.instagram.com/advertisement_portal.46" target="_blank"><i class="fab fa-instagram"></i></a>
+          <a href="https://www.facebook.com/share/1DszbP1nTB/" target="_blank"><i class="fab fa-facebook-f"></i></a>
+          <a href="https://www.snapchat.com/add/wael_elsayd2026" target="_blank"><i class="fab fa-snapchat-ghost"></i></a>
+          <a href="https://www.tiktok.com/@waelelsayd3" target="_blank"><i class="fab fa-tiktok"></i></a>
+          <a href="https://youtube.com/channel/UCA0-OJ461Na9MkTZMmgM48A" target="_blank"><i class="fab fa-youtube"></i></a>
+          <a href="https://x.com/Adverti556" target="_blank"><i class="fab fa-x-twitter"></i></a>
+        </div>
+      </div>
+      <div class="footer-links"><h4>روابط سريعة</h4><ul>
+        <li><a href="index.html">الرئيسية</a></li><li><a href="about.html">من نحن</a></li>
+        <li><a href="services.html">خدماتنا</a></li><li><a href="pricing.html">التسعيرة</a></li>
+        <li><a href="contact.html">تواصل معنا</a></li>
+      </ul></div>
+      <div class="footer-links"><h4>قانوني</h4><ul>
+        <li><a href="terms.html">الشروط والأحكام</a></li>
+        <li><a href="privacy.html">سياسة الخصوصية</a></li>
+      </ul></div>
+      <div class="footer-contact"><h4>تواصل معنا</h4><ul>
+        <li><i class="fab fa-whatsapp"></i> <a href="https://wa.me/966543944248">0543944248</a></li>
+        <li><i class="fas fa-phone"></i> <a href="tel:+966538862064">0538862064</a></li>
+        <li><i class="fas fa-envelope"></i> <a href="mailto:waelelsaydahmed@gmail.com">waelelsaydahmed@gmail.com</a></li>
+      </ul></div>
+    </div></div></div>
+    <div class="footer-bottom"><div class="container"><div class="footer-bottom-inner">
+      <p>&copy; 2025 VISION MEDIA. جميع الحقوق محفوظة</p>
+      <div class="footer-legal"><a href="terms.html">الشروط والأحكام</a><a href="privacy.html">سياسة الخصوصية</a></div>
+    </div></div></div>
+  </footer>
+  <a href="https://wa.me/966543944248" class="whatsapp-float" target="_blank"><i class="fab fa-whatsapp"></i></a>
+  <script src="core.js"></script>
+
+  <script>
+    // Password show/hide
+    const passInput   = document.getElementById('loginPass');
+    const togglePassBtn  = document.getElementById('togglePass');
+    const togglePassIcon = document.getElementById('togglePassIcon');
+    togglePassBtn.addEventListener('click', () => {
+      const isHidden = passInput.type === 'password';
+      passInput.type = isHidden ? 'text' : 'password';
+      togglePassIcon.className = isHidden ? 'fas fa-eye-slash' : 'fas fa-eye';
+    });
+
+    // Forgot password
+    document.getElementById('forgotPassLink').addEventListener('click', function(e){
+      e.preventDefault();
+      if(typeof VM !== 'undefined' && VM.notify){
+        VM.notify('سيتم إرسال رابط إعادة التعيين إلى بريدك', 'info');
+      } else {
+        alert('سيتم إرسال رابط إعادة التعيين إلى بريدك');
+      }
+    });
+
+    // Google / Apple stubs
+    document.getElementById('googleLoginBtn').addEventListener('click', function(){
+      if(typeof VM !== 'undefined' && VM.notify){
+        VM.notify('جاري التطوير - سيتم الربط بـ Google قريباً', 'info');
+      } else {
+        alert('جاري التطوير - سيتم الربط بـ Google قريباً');
+      }
+    });
+    document.getElementById('appleLoginBtn').addEventListener('click', function(){
+      if(typeof VM !== 'undefined' && VM.notify){
+        VM.notify('جاري التطوير - سيتم الربط بـ Apple قريباً', 'info');
+      } else {
+        alert('جاري التطوير - سيتم الربط بـ Apple قريباً');
+      }
+    });
+
+    // Login form submit
+    document.getElementById('loginForm').addEventListener('submit', async function(e){
+      e.preventDefault();
+      const email = document.getElementById('loginEmail').value.trim();
+      const pass  = document.getElementById('loginPass').value;
+      const btn   = document.getElementById('loginSubmit');
+      const btnTxt= document.getElementById('loginBtnText');
+
+      if(!email || !pass){
+        if(typeof VM !== 'undefined' && VM.notify){
+          VM.notify('يرجى إدخال البريد الإلكتروني وكلمة المرور', 'error');
+        } else { alert('يرجى إدخال البريد الإلكتروني وكلمة المرور'); }
+        return;
+      }
+
+      btn.disabled = true;
+      btnTxt.textContent = 'جاري التحقق...';
+
+      try {
+        if(typeof VM !== 'undefined' && VM.auth && VM.auth.login){
+          const result = await VM.auth.login(email, pass);
+          if(result && result.role === 'admin'){
+            window.location.href = 'admin-dashboard.html';
+          } else {
+            window.location.href = 'client-dashboard.html';
+          }
+        } else {
+          if(email && pass.length >= 6){
+            window.location.href = 'client-dashboard.html';
+          } else {
+            throw new Error('بيانات الدخول غير صحيحة');
+          }
+        }
+      } catch(err){
+        const msg = (err && err.message) ? err.message : 'البريد الإلكتروني أو كلمة المرور غير صحيحة';
+        if(typeof VM !== 'undefined' && VM.notify){
+          VM.notify(msg, 'error');
+        } else { alert(msg); }
+        btn.disabled = false;
+        btnTxt.textContent = 'تسجيل الدخول';
+      }
+    });
+  </script>
+<script src="vip-upgrade.js"></script>
+<script src="legal-system.js"></script>
+<script src="final-layout-fixes.js"></script>
+<div style="position:fixed;left:18px;bottom:92px;z-index:9999"><a href="employee.html" title="دخول الموظف" style="display:flex;width:44px;height:44px;align-items:center;justify-content:center;background:#0d1b2e;color:#fff;border-radius:50%;box-shadow:0 10px 30px #0003;text-decoration:none"><i class="fas fa-user-tie"></i></a></div>
+<script src="enterprise-security-forms-notifications.js"></script>
+<script src="vm-biometric-map-only.js"></script></body>
+</html>

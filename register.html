@@ -1,0 +1,532 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>VISION MEDIA | إنشاء حساب</title>
+  <link rel="stylesheet" href="style.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+  <style>
+    /* ── Auth page layout (shared with login.html) ── */
+    .auth-page { min-height: 100vh; display: flex; flex-direction: column; background: var(--bg-dark, #0d1b2e); }
+    .auth-main  { flex: 1; display: flex; align-items: stretch; }
+
+    .auth-left {
+      flex: 1;
+      background: linear-gradient(135deg, #0d1b2e 0%, #112240 50%, #1a3060 100%);
+      display: flex; flex-direction: column; justify-content: center; align-items: center;
+      padding: 3rem 2.5rem; position: relative; overflow: hidden;
+    }
+    .auth-left::before {
+      content: ''; position: absolute; inset: 0;
+      background: radial-gradient(ellipse at 70% 30%, rgba(201,162,39,.18) 0%, transparent 65%);
+    }
+    .auth-deco-shape {
+      position: absolute; border-radius: 50%; opacity: .07;
+      animation: floatShape 6s ease-in-out infinite alternate;
+    }
+    .auth-deco-shape:nth-child(1){ width:320px;height:320px;top:-80px;left:-100px;background:#c9a227;animation-delay:0s; }
+    .auth-deco-shape:nth-child(2){ width:200px;height:200px;bottom:-60px;right:-60px;background:#c9a227;animation-delay:2s; }
+    .auth-deco-shape:nth-child(3){ width:120px;height:120px;top:55%;left:10%;background:#fff;animation-delay:4s; }
+    @keyframes floatShape { from{transform:translateY(0) rotate(0deg);}to{transform:translateY(-20px) rotate(15deg);} }
+
+    .auth-left-inner { position: relative; z-index: 1; text-align: center; color: #fff; max-width: 420px; }
+    .auth-big-logo { font-size: 2.6rem; font-weight: 800; letter-spacing: 2px; margin-bottom: .4rem; }
+    .auth-big-logo .accent { color: #c9a227; }
+    .auth-tagline { color: rgba(255,255,255,.7); font-size: 1.05rem; margin-bottom: 2.5rem; }
+    .auth-benefits { list-style: none; padding: 0; margin: 0; text-align: right; }
+    .auth-benefits li { display: flex; align-items: center; gap: .75rem; padding: .65rem 0; color: rgba(255,255,255,.85); font-size: .97rem; border-bottom: 1px solid rgba(255,255,255,.07); }
+    .auth-benefits li:last-child { border-bottom: none; }
+    .auth-benefits li i { color: #c9a227; font-size: 1rem; flex-shrink: 0; }
+
+    .auth-right {
+      flex: 1; display: flex; align-items: center; justify-content: center;
+      padding: 2.5rem 2rem; background: #f5f7fa;
+    }
+    .auth-card {
+      background: #fff; border-radius: 16px; padding: 2.2rem 2rem;
+      width: 100%; max-width: 460px;
+      box-shadow: 0 8px 40px rgba(13,27,46,.12);
+    }
+    .auth-card-logo { text-align: center; font-size: 1.6rem; font-weight: 800; letter-spacing: 1px; color: #0d1b2e; margin-bottom: 1rem; }
+    .auth-card-logo .accent { color: #c9a227; }
+    .auth-card h2 { font-size: 1.45rem; font-weight: 700; color: #0d1b2e; text-align: center; margin-bottom: .3rem; }
+    .auth-card .auth-subtitle { text-align: center; color: #667; font-size: .92rem; margin-bottom: 1.4rem; }
+
+    .social-login-btn {
+      display: flex; align-items: center; justify-content: center; gap: .75rem;
+      width: 100%; padding: .72rem 1rem; border-radius: 10px;
+      border: 1.5px solid #e0e0e0; font-size: .95rem; font-weight: 600;
+      cursor: pointer; transition: box-shadow .2s, transform .15s;
+      margin-bottom: .8rem; text-decoration: none;
+    }
+    .social-login-btn:hover { box-shadow: 0 4px 16px rgba(0,0,0,.1); transform: translateY(-1px); }
+    .social-login-btn.google { background: #fff; color: #333; }
+    .social-login-btn.apple  { background: #111; color: #fff; border-color: #111; }
+    .social-login-btn i { font-size: 1.15rem; }
+
+    .auth-divider { display: flex; align-items: center; gap: .8rem; margin: .9rem 0; }
+    .auth-divider span { color: #aaa; font-size: .85rem; white-space: nowrap; }
+    .auth-divider::before,.auth-divider::after { content:''; flex:1; height:1px; background:#e5e5e5; }
+
+    .form-group { margin-bottom: .95rem; }
+    .form-group label { display: block; font-size: .87rem; font-weight: 600; color: #444; margin-bottom: .35rem; }
+    .form-group input {
+      width: 100%; padding: .72rem 1rem; border: 1.5px solid #ddd; border-radius: 9px;
+      font-size: .93rem; font-family: inherit; transition: border-color .2s;
+      background: #fafafa; color: #222; box-sizing: border-box;
+    }
+    .form-group input:focus { outline: none; border-color: #c9a227; background: #fff; }
+    .form-group select { width:100%; padding:.72rem 1rem; border:1.5px solid #ddd; border-radius:9px; font-size:.93rem; font-family:inherit; background:#fafafa; color:#222; box-sizing:border-box; appearance:none; background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%23666' d='M6 8L1 3h10z'/%3E%3C/svg%3E"); background-repeat:no-repeat; background-position:left 14px center; }
+    .form-group select:focus { outline:none; border-color:#c9a227; background-color:#fff; }
+    .form-group select option{padding:.55rem;background:#fff;color:#222;}
+    #regCity,#regDistrict{max-height:220px;}
+    .form-row-2 { display:grid; grid-template-columns:1fr 1fr; gap:.8rem; }
+    .phone-input-wrap { display:grid; grid-template-columns:128px 1fr; gap:.6rem; direction:ltr; }
+    .phone-input-wrap select,.phone-input-wrap input{ direction:ltr; text-align:left; }
+    @media(max-width:520px){ .form-row-2,.phone-input-wrap{ grid-template-columns:1fr; } }
+    .form-group.password-wrap { position: relative; }
+    .form-group.password-wrap input { padding-left: 2.8rem; }
+    .toggle-pass {
+      position: absolute; left: .85rem; top: 50%; transform: translateY(-50%);
+      background: none; border: none; cursor: pointer; color: #888; font-size: .93rem;
+      padding: 0; margin-top: 1.05rem;
+    }
+    .toggle-pass:hover { color: #c9a227; }
+
+    /* Password strength */
+    .strength-bar-wrap { margin-top: .45rem; }
+    .strength-bar-track { height: 5px; background: #eee; border-radius: 4px; overflow: hidden; }
+    .strength-bar-fill  { height: 100%; border-radius: 4px; width: 0; transition: width .35s, background .35s; }
+    .strength-label { font-size: .78rem; color: #888; margin-top: .3rem; }
+
+    /* Terms checkbox */
+    .terms-check-row { display: flex; align-items: flex-start; gap: .6rem; margin-bottom: 1.2rem; }
+    .terms-check-row input[type="checkbox"] { accent-color: #c9a227; margin-top: .18rem; flex-shrink: 0; width: 16px; height: 16px; }
+    .terms-check-row label { font-size: .87rem; color: #555; line-height: 1.5; }
+    .terms-check-row a { color: #c9a227; font-weight: 600; text-decoration: none; }
+    .terms-check-row a:hover { text-decoration: underline; }
+
+    .btn-auth { width: 100%; padding: .85rem; border: none; border-radius: 10px; font-size: 1rem; font-weight: 700; cursor: pointer; transition: background .2s, transform .15s; }
+    .btn-auth.gold { background: linear-gradient(135deg, #c9a227, #e6b830); color: #0d1b2e; }
+    .btn-auth.gold:hover { transform: translateY(-1px); box-shadow: 0 6px 20px rgba(201,162,39,.35); }
+    .btn-auth:disabled { opacity: .65; cursor: not-allowed; transform: none !important; }
+
+    .auth-footer-link { text-align: center; margin-top: 1.2rem; font-size: .9rem; color: #666; }
+    .auth-footer-link a { color: #c9a227; font-weight: 600; text-decoration: none; }
+    .auth-footer-link a:hover { text-decoration: underline; }
+
+    /* Input error state */
+    .form-group.has-error input { border-color: #e53e3e; }
+    .field-error { font-size: .8rem; color: #e53e3e; margin-top: .3rem; }
+
+    @media(max-width: 768px){
+      .auth-main { flex-direction: column; }
+      .auth-left { padding: 2.5rem 1.5rem; }
+      .auth-right { padding: 2rem 1rem; }
+      .auth-card { padding: 1.8rem 1.2rem; }
+    }
+  </style>
+  <link rel="stylesheet" href="vip-upgrade.css">
+  <link rel="stylesheet" href="legal-system.css">
+  <link rel="stylesheet" href="final-layout-fixes.css">
+  <link rel="stylesheet" href="enterprise-security-forms-notifications.css">
+  <link rel="stylesheet" href="all-pages-organization-fix.css">
+</head>
+<body>
+
+  <!-- SHARED HEADER -->
+  <header class="header" id="header">
+    <nav class="nav container">
+      <a href="index.html" class="nav-logo">VISION <span class="accent">MEDIA</span></a>
+      <ul class="nav-menu" id="navMenu">
+        <li><a href="index.html" class="nav-link">الرئيسية</a></li>
+        <li><a href="about.html" class="nav-link">من نحن</a></li>
+        <li class="nav-dropdown">
+          <a href="services.html" class="nav-link">خدماتنا <i class="fas fa-chevron-down"></i></a>
+          <div class="dropdown-menu">
+            <div class="dropdown-grid">
+              <a href="service-detail.html?id=1" class="dropdown-item">التسويق الإلكتروني</a>
+              <a href="service-detail.html?id=4" class="dropdown-item">تصميم الجرافيك</a>
+              <a href="service-detail.html?id=6" class="dropdown-item">تصميم المواقع</a>
+              <a href="service-detail.html?id=8" class="dropdown-item">إنتاج الفيديو</a>
+              <a href="service-detail.html?id=15" class="dropdown-item">تحسين SEO</a>
+            </div>
+            <div class="dropdown-footer"><a href="services.html" class="btn btn-gold btn-sm">عرض جميع الخدمات</a></div>
+          </div>
+        </li>
+        <li><a href="portfolio.html" class="nav-link">أعمالنا</a></li>
+        <li><a href="pricing.html" class="nav-link">التسعيرة</a></li>
+        <li><a href="contact.html" class="nav-link">تواصل معنا</a></li>
+      </ul>
+      <div class="nav-actions">
+        <a href="request-service.html" class="btn btn-gold btn-sm">طلب خدمة</a>
+        <a href="login.html" class="btn btn-outline-white btn-sm" id="loginBtn">دخول</a>
+        <button class="nav-toggle" id="navToggle"><span></span><span></span><span></span></button>
+      </div>
+    </nav>
+  </header>
+
+  <!-- MAIN -->
+  <main class="auth-main">
+
+    <!-- Left decorative -->
+    <div class="auth-left">
+      <div class="auth-deco-shape"></div>
+      <div class="auth-deco-shape"></div>
+      <div class="auth-deco-shape"></div>
+      <div class="auth-left-inner">
+        <div class="auth-big-logo">VISION <span class="accent">MEDIA</span></div>
+        <p class="auth-tagline">ابدأ رحلتك معنا اليوم</p>
+        <ul class="auth-benefits">
+          <li><i class="fas fa-star"></i> لوحة تحكم شخصية لمتابعة مشاريعك</li>
+          <li><i class="fas fa-bolt"></i> استلام عروض الأسعار بشكل فوري</li>
+          <li><i class="fas fa-file-alt"></i> أرشيف كامل لجميع طلباتك وفواتيرك</li>
+          <li><i class="fas fa-comments"></i> تواصل مباشر مع فريق التصميم</li>
+          <li><i class="fas fa-shield-alt"></i> بيانات محمية وخصوصية مضمونة</li>
+          <li><i class="fas fa-gift"></i> عروض وخصومات حصرية للأعضاء الجدد</li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- Right form -->
+    <div class="auth-right">
+      <div class="auth-card">
+        <div class="auth-card-logo">VISION <span class="accent">MEDIA</span></div>
+        <h2>إنشاء حساب جديد</h2>
+        <p class="auth-subtitle">سجّل وابدأ رحلتك الإعلانية</p>
+
+        <button class="social-login-btn google" id="googleRegBtn" type="button">
+          <svg width="20" height="20" viewBox="0 0 48 48" aria-hidden="true"><path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/><path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/><path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"/><path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.18 1.48-4.97 2.3-8.16 2.3-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/><path fill="none" d="M0 0h48v48H0z"/></svg>
+          المتابعة بحساب Google
+        </button>
+
+        <button class="social-login-btn apple" id="appleRegBtn" type="button">
+          <i class="fab fa-apple"></i>
+          المتابعة بحساب Apple
+        </button>
+
+        <div class="auth-divider"><span>أو</span></div>
+
+        <form id="registerForm" novalidate>
+          <div class="form-group" id="grpName">
+            <label for="regName">الاسم الكامل</label>
+            <input type="text" id="regName" name="name" placeholder="محمد أحمد" autocomplete="name" required />
+            <div class="field-error" id="errName"></div>
+          </div>
+          <div class="form-group" id="grpEmail">
+            <label for="regEmail">البريد الإلكتروني</label>
+            <input type="email" id="regEmail" name="email" placeholder="example@email.com" autocomplete="email" required />
+            <div class="field-error" id="errEmail"></div>
+          </div>
+          <div class="form-row-2">
+            <div class="form-group" id="grpCountry">
+              <label for="regCountry">الدولة</label>
+              <select id="regCountry" name="country" required></select>
+              <div class="field-error" id="errCountry"></div>
+            </div>
+            <div class="form-group" id="grpCity">
+              <label for="regCity">المحافظة / المدينة</label>
+              <select id="regCity" name="city" required></select>
+              <div class="field-error" id="errCity"></div>
+            </div>
+          </div>
+          <div class="form-group" id="grpDistrict">
+            <label for="regDistrict">الحي</label>
+            <select id="regDistrict" name="district" required></select>
+            <div class="field-error" id="errDistrict"></div>
+          </div>
+          <div class="form-group" id="grpPhone">
+            <label for="regPhone">رقم الجوال</label>
+            <div class="phone-input-wrap">
+              <select id="regPhoneCode" name="phoneCode" aria-label="كود الدولة"></select>
+              <input type="tel" id="regPhone" name="phone" placeholder="05XXXXXXXX" autocomplete="tel" />
+            </div>
+            <div class="field-error" id="errPhone"></div>
+          </div>
+          <div class="form-group password-wrap" id="grpPass">
+            <label for="regPass">كلمة المرور</label>
+            <input type="password" id="regPass" name="password" placeholder="••••••••" autocomplete="new-password" required />
+            <button type="button" class="toggle-pass" id="togglePass1"><i class="fas fa-eye" id="tpIcon1"></i></button>
+            <div class="strength-bar-wrap">
+              <div class="strength-bar-track"><div class="strength-bar-fill" id="strengthFill"></div></div>
+              <div class="strength-label" id="strengthLabel">أدخل كلمة المرور</div>
+            </div>
+            <div class="field-error" id="errPass"></div>
+          </div>
+          <div class="form-group password-wrap" id="grpConfirm">
+            <label for="regConfirm">تأكيد كلمة المرور</label>
+            <input type="password" id="regConfirm" name="confirm" placeholder="••••••••" autocomplete="new-password" required />
+            <button type="button" class="toggle-pass" id="togglePass2"><i class="fas fa-eye" id="tpIcon2"></i></button>
+            <div class="field-error" id="errConfirm"></div>
+          </div>
+
+          <div class="terms-check-row">
+            <input type="checkbox" id="agreeTerms" required />
+            <label for="agreeTerms">أوافق على <a href="terms.html" target="_blank">الشروط والأحكام</a> وأقر بقراءة <a href="privacy.html" target="_blank">سياسة الخصوصية</a></label>
+          </div>
+
+          <div id="vmRegisterDynamicFields"></div>
+          <button type="submit" class="btn-auth gold" id="regSubmit">
+            <span id="regBtnText">إنشاء الحساب</span>
+          </button>
+        </form>
+
+        <p class="auth-footer-link">
+          لديك حساب بالفعل؟ <a href="login.html">تسجيل الدخول</a>
+        </p>
+      </div>
+    </div>
+  </main>
+
+  <!-- SHARED FOOTER -->
+  <footer class="footer">
+    <div class="footer-top"><div class="container"><div class="footer-grid">
+      <div class="footer-brand">
+        <a href="index.html" class="footer-logo">VISION <span class="accent">MEDIA</span></a>
+        <p>شركة متخصصة في الدعاية والإعلان وحلول التسويق الرقمي الشاملة.</p>
+        <div class="social-links">
+          <a href="https://www.instagram.com/advertisement_portal.46" target="_blank"><i class="fab fa-instagram"></i></a>
+          <a href="https://www.facebook.com/share/1DszbP1nTB/" target="_blank"><i class="fab fa-facebook-f"></i></a>
+          <a href="https://www.snapchat.com/add/wael_elsayd2026" target="_blank"><i class="fab fa-snapchat-ghost"></i></a>
+          <a href="https://www.tiktok.com/@waelelsayd3" target="_blank"><i class="fab fa-tiktok"></i></a>
+          <a href="https://youtube.com/channel/UCA0-OJ461Na9MkTZMmgM48A" target="_blank"><i class="fab fa-youtube"></i></a>
+          <a href="https://x.com/Adverti556" target="_blank"><i class="fab fa-x-twitter"></i></a>
+        </div>
+      </div>
+      <div class="footer-links"><h4>روابط سريعة</h4><ul>
+        <li><a href="index.html">الرئيسية</a></li><li><a href="about.html">من نحن</a></li>
+        <li><a href="services.html">خدماتنا</a></li><li><a href="pricing.html">التسعيرة</a></li>
+        <li><a href="contact.html">تواصل معنا</a></li>
+      </ul></div>
+      <div class="footer-links"><h4>قانوني</h4><ul>
+        <li><a href="terms.html">الشروط والأحكام</a></li>
+        <li><a href="privacy.html">سياسة الخصوصية</a></li>
+      </ul></div>
+      <div class="footer-contact"><h4>تواصل معنا</h4><ul>
+        <li><i class="fab fa-whatsapp"></i> <a href="https://wa.me/966543944248">0543944248</a></li>
+        <li><i class="fas fa-phone"></i> <a href="tel:+966538862064">0538862064</a></li>
+        <li><i class="fas fa-envelope"></i> <a href="mailto:waelelsaydahmed@gmail.com">waelelsaydahmed@gmail.com</a></li>
+      </ul></div>
+    </div></div></div>
+    <div class="footer-bottom"><div class="container"><div class="footer-bottom-inner">
+      <p>&copy; 2025 VISION MEDIA. جميع الحقوق محفوظة</p>
+      <div class="footer-legal"><a href="terms.html">الشروط والأحكام</a><a href="privacy.html">سياسة الخصوصية</a></div>
+    </div></div></div>
+  </footer>
+  <a href="https://wa.me/966543944248" class="whatsapp-float" target="_blank"><i class="fab fa-whatsapp"></i></a>
+  <script src="core.js"></script>
+
+  <script>
+    // Password toggles
+    function setupToggle(btnId, iconId, inputId){
+      document.getElementById(btnId).addEventListener('click', function(){
+        const inp = document.getElementById(inputId);
+        const isHidden = inp.type === 'password';
+        inp.type = isHidden ? 'text' : 'password';
+        document.getElementById(iconId).className = isHidden ? 'fas fa-eye-slash' : 'fas fa-eye';
+      });
+    }
+    setupToggle('togglePass1','tpIcon1','regPass');
+    setupToggle('togglePass2','tpIcon2','regConfirm');
+
+    // Strength indicator
+    document.getElementById('regPass').addEventListener('input', function(){
+      const val = this.value;
+      const fill  = document.getElementById('strengthFill');
+      const label = document.getElementById('strengthLabel');
+      let score = 0;
+      if(val.length >= 8)   score++;
+      if(/[A-Z]/.test(val)) score++;
+      if(/[0-9]/.test(val)) score++;
+      if(/[^A-Za-z0-9]/.test(val)) score++;
+      const levels = [
+        {w:'0%',   bg:'#eee',     txt:'أدخل كلمة المرور'},
+        {w:'25%',  bg:'#e53e3e',  txt:'ضعيفة جداً'},
+        {w:'50%',  bg:'#f6ad55',  txt:'ضعيفة'},
+        {w:'75%',  bg:'#68d391',  txt:'جيدة'},
+        {w:'100%', bg:'#38a169',  txt:'قوية جداً'},
+      ];
+      if(!val){ score = 0; }
+      fill.style.width      = levels[score].w;
+      fill.style.background = levels[score].bg;
+      label.textContent     = levels[score].txt;
+      label.style.color     = levels[score].bg;
+    });
+
+    // Field helpers
+    function setErr(grpId, errId, msg){
+      document.getElementById(grpId).classList.toggle('has-error', !!msg);
+      document.getElementById(errId).textContent = msg || '';
+    }
+    function notify(msg, type){
+      if(typeof VM !== 'undefined' && VM.notify){ VM.notify(msg, type); }
+      else { alert(msg); }
+    }
+
+
+    // Countries / cities / districts / phone code behavior
+    // ملاحظة: تمت إضافة المحافظات/المناطق والمراكز/الأحياء الأساسية لكل دولة موجودة في القائمة.
+    // يمكنك إضافة المزيد من الأحياء لاحقًا من نفس القالب بدون كسر الصفحة.
+    const VM_LOCATIONS = {
+      SA: { name:'السعودية', code:'+966', placeholder:'05XXXXXXXX', pattern:/^05\d{8}$/, cities:{
+        'الرياض':['الرياض - العليا','الرياض - الملز','الرياض - النرجس','الرياض - حطين','الرياض - الياسمين','الرياض - الملقا','الرياض - الصحافة','الرياض - النسيم','الرياض - السويدي','الخرج','الدرعية','المجمعة','الزلفي','وادي الدواسر','الأفلاج','القويعية','شقراء','حوطة بني تميم','عفيف','الغاط','السليل','رماح','ثادق','حريملاء','ضرماء','المزاحمية'],
+        'مكة المكرمة':['مكة - العزيزية','مكة - الشرائع','مكة - العوالي','مكة - الشوقية','جدة - الروضة','جدة - الصفا','جدة - النهضة','جدة - الحمدانية','جدة - الشاطئ','جدة - السامر','جدة - الفيحاء','الطائف','القنفذة','الليث','رابغ','خليص','الجموم','الكامل','الخرمة','رنية','تربة','ميسان','أضم','العرضيات','بحرة'],
+        'المدينة المنورة':['المدينة - قباء','المدينة - العوالي','المدينة - الهجرة','المدينة - شوران','المدينة - الدفاع','ينبع','العلا','المهد','الحناكية','بدر','خيبر','العيص','وادي الفرع'],
+        'المنطقة الشرقية':['الدمام - الشاطئ','الدمام - الفيصلية','الدمام - النور','الدمام - المزروعية','الخبر - العقربية','الخبر - الراكة','الخبر - الثقبة','الظهران','الأحساء','القطيف','الجبيل','حفر الباطن','الخفجي','رأس تنورة','بقيق','النعيرية','قرية العليا','العديد'],
+        'عسير':['أبها','خميس مشيط','بيشة','النماص','محايل عسير','ظهران الجنوب','تثليث','سراة عبيدة','رجال ألمع','بلقرن','أحد رفيدة','المجاردة','تنومة','البرك','طريب'],
+        'القصيم':['بريدة','عنيزة','الرس','المذنب','البكيرية','البدائع','الأسياح','النبهانية','الشماسية','عيون الجواء','رياض الخبراء','عقلة الصقور','ضرية'],
+        'تبوك':['تبوك','الوجه','ضباء','تيماء','أملج','حقل','البدع'],
+        'حائل':['حائل','بقعاء','الغزالة','الشنان','الحائط','السليمي','الشملي','موقق','سميراء'],
+        'جازان':['جازان','صبيا','أبو عريش','صامطة','بيش','الدرب','الحرث','ضمد','الريث','فرسان','الدائر','العارضة','أحد المسارحة','العيدابي','فيفاء','هروب'],
+        'نجران':['نجران','شرورة','حبونا','بدر الجنوب','يدمة','ثار','خباش'],
+        'الباحة':['الباحة','بلجرشي','المندق','المخواة','قلوة','العقيق','القرى','غامد الزناد','الحجرة','بني حسن'],
+        'الجوف':['سكاكا','القريات','دومة الجندل','طبرجل'],
+        'الحدود الشمالية':['عرعر','رفحاء','طريف','العويقيلة']
+      }},
+      EG: { name:'مصر', code:'+20', placeholder:'01XXXXXXXXX', pattern:/^01\d{9}$/, cities:{
+        'القاهرة':['مدينة نصر','مصر الجديدة','المعادي','التجمع الخامس','الشروق','بدر','حلوان','شبرا','الزمالك','وسط البلد','المقطم','المرج','السلام','عين شمس'],
+        'الجيزة':['الدقي','المهندسين','الهرم','فيصل','6 أكتوبر','الشيخ زايد','العجوزة','الوراق','بولاق الدكرور','البدرشين','الصف','أطفيح','العياط','منشأة القناطر','أوسيم','كرداسة'],
+        'الإسكندرية':['سيدي جابر','سموحة','العجمي','ميامي','محرم بك','المنتزه','العصافرة','ستانلي','برج العرب','العامرية','كرموز','باكوس'],
+        'الدقهلية':['المنصورة','طلخا','ميت غمر','دكرنس','أجا','السنبلاوين','بلقاس','منية النصر','شربين','تمي الأمديد','الجمالية','المطرية','المنزلة','ميت سلسيل','نبروه'],
+        'البحر الأحمر':['الغردقة','رأس غارب','سفاجا','القصير','مرسى علم','الشلاتين','حلايب'],
+        'البحيرة':['دمنهور','كفر الدوار','رشيد','إدكو','أبو المطامير','أبو حمص','الدلنجات','المحمودية','الرحمانية','إيتاي البارود','حوش عيسى','شبراخيت','كوم حمادة','بدر','وادي النطرون'],
+        'الفيوم':['الفيوم','سنورس','إطسا','طامية','يوسف الصديق','أبشواي'],
+        'الغربية':['طنطا','المحلة الكبرى','كفر الزيات','زفتى','السنطة','قطور','بسيون','سمنود'],
+        'الإسماعيلية':['الإسماعيلية','فايد','القنطرة شرق','القنطرة غرب','التل الكبير','أبو صوير','القصاصين'],
+        'المنوفية':['شبين الكوم','منوف','أشمون','قويسنا','تلا','الباجور','الشهداء','بركة السبع','سرس الليان','السادات'],
+        'المنيا':['المنيا','ملوي','سمالوط','بني مزار','مطاي','مغاغة','العدوة','أبو قرقاص','دير مواس'],
+        'القليوبية':['بنها','شبرا الخيمة','القناطر الخيرية','الخانكة','كفر شكر','طوخ','قليوب','شبين القناطر','الخصوص','العبور'],
+        'الوادي الجديد':['الخارجة','الداخلة','الفرافرة','باريس','بلاط'],
+        'السويس':['السويس','الأربعين','عتاقة','الجناين','فيصل'],
+        'أسوان':['أسوان','كوم أمبو','دراو','نصر النوبة','إدفو','أبو سمبل'],
+        'أسيوط':['أسيوط','ديروط','منفلوط','القوصية','أبنوب','أبو تيج','الغنايم','ساحل سليم','البداري','صدفا','الفتح'],
+        'بني سويف':['بني سويف','الواسطى','ناصر','إهناسيا','ببا','سمسطا','الفشن'],
+        'بورسعيد':['بورسعيد','بورفؤاد','حي الشرق','حي العرب','حي المناخ','حي الزهور','حي الضواحي','حي الجنوب'],
+        'دمياط':['دمياط','رأس البر','فارسكور','كفر سعد','الزرقا','كفر البطيخ','السرو','ميت أبو غالب'],
+        'الشرقية':['الزقازيق','بلبيس','منيا القمح','أبو حماد','أبو كبير','فاقوس','الحسينية','كفر صقر','أولاد صقر','ديرب نجم','ههيا','مشتول السوق','الإبراهيمية','القرين','صان الحجر','العاشر من رمضان'],
+        'جنوب سيناء':['الطور','شرم الشيخ','دهب','نويبع','طابا','سانت كاترين','أبو رديس','رأس سدر'],
+        'كفر الشيخ':['كفر الشيخ','دسوق','فوه','مطوبس','بلطيم','الحامول','بيلا','قلين','سيدي سالم','الرياض'],
+        'مطروح':['مرسى مطروح','الحمام','العلمين','الضبعة','النجيلة','سيدي براني','السلوم','سيوة'],
+        'الأقصر':['الأقصر','البياضية','الزينية','القرنة','أرمنت','الطود','إسنا'],
+        'قنا':['قنا','قوص','نجع حمادي','دشنا','فرشوط','أبو تشت','نقادة','قفط','الوقف'],
+        'شمال سيناء':['العريش','بئر العبد','الشيخ زويد','رفح','الحسنة','نخل'],
+        'سوهاج':['سوهاج','أخميم','جرجا','طهطا','طما','المراغة','البلينا','دار السلام','المنشاة','جهينة','ساقلتة']
+      }},
+      AE:{name:'الإمارات',code:'+971',placeholder:'05XXXXXXXX',pattern:/^05\d{8}$/,cities:{'أبوظبي':['الخالدية','المرور','جزيرة الريم','مدينة محمد بن زايد','العين','الظفرة','بني ياس'],'دبي':['ديرة','بر دبي','جميرا','دبي مارينا','الخليج التجاري','البرشاء','القصيص','ند الحمر'],'الشارقة':['المجاز','النهدة','القاسمية','مويلح','خورفكان','كلباء','الذيد'],'عجمان':['الراشدية','النعيمية','الجرف','مصفوت'],'أم القيوين':['الراس','السلمة','فلج المعلا'],'رأس الخيمة':['النخيل','الظيت','خور خوير','الرمس'],'الفجيرة':['الفجيرة','دبا الفجيرة','قدفع','مربح']}},
+      KW:{name:'الكويت',code:'+965',placeholder:'5XXXXXXX',pattern:/^[569]\d{7}$/,cities:{'العاصمة':['مدينة الكويت','شرق','القبلة','المرقاب','بنيد القار','الدسمة','الدعية'],'حولي':['السالمية','حولي','الجابرية','بيان','مشرف','سلوى'],'الفروانية':['الفروانية','خيطان','العمرية','العارضية','الفردوس'],'الأحمدي':['الأحمدي','الفحيحيل','المنقف','العقيلة','الصباحية'],'الجهراء':['الجهراء','العيون','النسيم','القصر'],'مبارك الكبير':['مبارك الكبير','القرين','القصور','صباح السالم']}},
+      QA:{name:'قطر',code:'+974',placeholder:'3XXXXXXX أو 5XXXXXXX',pattern:/^[3567]\d{7}$/,cities:{'الدوحة':['الدفنة','السد','الوعب','المرخية','الهلال','النجمة','الغرافة'],'الريان':['معيذر','أم السنيم','الوجبة','اللقطة'],'الوكرة':['الوكرة','الوكير','المشاف'],'الخور والذخيرة':['الخور','الذخيرة'],'أم صلال':['أم صلال علي','أم صلال محمد'],'الشمال':['مدينة الشمال','الرويس'],'الظعاين':['لوسيل','السميسمة'],'الشحانية':['الشحانية','دخان']}},
+      BH:{name:'البحرين',code:'+973',placeholder:'3XXXXXXX',pattern:/^[369]\d{7}$/,cities:{'العاصمة':['المنامة','الجفير','العدلية','السيف','الماحوز'],'المحرق':['المحرق','عراد','البسيتين','قلالي','الحد'],'الشمالية':['سار','البديع','باربار','جدحفص'],'الجنوبية':['الرفاع','عوالي','الزلاق','مدينة حمد']}},
+      OM:{name:'عُمان',code:'+968',placeholder:'9XXXXXXX',pattern:/^[79]\d{7}$/,cities:{'مسقط':['الخوير','الغبرة','بوشر','السيب','القرم','روي','مطرح'],'ظفار':['صلالة','السعادة','عوقد','ثمريت','مرباط'],'شمال الباطنة':['صحار','شناص','لوى','صحم','الخابورة','السويق'],'جنوب الباطنة':['الرستاق','العوابي','نخل','وادي المعاول','بركاء'],'الداخلية':['نزوى','بهلاء','سمائل','إزكي','الحمراء'],'شمال الشرقية':['إبراء','المضيبي','بدية','القابل'],'جنوب الشرقية':['صور','جعلان بني بو علي','جعلان بني بو حسن','الكامل والوافي'],'البريمي':['البريمي','محضة','السنينة'],'الظاهرة':['عبري','ينقل','ضنك'],'مسندم':['خصب','بخاء','دبا','مدحاء'],'الوسطى':['هيما','الدقم','محوت','الجازر']}},
+      JO:{name:'الأردن',code:'+962',placeholder:'07XXXXXXXX',pattern:/^07\d{8}$/,cities:{'عمّان':['الجبيهة','العبدلي','صويلح','خلدا','مرج الحمام','تلاع العلي'],'إربد':['إربد','الرمثا','بني عبيد','الكورة'],'الزرقاء':['الزرقاء','الرصيفة','الهاشمية'],'البلقاء':['السلط','عين الباشا','دير علا'],'العقبة':['العقبة','القويرة'],'الكرك':['الكرك','المزار الجنوبي'],'المفرق':['المفرق','البادية الشمالية'],'مادبا':['مادبا','ذيبان'],'جرش':['جرش'],'عجلون':['عجلون'],'معان':['معان','الشوبك'],'الطفيلة':['الطفيلة']}},
+      MA:{name:'المغرب',code:'+212',placeholder:'06XXXXXXXX',pattern:/^0[67]\d{8}$/,cities:{'الدار البيضاء-سطات':['الدار البيضاء','المحمدية','الجديدة','سطات','برشيد'],'الرباط-سلا-القنيطرة':['الرباط','سلا','تمارة','القنيطرة'],'مراكش-آسفي':['مراكش','آسفي','الصويرة'],'فاس-مكناس':['فاس','مكناس','إفران'],'طنجة-تطوان-الحسيمة':['طنجة','تطوان','الحسيمة'],'سوس-ماسة':['أكادير','تارودانت','تزنيت'],'الشرق':['وجدة','الناظور','بركان'],'درعة-تافيلالت':['الرشيدية','ورزازات'],'بني ملال-خنيفرة':['بني ملال','خنيفرة'],'كلميم-واد نون':['كلميم'],'العيون-الساقية الحمراء':['العيون'],'الداخلة-وادي الذهب':['الداخلة']}}
+    };
+
+    function fillSelect(el, items, selected){
+      el.innerHTML = items.map(function(x){ return '<option value="'+x+'" '+(x===selected?'selected':'')+'>'+x+'</option>'; }).join('');
+    }
+    function setupLocationFields(){
+      const country = document.getElementById('regCountry');
+      const code = document.getElementById('regPhoneCode');
+      const city = document.getElementById('regCity');
+      const district = document.getElementById('regDistrict');
+      const phone = document.getElementById('regPhone');
+      const keys = Object.keys(VM_LOCATIONS);
+      country.innerHTML = keys.map(function(k){ return '<option value="'+k+'">'+VM_LOCATIONS[k].name+'</option>'; }).join('');
+      code.innerHTML = keys.map(function(k){ return '<option value="'+VM_LOCATIONS[k].code+'" data-country="'+k+'">'+VM_LOCATIONS[k].code+' '+VM_LOCATIONS[k].name+'</option>'; }).join('');
+      function syncCountry(k){
+        const data = VM_LOCATIONS[k] || VM_LOCATIONS.SA;
+        country.value = k;
+        code.value = data.code;
+        phone.placeholder = data.placeholder;
+        const cities = Object.keys(data.cities);
+        fillSelect(city, cities);
+        fillSelect(district, data.cities[cities[0]] || ['اختر الحي']);
+      }
+      country.addEventListener('change', function(){ syncCountry(this.value); phone.value=''; });
+      code.addEventListener('change', function(){
+        const opt = code.options[code.selectedIndex];
+        syncCountry(opt.getAttribute('data-country') || 'SA');
+        phone.value='';
+      });
+      city.addEventListener('change', function(){
+        const data = VM_LOCATIONS[country.value] || VM_LOCATIONS.SA;
+        fillSelect(district, data.cities[this.value] || ['اختر الحي']);
+      });
+      syncCountry('SA');
+    }
+    setupLocationFields();
+
+    // Social stubs
+    document.getElementById('googleRegBtn').addEventListener('click', function(){
+      notify('جاري التطوير - سيتم الربط بـ Google قريباً', 'info');
+    });
+    document.getElementById('appleRegBtn').addEventListener('click', function(){
+      notify('جاري التطوير - سيتم الربط بـ Apple قريباً', 'info');
+    });
+
+    // Form submit
+    document.getElementById('registerForm').addEventListener('submit', async function(e){
+      e.preventDefault();
+      const name    = document.getElementById('regName').value.trim();
+      const email   = document.getElementById('regEmail').value.trim();
+      const country = document.getElementById('regCountry').value;
+      const city    = document.getElementById('regCity').value;
+      const district= document.getElementById('regDistrict').value;
+      const phoneCode = document.getElementById('regPhoneCode').value;
+      const phone   = document.getElementById('regPhone').value.trim();
+      const pass    = document.getElementById('regPass').value;
+      const confirm = document.getElementById('regConfirm').value;
+      const terms   = document.getElementById('agreeTerms').checked;
+
+      let valid = true;
+      setErr('grpName','errName','');
+      setErr('grpEmail','errEmail','');
+      setErr('grpCountry','errCountry','');
+      setErr('grpCity','errCity','');
+      setErr('grpDistrict','errDistrict','');
+      setErr('grpPhone','errPhone','');
+      setErr('grpPass','errPass','');
+      setErr('grpConfirm','errConfirm','');
+
+      if(!name){ setErr('grpName','errName','الاسم الكامل مطلوب'); valid=false; }
+      if(!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)){ setErr('grpEmail','errEmail','يرجى إدخال بريد إلكتروني صحيح'); valid=false; }
+      if(!country){ setErr('grpCountry','errCountry','الدولة مطلوبة'); valid=false; }
+      if(!city){ setErr('grpCity','errCity','المحافظة أو المدينة مطلوبة'); valid=false; }
+      if(!district){ setErr('grpDistrict','errDistrict','الحي مطلوب'); valid=false; }
+      const locData = VM_LOCATIONS[country] || VM_LOCATIONS.SA;
+      if(phone && !locData.pattern.test(phone)){ setErr('grpPhone','errPhone','يرجى إدخال رقم صحيح حسب الدولة المختارة: '+locData.placeholder); valid=false; }
+      if(pass.length < 8){ setErr('grpPass','errPass','كلمة المرور يجب أن تكون 8 أحرف على الأقل'); valid=false; }
+      if(pass !== confirm){ setErr('grpConfirm','errConfirm','كلمتا المرور غير متطابقتين'); valid=false; }
+      if(!terms){ notify('يجب الموافقة على الشروط والأحكام للمتابعة', 'error'); valid=false; }
+      if(!valid) return;
+
+      const btn    = document.getElementById('regSubmit');
+      const btnTxt = document.getElementById('regBtnText');
+      btn.disabled = true;
+      btnTxt.textContent = 'جاري إنشاء الحساب...';
+
+      try {
+        const data = { name, email, country: VM_LOCATIONS[country].name, city, district, phoneCode, phone, fullPhone: phoneCode + phone.replace(/^0/, ''), password: pass };
+        if(typeof VM !== 'undefined' && VM.auth && VM.auth.register){
+          await VM.auth.register(data);
+        }
+        notify('تم إنشاء حسابك بنجاح! مرحباً بك', 'success');
+        setTimeout(() => { window.location.href = 'client-dashboard.html'; }, 1200);
+      } catch(err){
+        const msg = (err && err.message) ? err.message : 'حدث خطأ أثناء إنشاء الحساب. يرجى المحاولة مرة أخرى.';
+        notify(msg, 'error');
+        btn.disabled = false;
+        btnTxt.textContent = 'إنشاء الحساب';
+      }
+    });
+  </script>
+<script src="locationsData.js"></script>
+<script src="locations-ui.js"></script>
+<script src="vip-upgrade.js"></script>
+<script src="legal-system.js"></script>
+<script src="final-layout-fixes.js"></script>
+<div style="position:fixed;left:18px;bottom:92px;z-index:9999"><a href="employee.html" title="دخول الموظف" style="display:flex;width:44px;height:44px;align-items:center;justify-content:center;background:#0d1b2e;color:#fff;border-radius:50%;box-shadow:0 10px 30px #0003;text-decoration:none"><i class="fas fa-user-tie"></i></a></div>
+<script src="enterprise-security-forms-notifications.js"></script>
+<script src="vm-biometric-map-only.js"></script></body>
+</html>

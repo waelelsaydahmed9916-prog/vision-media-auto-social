@@ -1,0 +1,731 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>VISION MEDIA | طلب خدمة</title>
+  <link rel="stylesheet" href="style.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+  <style>
+    /* ── Page-specific overrides ── */
+    .page-hero{background:linear-gradient(135deg,var(--primary,#0d1b2e) 0%,#162840 100%);padding:100px 0 60px;text-align:center;border-bottom:3px solid var(--accent,#c9a227);}
+    .page-hero h1{font-size:2.4rem;color:#fff;margin-bottom:12px;}
+    .page-hero p{color:rgba(255,255,255,.7);font-size:1.05rem;}
+
+    /* layout */
+    .request-layout{display:grid;grid-template-columns:1fr 320px;gap:32px;padding:60px 0;}
+    @media(max-width:900px){.request-layout{grid-template-columns:1fr;}}
+
+    /* steps */
+    .steps-bar{display:flex;align-items:center;justify-content:center;gap:0;margin-bottom:36px;}
+    .step-item{display:flex;flex-direction:column;align-items:center;gap:6px;position:relative;flex:1;}
+    .step-item:not(:last-child)::after{content:'';position:absolute;top:18px;left:0;width:100%;height:2px;background:#dde;z-index:0;}
+    .step-item.active .step-circle,.step-item.done .step-circle{background:var(--accent,#c9a227);color:#0d1b2e;}
+    .step-circle{width:36px;height:36px;border-radius:50%;background:#dde;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:.9rem;position:relative;z-index:1;transition:.3s;}
+    .step-label{font-size:.78rem;color:#888;white-space:nowrap;}
+    .step-item.active .step-label{color:var(--accent,#c9a227);font-weight:600;}
+    .step-item.done .step-label{color:#555;}
+    .step-connector{flex:1;height:2px;background:#dde;margin-bottom:22px;}
+    .step-connector.done{background:var(--accent,#c9a227);}
+
+    /* form card */
+    .form-card{background:#fff;border-radius:16px;box-shadow:0 4px 30px rgba(0,0,0,.08);padding:36px 40px;}
+    @media(max-width:600px){.form-card{padding:24px 18px;}}
+    .form-step{display:none;}
+    .form-step.active{display:block;}
+    .form-step h3{font-size:1.25rem;color:var(--primary,#0d1b2e);margin-bottom:24px;padding-bottom:12px;border-bottom:2px solid #f0e8d0;}
+
+    /* fields */
+    .form-row{display:grid;grid-template-columns:1fr 1fr;gap:18px;margin-bottom:18px;}
+    @media(max-width:600px){.form-row{grid-template-columns:1fr;}}
+    .form-group{margin-bottom:18px;display:flex;flex-direction:column;gap:6px;}
+    .form-group label{font-size:.88rem;font-weight:600;color:#333;}
+    .form-group label span.req{color:#e53935;}
+    .form-group input,.form-group select,.form-group textarea{width:100%;padding:11px 14px;border:1.5px solid #dde;border-radius:8px;font-size:.95rem;font-family:inherit;direction:rtl;transition:.2s;background:#fdfdfd;color:#222;box-sizing:border-box;}
+    .form-group input:focus,.form-group select:focus,.form-group textarea:focus{border-color:var(--accent,#c9a227);outline:none;background:#fffef7;}
+    .form-group textarea{resize:vertical;min-height:130px;}
+    .phone-row{display:grid;grid-template-columns:140px 1fr;gap:10px;}
+    @media(max-width:380px){.phone-row{grid-template-columns:110px 1fr;}}
+
+    /* radio */
+    .radio-group{display:flex;gap:18px;flex-wrap:wrap;}
+    .radio-group label{display:flex;align-items:center;gap:8px;cursor:pointer;font-size:.95rem;}
+    .radio-group input[type=radio]{width:18px;height:18px;accent-color:var(--accent,#c9a227);}
+
+    /* char count */
+    .char-count{font-size:.78rem;color:#888;text-align:left;direction:ltr;}
+    .char-count.warn{color:#e53935;}
+
+    /* review */
+    .review-card{background:#f8f6f0;border-radius:12px;padding:24px;margin-bottom:24px;}
+    .review-card h4{color:var(--primary,#0d1b2e);margin-bottom:16px;font-size:1rem;}
+    .review-row{display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid #e8e0cc;font-size:.9rem;}
+    .review-row:last-child{border-bottom:none;}
+    .review-row span:first-child{color:#666;font-weight:600;}
+    .review-row span:last-child{color:#222;max-width:60%;text-align:left;}
+
+    /* terms */
+    .terms-check{display:flex;align-items:flex-start;gap:10px;margin-bottom:24px;font-size:.9rem;}
+    .terms-check input{width:18px;height:18px;margin-top:2px;accent-color:var(--accent,#c9a227);flex-shrink:0;}
+
+    /* step btns */
+    .step-actions{display:flex;justify-content:flex-end;gap:12px;margin-top:28px;}
+    .step-actions .btn-prev{background:transparent;border:1.5px solid #ccc;color:#555;padding:10px 28px;border-radius:8px;cursor:pointer;font-size:.95rem;font-family:inherit;transition:.2s;}
+    .step-actions .btn-prev:hover{border-color:#aaa;color:#222;}
+    .btn-next,.btn-submit{background:var(--accent,#c9a227);color:#0d1b2e;border:none;padding:11px 32px;border-radius:8px;cursor:pointer;font-size:.97rem;font-weight:700;font-family:inherit;transition:.2s;}
+    .btn-next:hover,.btn-submit:hover{filter:brightness(1.1);}
+
+    /* success message */
+    .success-msg{display:none;background:#e8f5e9;border:1.5px solid #66bb6a;border-radius:12px;padding:32px;text-align:center;}
+    .success-msg i{font-size:3rem;color:#43a047;margin-bottom:12px;}
+    .success-msg h3{color:#2e7d32;margin-bottom:8px;}
+    .success-msg p{color:#555;}
+
+    /* sidebar */
+    .sidebar-card{background:#fff;border-radius:14px;box-shadow:0 4px 24px rgba(0,0,0,.08);padding:26px;margin-bottom:22px;}
+    .sidebar-card h4{font-size:1rem;color:var(--primary,#0d1b2e);margin-bottom:16px;display:flex;align-items:center;gap:8px;}
+    .sidebar-card h4 i{color:var(--accent,#c9a227);}
+    .contact-item{display:flex;align-items:center;gap:12px;padding:10px 0;border-bottom:1px solid #f0f0f0;font-size:.9rem;}
+    .contact-item:last-of-type{border-bottom:none;}
+    .contact-item i{width:20px;color:var(--accent,#c9a227);text-align:center;}
+    .contact-item a{color:#333;text-decoration:none;}
+    .contact-item a:hover{color:var(--accent,#c9a227);}
+    .btn-whatsapp{display:flex;align-items:center;justify-content:center;gap:8px;background:#25d366;color:#fff;padding:11px;border-radius:8px;text-decoration:none;font-weight:600;margin-top:12px;transition:.2s;}
+    .btn-whatsapp:hover{background:#1ebe5d;}
+    .hours-row{display:flex;justify-content:space-between;font-size:.88rem;padding:6px 0;border-bottom:1px solid #f5f5f5;}
+    .hours-row:last-child{border-bottom:none;}
+    .why-item{display:flex;align-items:flex-start;gap:10px;padding:8px 0;font-size:.88rem;color:#444;}
+    .why-item i{color:var(--accent,#c9a227);margin-top:2px;flex-shrink:0;}
+
+    /* file input */
+    .file-input-wrapper{position:relative;border:2px dashed #dde;border-radius:8px;padding:20px;text-align:center;cursor:pointer;transition:.2s;background:#fafafa;}
+    .file-input-wrapper:hover{border-color:var(--accent,#c9a227);background:#fffef7;}
+    .file-input-wrapper input[type=file]{position:absolute;inset:0;opacity:0;cursor:pointer;width:100%;height:100%;}
+    .file-input-wrapper i{font-size:1.6rem;color:#bbb;display:block;margin-bottom:6px;}
+    .file-input-wrapper span{font-size:.85rem;color:#888;}
+    #fileNameDisplay{font-size:.82rem;color:var(--accent,#c9a227);margin-top:6px;}
+
+    /* company field */
+    #companyField{display:none;}
+
+    /* login prompt */
+    .login-prompt{background:#fffbef;border:1.5px solid #ffe082;border-radius:10px;padding:14px 18px;margin-bottom:24px;font-size:.88rem;color:#7a5f00;display:flex;align-items:center;gap:10px;}
+    .login-prompt a{color:var(--accent,#c9a227);font-weight:600;}
+  </style>
+  <link rel="stylesheet" href="vip-upgrade.css">
+  <link rel="stylesheet" href="legal-system.css">
+  <link rel="stylesheet" href="final-layout-fixes.css">
+  <link rel="stylesheet" href="enterprise-security-forms-notifications.css">
+  <link rel="stylesheet" href="all-pages-organization-fix.css">
+</head>
+<body>
+
+  <!-- ═══════════════ HEADER ═══════════════ -->
+  <header class="header" id="header">
+    <nav class="nav container">
+      <a href="index.html" class="nav-logo">VISION <span class="accent">MEDIA</span></a>
+      <ul class="nav-menu" id="navMenu">
+        <li><a href="index.html" class="nav-link">الرئيسية</a></li>
+        <li><a href="about.html" class="nav-link">من نحن</a></li>
+        <li class="nav-dropdown">
+          <a href="services.html" class="nav-link">خدماتنا <i class="fas fa-chevron-down"></i></a>
+          <div class="dropdown-menu">
+            <div class="dropdown-grid">
+              <a href="service-detail.html?id=1" class="dropdown-item">التسويق الإلكتروني</a>
+              <a href="service-detail.html?id=2" class="dropdown-item">إدارة السوشيال ميديا</a>
+              <a href="service-detail.html?id=3" class="dropdown-item">الإعلانات الممولة</a>
+              <a href="service-detail.html?id=4" class="dropdown-item">تصميم الجرافيك</a>
+              <a href="service-detail.html?id=5" class="dropdown-item">تصميم الهوية التجارية</a>
+              <a href="service-detail.html?id=6" class="dropdown-item">تصميم المواقع</a>
+              <a href="service-detail.html?id=7" class="dropdown-item">المتاجر الإلكترونية</a>
+              <a href="service-detail.html?id=8" class="dropdown-item">إنتاج الفيديو</a>
+              <a href="service-detail.html?id=9" class="dropdown-item">الموشن جرافيك</a>
+              <a href="service-detail.html?id=10" class="dropdown-item">التصوير الاحترافي</a>
+              <a href="service-detail.html?id=11" class="dropdown-item">صور الذكاء الاصطناعي</a>
+              <a href="service-detail.html?id=12" class="dropdown-item">فيديو الذكاء الاصطناعي</a>
+              <a href="service-detail.html?id=13" class="dropdown-item">إدارة الحملات</a>
+              <a href="service-detail.html?id=14" class="dropdown-item">كتابة المحتوى</a>
+              <a href="service-detail.html?id=15" class="dropdown-item">تحسين SEO</a>
+            </div>
+            <div class="dropdown-footer"><a href="services.html" class="btn btn-gold btn-sm">عرض جميع الخدمات</a></div>
+          </div>
+        </li>
+        <li><a href="portfolio.html" class="nav-link">أعمالنا</a></li>
+        <li><a href="clients.html" class="nav-link">عملاؤنا</a></li>
+        <li><a href="blog.html" class="nav-link">المقالات</a></li>
+        <li><a href="pricing.html" class="nav-link">التسعيرة</a></li>
+        <li><a href="contact.html" class="nav-link">تواصل معنا</a></li>
+      </ul>
+      <div class="nav-actions">
+        <a href="request-service.html" class="btn btn-gold btn-sm">طلب خدمة</a>
+        <a href="login.html" class="btn btn-outline-white btn-sm" id="loginBtn">دخول</a>
+        <button class="nav-toggle" id="navToggle"><span></span><span></span><span></span></button>
+      </div>
+    </nav>
+  </header>
+
+  <!-- ═══════════════ HERO ═══════════════ -->
+  <section class="page-hero">
+    <div class="container">
+      <h1><i class="fas fa-paper-plane" style="color:var(--accent,#c9a227);margin-left:12px;"></i>طلب خدمة</h1>
+      <p>املأ النموذج وسنتواصل معك خلال 24 ساعة</p>
+    </div>
+  </section>
+
+  <!-- ═══════════════ MAIN ═══════════════ -->
+  <main>
+    <div class="container">
+      <div class="request-layout">
+
+        <!-- ── FORM COLUMN ── -->
+        <div>
+          <!-- Login prompt (shown if not logged in) -->
+          <div class="login-prompt" id="loginPrompt">
+            <i class="fas fa-user-circle"></i>
+            <span>هل لديك حساب؟ <a href="login.html">تسجيل الدخول</a> لتتبع طلباتك بسهولة، أو أكمل كضيف.</span>
+            <button onclick="document.getElementById('loginPrompt').style.display='none'" style="background:none;border:none;cursor:pointer;color:#aaa;margin-right:auto;font-size:1rem;">✕</button>
+          </div>
+
+          <!-- Steps bar -->
+          <div class="steps-bar" id="stepsBar">
+            <div class="step-item active" data-step="1">
+              <div class="step-circle">1</div>
+              <div class="step-label">البيانات الشخصية</div>
+            </div>
+            <div class="step-connector" id="conn1"></div>
+            <div class="step-item" data-step="2">
+              <div class="step-circle">2</div>
+              <div class="step-label">تفاصيل الطلب</div>
+            </div>
+            <div class="step-connector" id="conn2"></div>
+            <div class="step-item" data-step="3">
+              <div class="step-circle">3</div>
+              <div class="step-label">التأكيد</div>
+            </div>
+          </div>
+
+          <div class="form-card">
+            <form id="serviceForm" novalidate>
+
+              <!-- ── STEP 1 ── -->
+              <div class="form-step active" id="step1">
+                <h3><i class="fas fa-user" style="color:var(--accent,#c9a227);margin-left:8px;"></i>البيانات الشخصية</h3>
+
+                <div class="form-group">
+                  <label for="fullName">الاسم الثلاثي <span class="req">*</span></label>
+                  <input type="text" id="fullName" name="fullName" placeholder="أدخل اسمك الثلاثي" required />
+                </div>
+
+                <div class="form-group">
+                  <label>رقم الجوال <span class="req">*</span></label>
+                  <div class="phone-row">
+                    <select id="countryCode" name="countryCode">
+                      <option value="+966">🇸🇦 +966</option>
+                      <option value="+971">🇦🇪 +971</option>
+                      <option value="+965">🇰🇼 +965</option>
+                      <option value="+973">🇧🇭 +973</option>
+                      <option value="+968">🇴🇲 +968</option>
+                      <option value="+974">🇶🇦 +974</option>
+                      <option value="+20">🇪🇬 +20</option>
+                      <option value="+218">🇱🇾 +218</option>
+                      <option value="+213">🇩🇿 +213</option>
+                    </select>
+                    <input type="tel" id="phone" name="phone" placeholder="05XXXXXXXX" required />
+                  </div>
+                </div>
+
+                <div class="form-group">
+                  <label for="email">البريد الإلكتروني <span class="req">*</span></label>
+                  <input type="email" id="email" name="email" placeholder="example@email.com" required />
+                </div>
+
+                <div class="form-row">
+                  <div class="form-group">
+                    <label for="country">الدولة <span class="req">*</span></label>
+                    <select id="country" name="country" required>
+                      <option value="">اختر الدولة</option>
+                      <option value="SA">المملكة العربية السعودية</option>
+                      <option value="AE">الإمارات العربية المتحدة</option>
+                      <option value="KW">الكويت</option>
+                      <option value="BH">البحرين</option>
+                      <option value="OM">سلطنة عُمان</option>
+                      <option value="QA">قطر</option>
+                      <option value="EG">مصر</option>
+                      <option value="LY">ليبيا</option>
+                      <option value="DZ">الجزائر</option>
+                      <option value="MA">المغرب</option>
+                      <option value="TN">تونس</option>
+                      <option value="IQ">العراق</option>
+                      <option value="JO">الأردن</option>
+                      <option value="LB">لبنان</option>
+                      <option value="SY">سوريا</option>
+                      <option value="YE">اليمن</option>
+                      <option value="other">أخرى</option>
+                    </select>
+                  </div>
+                  <div class="form-group">
+                    <label for="city">المدينة / المحافظة</label>
+                    <input type="text" id="city" name="city" placeholder="مثال: الرياض" />
+                  </div>
+                </div>
+
+                <div class="form-group">
+                  <label>نوع العميل <span class="req">*</span></label>
+                  <div class="radio-group">
+                    <label><input type="radio" name="clientType" value="individual" checked onchange="toggleCompany(this)"> فرد</label>
+                    <label><input type="radio" name="clientType" value="company" onchange="toggleCompany(this)"> شركة / مؤسسة</label>
+                  </div>
+                </div>
+
+                <div class="form-group" id="companyField">
+                  <label for="companyName">اسم الشركة / المؤسسة <span class="req">*</span></label>
+                  <input type="text" id="companyName" name="companyName" placeholder="أدخل اسم الشركة" />
+                </div>
+
+                <div class="step-actions">
+                  <button type="button" class="btn-next" onclick="goToStep(2)">التالي <i class="fas fa-arrow-left"></i></button>
+                </div>
+              </div>
+
+              <!-- ── STEP 2 ── -->
+              <div class="form-step" id="step2">
+                <h3><i class="fas fa-briefcase" style="color:var(--accent,#c9a227);margin-left:8px;"></i>تفاصيل الطلب</h3>
+
+                <div class="form-group">
+                  <label for="serviceSelect">الخدمة المطلوبة <span class="req">*</span></label>
+                  <select id="serviceSelect" name="service" required onchange="populateSubServices()">
+                    <option value="">اختر الخدمة</option>
+                    <option value="1">التسويق الإلكتروني</option>
+                    <option value="2">إدارة السوشيال ميديا</option>
+                    <option value="3">الإعلانات الممولة</option>
+                    <option value="4">تصميم الجرافيك</option>
+                    <option value="5">تصميم الهوية التجارية</option>
+                    <option value="6">تصميم المواقع</option>
+                    <option value="7">المتاجر الإلكترونية</option>
+                    <option value="8">إنتاج الفيديو</option>
+                    <option value="9">الموشن جرافيك</option>
+                    <option value="10">التصوير الاحترافي</option>
+                    <option value="11">صور الذكاء الاصطناعي</option>
+                    <option value="12">فيديو الذكاء الاصطناعي</option>
+                    <option value="13">إدارة الحملات</option>
+                    <option value="14">كتابة المحتوى</option>
+                    <option value="15">تحسين SEO</option>
+                  </select>
+                </div>
+
+                <div class="form-group">
+                  <label for="subServiceSelect">نوع الخدمة <span class="req">*</span></label>
+                  <select id="subServiceSelect" name="subService" required>
+                    <option value="">اختر الخدمة أولاً</option>
+                  </select>
+                </div>
+
+                <div class="form-row">
+                  <div class="form-group">
+                    <label for="budget">الميزانية المتوقعة <span class="req">*</span></label>
+                    <select id="budget" name="budget" required>
+                      <option value="">اختر الميزانية</option>
+                      <option value="lt500">أقل من 500 ر.س</option>
+                      <option value="500-2000">500 - 2,000 ر.س</option>
+                      <option value="2000-5000">2,000 - 5,000 ر.س</option>
+                      <option value="5000-10000">5,000 - 10,000 ر.س</option>
+                      <option value="gt10000">أكثر من 10,000 ر.س</option>
+                    </select>
+                  </div>
+                  <div class="form-group">
+                    <label for="timeline">موعد التنفيذ المطلوب <span class="req">*</span></label>
+                    <select id="timeline" name="timeline" required>
+                      <option value="">اختر الموعد</option>
+                      <option value="immediate">فوري</option>
+                      <option value="week">خلال أسبوع</option>
+                      <option value="month">خلال شهر</option>
+                      <option value="3months">خلال 3 أشهر</option>
+                      <option value="flexible">مرن</option>
+                    </select>
+                  </div>
+                </div>
+
+                <div class="form-group">
+                  <label for="description">وصف الطلب <span class="req">*</span> <small style="color:#aaa;font-weight:400;">(50 حرف على الأقل)</small></label>
+                  <textarea id="description" name="description" placeholder="اشرح طلبك بالتفصيل: ماذا تريد؟ ما هدفك؟ ما التفاصيل المهمة؟" required oninput="updateCharCount()"></textarea>
+                  <div class="char-count" id="charCount">0 / 50 حرف على الأقل</div>
+                </div>
+
+                <div class="form-group">
+                  <label>رفع ملف أو صورة مرجعية <small style="color:#aaa;font-weight:400;">(اختياري)</small></label>
+                  <div class="file-input-wrapper">
+                    <input type="file" id="attachFile" name="attachFile" accept="image/*,.pdf,.doc,.docx" onchange="showFileName(this)" />
+                    <i class="fas fa-cloud-upload-alt"></i>
+                    <span>اسحب الملف هنا أو انقر للاختيار</span>
+                    <div id="fileNameDisplay"></div>
+                  </div>
+                </div>
+
+                <div class="step-actions">
+                  <button type="button" class="btn-prev" onclick="goToStep(1)"><i class="fas fa-arrow-right"></i> السابق</button>
+                  <button type="button" class="btn-next" onclick="goToStep(3)">التالي <i class="fas fa-arrow-left"></i></button>
+                </div>
+              </div>
+
+              <!-- ── STEP 3 ── -->
+              <div class="form-step" id="step3">
+                <h3><i class="fas fa-check-circle" style="color:var(--accent,#c9a227);margin-left:8px;"></i>المراجعة والتأكيد</h3>
+
+                <div class="review-card" id="reviewCard">
+                  <h4><i class="fas fa-user" style="margin-left:6px;color:var(--accent,#c9a227);"></i>البيانات الشخصية</h4>
+                  <div class="review-row"><span>الاسم</span><span id="rv_name">—</span></div>
+                  <div class="review-row"><span>الجوال</span><span id="rv_phone">—</span></div>
+                  <div class="review-row"><span>البريد</span><span id="rv_email">—</span></div>
+                  <div class="review-row"><span>الدولة</span><span id="rv_country">—</span></div>
+                  <div class="review-row"><span>نوع العميل</span><span id="rv_type">—</span></div>
+                </div>
+
+                <div class="review-card" id="reviewCard2">
+                  <h4><i class="fas fa-briefcase" style="margin-left:6px;color:var(--accent,#c9a227);"></i>تفاصيل الطلب</h4>
+                  <div class="review-row"><span>الخدمة</span><span id="rv_service">—</span></div>
+                  <div class="review-row"><span>نوع الخدمة</span><span id="rv_subservice">—</span></div>
+                  <div class="review-row"><span>الميزانية</span><span id="rv_budget">—</span></div>
+                  <div class="review-row"><span>موعد التنفيذ</span><span id="rv_timeline">—</span></div>
+                  <div class="review-row"><span>وصف الطلب</span><span id="rv_desc" style="max-width:60%;text-align:left;direction:rtl;">—</span></div>
+                </div>
+
+                <div class="terms-check">
+                  <input type="checkbox" id="termsCheck" required />
+                  <label for="termsCheck">أوافق على <a href="terms.html" target="_blank" style="color:var(--accent,#c9a227);">الشروط والأحكام</a> الخاصة بـ VISION MEDIA</label>
+                </div>
+
+                <div class="step-actions">
+                  <button type="button" class="btn-prev" onclick="goToStep(2)"><i class="fas fa-arrow-right"></i> السابق</button>
+                  <div id="vmRequestDynamicFields" style="margin:16px 0"></div>
+                  <button type="submit" class="btn-submit"><i class="fas fa-paper-plane" style="margin-left:8px;"></i>إرسال الطلب</button>
+                </div>
+              </div>
+
+            </form>
+
+            <!-- Success message -->
+            <div class="success-msg" id="successMsg">
+              <i class="fas fa-check-circle"></i>
+              <h3>تم إرسال طلبك بنجاح!</h3>
+              <p>شكراً لك. سيتواصل معك فريقنا خلال 24 ساعة على الأكثر.</p>
+              <a href="index.html" class="btn-next" style="display:inline-block;margin-top:18px;text-decoration:none;">العودة للرئيسية</a>
+            </div>
+          </div>
+        </div>
+
+        <!-- ── SIDEBAR ── -->
+        <aside>
+          <!-- Contact Info -->
+          <div class="sidebar-card">
+            <h4><i class="fas fa-headset"></i> تواصل معنا مباشرةً</h4>
+            <div class="contact-item"><i class="fas fa-phone"></i><a href="tel:+966538862064">0538862064</a></div>
+            <div class="contact-item"><i class="fas fa-envelope"></i><a href="mailto:waelelsaydahmed@gmail.com">waelelsaydahmed@gmail.com</a></div>
+            <a href="https://wa.me/966543944248" class="btn-whatsapp" target="_blank"><i class="fab fa-whatsapp"></i> تواصل عبر واتساب</a>
+          </div>
+
+          <!-- Working Hours -->
+          <div class="sidebar-card">
+            <h4><i class="fas fa-clock"></i> ساعات العمل</h4>
+            <div class="hours-row"><span>الأحد – الخميس</span><span>9:00ص – 6:00م</span></div>
+            <div class="hours-row"><span>الجمعة</span><span>مغلق</span></div>
+            <div class="hours-row"><span>السبت</span><span>10:00ص – 2:00م</span></div>
+            <div class="hours-row" style="color:var(--accent,#c9a227);font-weight:600;padding-top:10px;"><span>الرد عبر واتساب</span><span>24 / 7</span></div>
+          </div>
+
+          <!-- Why Us -->
+          <div class="sidebar-card">
+            <h4><i class="fas fa-star"></i> لماذا تختارنا؟</h4>
+            <div class="why-item"><i class="fas fa-check-circle"></i><span>فريق متخصص بخبرة +5 سنوات في الدعاية الرقمية</span></div>
+            <div class="why-item"><i class="fas fa-check-circle"></i><span>أسعار تنافسية مع ضمان جودة العمل وحق المراجعة</span></div>
+            <div class="why-item"><i class="fas fa-check-circle"></i><span>تسليم في الموعد المحدد مع متابعة مستمرة لحملتك</span></div>
+          </div>
+        </aside>
+
+      </div>
+    </div>
+  </main>
+
+  <!-- ═══════════════ FOOTER ═══════════════ -->
+  <footer class="footer">
+    <div class="footer-top"><div class="container"><div class="footer-grid">
+      <div class="footer-brand">
+        <a href="index.html" class="footer-logo">VISION <span class="accent">MEDIA</span></a>
+        <p>شركة متخصصة في الدعاية والإعلان وحلول التسويق الرقمي الشاملة.</p>
+        <div class="social-links">
+          <a href="https://www.instagram.com/advertisement_portal.46" target="_blank"><i class="fab fa-instagram"></i></a>
+          <a href="https://www.facebook.com/share/1DszbP1nTB/" target="_blank"><i class="fab fa-facebook-f"></i></a>
+          <a href="https://www.snapchat.com/add/wael_elsayd2026" target="_blank"><i class="fab fa-snapchat-ghost"></i></a>
+          <a href="https://www.tiktok.com/@waelelsayd3" target="_blank"><i class="fab fa-tiktok"></i></a>
+          <a href="https://youtube.com/channel/UCA0-OJ461Na9MkTZMmgM48A" target="_blank"><i class="fab fa-youtube"></i></a>
+          <a href="https://x.com/Adverti556" target="_blank"><i class="fab fa-x-twitter"></i></a>
+        </div>
+      </div>
+      <div class="footer-links"><h4>روابط سريعة</h4><ul>
+        <li><a href="index.html">الرئيسية</a></li><li><a href="about.html">من نحن</a></li>
+        <li><a href="services.html">خدماتنا</a></li><li><a href="portfolio.html">أعمالنا</a></li>
+        <li><a href="pricing.html">التسعيرة</a></li><li><a href="contact.html">تواصل معنا</a></li>
+      </ul></div>
+      <div class="footer-links"><h4>خدماتنا</h4><ul>
+        <li><a href="service-detail.html?id=1">التسويق الإلكتروني</a></li>
+        <li><a href="service-detail.html?id=4">تصميم الجرافيك</a></li>
+        <li><a href="service-detail.html?id=6">تصميم المواقع</a></li>
+        <li><a href="service-detail.html?id=8">إنتاج الفيديو</a></li>
+        <li><a href="service-detail.html?id=15">تحسين SEO</a></li>
+      </ul></div>
+      <div class="footer-contact"><h4>تواصل معنا</h4><ul>
+        <li><i class="fab fa-whatsapp"></i> <a href="https://wa.me/966543944248">0543944248</a></li>
+        <li><i class="fas fa-phone"></i> <a href="tel:+966538862064">0538862064</a></li>
+        <li><i class="fas fa-envelope"></i> <a href="mailto:waelelsaydahmed@gmail.com">waelelsaydahmed@gmail.com</a></li>
+      </ul>
+      <a href="request-service.html" class="btn btn-gold btn-sm" style="margin-top:12px;">طلب خدمة</a>
+      </div>
+    </div></div></div>
+    <div class="footer-bottom"><div class="container"><div class="footer-bottom-inner">
+      <p>&copy; 2025 VISION MEDIA. جميع الحقوق محفوظة</p>
+      <div class="footer-legal"><a href="terms.html">الشروط والأحكام</a><a href="privacy.html">سياسة الخصوصية</a></div>
+    </div></div></div>
+  </footer>
+  <a href="https://wa.me/966543944248" class="whatsapp-float" target="_blank"><i class="fab fa-whatsapp"></i></a>
+  <script src="core.js"></script>
+
+  <script>
+  /* ════════════════════════════════════════
+     Sub-services data
+  ════════════════════════════════════════ */
+  const subServicesMap = {
+    "1": ["استراتيجية التسويق الإلكتروني","تسويق عبر البريد الإلكتروني","تسويق بالمحتوى","التسويق بالعمولة"],
+    "2": ["إدارة إنستغرام","إدارة فيسبوك","إدارة تيك توك","إدارة سناب شات","إدارة تويتر/X","إدارة متعدد المنصات"],
+    "3": ["إعلانات جوجل Google Ads","إعلانات فيسبوك Facebook Ads","إعلانات سناب شات Snap Ads","إعلانات تيك توك TikTok Ads","إعلانات تويتر/X Ads"],
+    "4": ["تصميم منشورات سوشيال ميديا","تصميم بنرات إعلانية","تصميم مطبوعات","تصميم إنفوجرافيك","تصميم عروض تقديمية"],
+    "5": ["تصميم شعار Logo","دليل الهوية البصرية","أدوات العلامة التجارية","إعادة تصميم الهوية"],
+    "6": ["موقع معرض أعمال","موقع شركة","موقع صفحة هبوط","موقع مدونة","لوحة إدارة مخصصة"],
+    "7": ["متجر WooCommerce","متجر Shopify","متجر مخصص","بوابة دفع إلكتروني"],
+    "8": ["إنتاج فيديو إعلاني","فيديو تعريفي بالشركة","فيديو منتجات","فيديو يوتيوب","فيديو قصير للسوشيال ميديا"],
+    "9": ["موشن جرافيك 2D","موشن جرافيك 3D","إنفوجرافيك متحرك","مقدمات فيديو (Intro/Outro)"],
+    "10": ["تصوير منتجات","تصوير فعاليات","تصوير شخصي","تصوير معماري"],
+    "11": ["توليد صور AI للمنتجات","توليد صور AI إبداعية","تحسين صور بالذكاء الاصطناعي"],
+    "12": ["توليد فيديو AI قصير","توليد فيديو AI إعلاني","تحسين جودة فيديو AI"],
+    "13": ["إدارة حملة سوشيال ميديا","إدارة حملة إعلانات مدفوعة","إدارة حملة بريد إلكتروني","تقارير وتحليلات الحملة"],
+    "14": ["كتابة مقالات SEO","كتابة محتوى سوشيال ميديا","كتابة سكريبت فيديو","كتابة محتوى موقع","ترجمة محتوى"],
+    "15": ["تحسين On-Page SEO","بناء الروابط Link Building","تحسين السرعة والأداء","بحث الكلمات المفتاحية","تقارير SEO"]
+  };
+
+  /* ════════════════════════════════════════
+     Step navigation
+  ════════════════════════════════════════ */
+  let currentStep = 1;
+
+  function goToStep(step) {
+    if (step > currentStep && !validateStep(currentStep)) return;
+    if (step === 3) populateReview();
+
+    document.getElementById('step' + currentStep).classList.remove('active');
+    document.getElementById('step' + step).classList.add('active');
+
+    // update steps bar
+    document.querySelectorAll('.step-item').forEach(el => {
+      const s = parseInt(el.dataset.step);
+      el.classList.remove('active','done');
+      if (s === step) el.classList.add('active');
+      if (s < step) el.classList.add('done');
+    });
+    // connectors
+    if (document.getElementById('conn1')) document.getElementById('conn1').classList.toggle('done', step >= 2);
+    if (document.getElementById('conn2')) document.getElementById('conn2').classList.toggle('done', step >= 3);
+
+    currentStep = step;
+    window.scrollTo({top: 120, behavior:'smooth'});
+  }
+
+  /* ════════════════════════════════════════
+     Validation
+  ════════════════════════════════════════ */
+  function validateStep(step) {
+    if (step === 1) {
+      const name = document.getElementById('fullName').value.trim();
+      const phone = document.getElementById('phone').value.trim();
+      const email = document.getElementById('email').value.trim();
+      const country = document.getElementById('country').value;
+      const clientType = document.querySelector('input[name="clientType"]:checked').value;
+      const company = document.getElementById('companyName').value.trim();
+      if (!name) { alert('يرجى إدخال الاسم الثلاثي'); return false; }
+      if (!phone) { alert('يرجى إدخال رقم الجوال'); return false; }
+      if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) { alert('يرجى إدخال بريد إلكتروني صحيح'); return false; }
+      if (!country) { alert('يرجى اختيار الدولة'); return false; }
+      if (clientType === 'company' && !company) { alert('يرجى إدخال اسم الشركة'); return false; }
+    }
+    if (step === 2) {
+      const service = document.getElementById('serviceSelect').value;
+      const sub = document.getElementById('subServiceSelect').value;
+      const budget = document.getElementById('budget').value;
+      const timeline = document.getElementById('timeline').value;
+      const desc = document.getElementById('description').value.trim();
+      if (!service) { alert('يرجى اختيار الخدمة المطلوبة'); return false; }
+      if (!sub) { alert('يرجى اختيار نوع الخدمة'); return false; }
+      if (!budget) { alert('يرجى اختيار الميزانية المتوقعة'); return false; }
+      if (!timeline) { alert('يرجى اختيار موعد التنفيذ'); return false; }
+      if (desc.length < 50) { alert('يرجى كتابة وصف الطلب (50 حرف على الأقل)'); return false; }
+    }
+    return true;
+  }
+
+  /* ════════════════════════════════════════
+     Sub-services dropdown
+  ════════════════════════════════════════ */
+  function populateSubServices() {
+    const serviceId = document.getElementById('serviceSelect').value;
+    const subSelect = document.getElementById('subServiceSelect');
+    subSelect.innerHTML = '<option value="">اختر نوع الخدمة</option>';
+    if (serviceId && subServicesMap[serviceId]) {
+      subServicesMap[serviceId].forEach(sub => {
+        const opt = document.createElement('option');
+        opt.value = sub;
+        opt.textContent = sub;
+        subSelect.appendChild(opt);
+      });
+    }
+  }
+
+  /* ════════════════════════════════════════
+     Company field toggle
+  ════════════════════════════════════════ */
+  function toggleCompany(radio) {
+    document.getElementById('companyField').style.display = radio.value === 'company' ? 'flex' : 'none';
+  }
+
+  /* ════════════════════════════════════════
+     Char count
+  ════════════════════════════════════════ */
+  function updateCharCount() {
+    const len = document.getElementById('description').value.length;
+    const el = document.getElementById('charCount');
+    el.textContent = len + ' / 50 حرف على الأقل';
+    el.classList.toggle('warn', len < 50);
+  }
+
+  /* ════════════════════════════════════════
+     File name display
+  ════════════════════════════════════════ */
+  function showFileName(input) {
+    const display = document.getElementById('fileNameDisplay');
+    display.textContent = input.files.length ? input.files[0].name : '';
+  }
+
+  /* ════════════════════════════════════════
+     Populate review
+  ════════════════════════════════════════ */
+  function populateReview() {
+    const countrySelect = document.getElementById('country');
+    const countryText = countrySelect.options[countrySelect.selectedIndex]?.text || '—';
+    const clientType = document.querySelector('input[name="clientType"]:checked').value;
+    const serviceSelect = document.getElementById('serviceSelect');
+    const serviceText = serviceSelect.options[serviceSelect.selectedIndex]?.text || '—';
+    const subSelect = document.getElementById('subServiceSelect');
+    const subText = subSelect.options[subSelect.selectedIndex]?.text || '—';
+    const budgetSelect = document.getElementById('budget');
+    const budgetText = budgetSelect.options[budgetSelect.selectedIndex]?.text || '—';
+    const timelineSelect = document.getElementById('timeline');
+    const timelineText = timelineSelect.options[timelineSelect.selectedIndex]?.text || '—';
+    const phone = document.getElementById('countryCode').value + ' ' + document.getElementById('phone').value;
+    const typeLabel = clientType === 'company'
+      ? 'شركة: ' + document.getElementById('companyName').value
+      : 'فرد';
+
+    document.getElementById('rv_name').textContent = document.getElementById('fullName').value;
+    document.getElementById('rv_phone').textContent = phone;
+    document.getElementById('rv_email').textContent = document.getElementById('email').value;
+    document.getElementById('rv_country').textContent = countryText + (document.getElementById('city').value ? ' - ' + document.getElementById('city').value : '');
+    document.getElementById('rv_type').textContent = typeLabel;
+    document.getElementById('rv_service').textContent = serviceText;
+    document.getElementById('rv_subservice').textContent = subText;
+    document.getElementById('rv_budget').textContent = budgetText;
+    document.getElementById('rv_timeline').textContent = timelineText;
+    const descFull = document.getElementById('description').value;
+    document.getElementById('rv_desc').textContent = descFull.length > 100 ? descFull.substring(0, 100) + '...' : descFull;
+  }
+
+  /* ════════════════════════════════════════
+     Form submit
+  ════════════════════════════════════════ */
+  document.getElementById('serviceForm').addEventListener('submit', function(e) {
+    e.preventDefault();
+    if (!document.getElementById('termsCheck').checked) {
+      alert('يرجى الموافقة على الشروط والأحكام أولاً');
+      return;
+    }
+
+    const formData = {
+      id: 'ORD-' + Date.now(),
+      date: new Date().toISOString(),
+      name: document.getElementById('fullName').value.trim(),
+      phone: document.getElementById('countryCode').value + document.getElementById('phone').value.trim(),
+      email: document.getElementById('email').value.trim(),
+      country: document.getElementById('country').value,
+      city: document.getElementById('city').value.trim(),
+      clientType: document.querySelector('input[name="clientType"]:checked').value,
+      companyName: document.getElementById('companyName').value.trim(),
+      serviceId: document.getElementById('serviceSelect').value,
+      serviceName: document.getElementById('serviceSelect').options[document.getElementById('serviceSelect').selectedIndex].text,
+      subService: document.getElementById('subServiceSelect').value,
+      budget: document.getElementById('budget').value,
+      timeline: document.getElementById('timeline').value,
+      description: document.getElementById('description').value.trim(),
+      status: 'pending'
+    };
+
+    // Save via VM.orders.add if available, otherwise localStorage
+    try {
+      if (typeof VM !== 'undefined' && VM.orders && VM.orders.add) {
+        VM.orders.add(formData);
+      } else {
+        const orders = JSON.parse(localStorage.getItem('vm_orders') || '[]');
+        orders.push(formData);
+        localStorage.setItem('vm_orders', JSON.stringify(orders));
+      }
+    } catch(err) {
+      const orders = JSON.parse(localStorage.getItem('vm_orders') || '[]');
+      orders.push(formData);
+      localStorage.setItem('vm_orders', JSON.stringify(orders));
+    }
+
+    // Show notification
+    try {
+      if (typeof VM !== 'undefined' && VM.notify) {
+        VM.notify('تم إرسال طلبك بنجاح وسيتم التواصل معك قريبًا', 'success');
+      }
+    } catch(err) {}
+
+    // Show success message
+    document.getElementById('serviceForm').style.display = 'none';
+    document.getElementById('successMsg').style.display = 'block';
+    document.getElementById('stepsBar').style.display = 'none';
+  });
+
+  /* ════════════════════════════════════════
+     Pre-select service from URL ?service=ID
+  ════════════════════════════════════════ */
+  (function() {
+    const params = new URLSearchParams(window.location.search);
+    const serviceId = params.get('service');
+    if (serviceId) {
+      const sel = document.getElementById('serviceSelect');
+      for (let i = 0; i < sel.options.length; i++) {
+        if (sel.options[i].value === serviceId) {
+          sel.selectedIndex = i;
+          populateSubServices();
+          break;
+        }
+      }
+    }
+    // Initial char count
+    updateCharCount();
+  })();
+  </script>
+<script src="locationsData.js"></script>
+<script src="locations-ui.js"></script>
+<script src="vip-upgrade.js"></script>
+<script src="legal-system.js"></script>
+<script src="final-layout-fixes.js"></script>
+<script src="enterprise-security-forms-notifications.js"></script>
+<script src="vm-biometric-map-only.js"></script></body>
+</html>

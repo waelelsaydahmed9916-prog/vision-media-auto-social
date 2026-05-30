@@ -1,0 +1,1398 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>VISION MEDIA | لوحة الأدمن</title>
+  <link rel="stylesheet" href="style.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+  <style>
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+    body{font-family:'Segoe UI',Tahoma,Arial,sans-serif;background:#f0f4f8;direction:rtl;}
+    :root{--primary:#0d1b2e;--accent:#c9a227;--sidebar-bg:#07111e;--sidebar2:#0f2035;}
+    .dash-layout{display:flex;min-height:100vh;direction:rtl;}
+    .dash-sidebar{width:260px;background:var(--sidebar-bg);color:white;flex-shrink:0;position:fixed;right:0;top:0;bottom:0;overflow-y:auto;z-index:100;display:flex;flex-direction:column;}
+    .dash-main{flex:1;margin-right:260px;background:#f0f4f8;min-height:100vh;}
+    .dash-header{background:white;padding:14px 28px;display:flex;align-items:center;justify-content:space-between;box-shadow:0 2px 8px rgba(0,0,0,0.06);position:sticky;top:0;z-index:50;}
+    .dash-content{padding:28px;}
+    .dash-nav-link{display:flex;align-items:center;gap:10px;padding:11px 18px;color:rgba(255,255,255,0.65);font-size:13px;font-weight:600;cursor:pointer;transition:all 0.2s;border-right:3px solid transparent;text-decoration:none;}
+    .dash-nav-link:hover,.dash-nav-link.active{background:rgba(201,162,39,0.14);color:#c9a227;border-right-color:#c9a227;}
+    .dash-nav-link i{width:16px;font-size:14px;text-align:center;}
+    .panel{display:none;}
+    .panel.active{display:block;}
+    .sidebar-logo{padding:22px 18px 16px;border-bottom:1px solid rgba(255,255,255,0.07);}
+    .sidebar-logo .logo-text{font-size:18px;font-weight:800;color:var(--accent);letter-spacing:1px;}
+    .sidebar-logo .logo-sub{font-size:10px;color:rgba(255,255,255,0.35);margin-top:2px;}
+    .sidebar-admin{padding:14px 18px;border-bottom:1px solid rgba(255,255,255,0.07);display:flex;align-items:center;gap:10px;}
+    .admin-avatar{width:40px;height:40px;border-radius:50%;background:var(--accent);display:flex;align-items:center;justify-content:center;font-weight:700;font-size:14px;color:var(--primary);flex-shrink:0;}
+    .admin-name{font-size:13px;font-weight:700;color:white;}
+    .admin-role{font-size:10px;color:var(--accent);margin-top:2px;font-weight:600;}
+    .nav-section-title{font-size:9px;color:rgba(255,255,255,0.25);text-transform:uppercase;letter-spacing:1.5px;padding:14px 18px 5px;font-weight:700;}
+    .badge-count{background:var(--accent);color:var(--primary);border-radius:20px;padding:2px 7px;font-size:10px;font-weight:700;margin-right:auto;}
+    .badge-count-red{background:#e53935;color:white;border-radius:20px;padding:2px 7px;font-size:10px;font-weight:700;margin-right:auto;}
+    .btn{display:inline-flex;align-items:center;gap:7px;padding:9px 18px;border-radius:8px;font-size:13px;font-weight:600;cursor:pointer;border:none;transition:all 0.2s;text-decoration:none;}
+    .btn-primary{background:var(--primary);color:white;}
+    .btn-primary:hover{background:#162d4a;}
+    .btn-accent{background:var(--accent);color:var(--primary);}
+    .btn-accent:hover{background:#b8911f;}
+    .btn-outline{background:transparent;border:1.5px solid var(--primary);color:var(--primary);}
+    .btn-outline:hover{background:var(--primary);color:white;}
+    .btn-sm{padding:5px 12px;font-size:12px;}
+    .btn-danger{background:#ffebee;color:#c62828;}
+    .btn-danger:hover{background:#c62828;color:white;}
+    .btn-success{background:#e8f5e9;color:#2e7d32;}
+    .btn-success:hover{background:#2e7d32;color:white;}
+    .btn-warning{background:#fff8e1;color:#e65100;}
+    .btn-warning:hover{background:#e65100;color:white;}
+    .card{background:white;border-radius:12px;padding:24px;border:1px solid #e5e9f0;margin-bottom:20px;}
+    .card-title{font-size:15px;font-weight:700;color:var(--primary);margin-bottom:18px;display:flex;align-items:center;gap:8px;}
+    .stats-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:16px;margin-bottom:24px;}
+    .stat-card{background:white;border-radius:12px;padding:20px;border:1px solid #e5e9f0;}
+    .stat-icon{width:44px;height:44px;border-radius:11px;display:flex;align-items:center;justify-content:center;font-size:18px;margin-bottom:8px;}
+    .stat-num{font-size:28px;font-weight:800;color:var(--primary);}
+    .stat-label{font-size:12px;color:#7a8ca0;font-weight:500;}
+    .dash-table{width:100%;border-collapse:collapse;background:white;border-radius:12px;overflow:hidden;}
+    .dash-table th{background:var(--primary);color:white;padding:11px 14px;text-align:right;font-size:12px;white-space:nowrap;}
+    .dash-table td{padding:10px 14px;border-bottom:1px solid #f0f4f8;font-size:12px;vertical-align:middle;}
+    .dash-table tr:last-child td{border-bottom:none;}
+    .dash-table tr:hover td{background:#f8fafc;}
+    .badge{display:inline-block;padding:3px 9px;border-radius:20px;font-size:11px;font-weight:700;}
+    .badge-new{background:#e3f0ff;color:#1565c0;}
+    .badge-review{background:#fff8e1;color:#f57c00;}
+    .badge-progress{background:#e8f5e9;color:#2e7d32;}
+    .badge-done{background:#f5f5f5;color:#555;}
+    .badge-rejected{background:#ffebee;color:#c62828;}
+    .badge-admin{background:rgba(201,162,39,0.2);color:#9a7606;}
+    .badge-client{background:#e3f0ff;color:#1565c0;}
+    .filter-tabs{display:flex;gap:7px;flex-wrap:wrap;margin-bottom:18px;}
+    .filter-tab{padding:6px 14px;border-radius:20px;font-size:12px;font-weight:600;cursor:pointer;border:1.5px solid #e5e9f0;background:white;color:#7a8ca0;transition:all 0.2s;}
+    .filter-tab.active{background:var(--primary);color:white;border-color:var(--primary);}
+    .page-title{font-size:20px;font-weight:800;color:var(--primary);margin-bottom:4px;}
+    .page-sub{font-size:12px;color:#7a8ca0;margin-bottom:20px;}
+    .form-group{margin-bottom:16px;}
+    .form-label{display:block;font-size:12px;font-weight:700;color:var(--primary);margin-bottom:5px;}
+    .form-control{width:100%;border:1.5px solid #e5e9f0;border-radius:8px;padding:9px 12px;font-size:13px;font-family:inherit;direction:rtl;transition:border 0.2s;}
+    .form-control:focus{outline:none;border-color:var(--accent);}
+    select.form-control{cursor:pointer;}
+    .form-row{display:grid;grid-template-columns:1fr 1fr;gap:14px;}
+    .form-row-3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px;}
+    .section-divider{border:none;border-top:1.5px solid #f0f4f8;margin:20px 0;}
+    .chart-placeholder{background:#f8fafc;border:2px dashed #dde3ea;border-radius:12px;padding:48px;text-align:center;color:#aab4c0;font-size:14px;}
+    .chart-placeholder i{font-size:36px;display:block;margin-bottom:12px;}
+    .charts-grid{display:grid;grid-template-columns:1fr 1fr;gap:20px;margin-bottom:24px;}
+    .modal-backdrop{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.5);z-index:200;align-items:center;justify-content:center;}
+    .modal-backdrop.open{display:flex;}
+    .modal-box{background:white;border-radius:14px;padding:28px;max-width:520px;width:90%;max-height:80vh;overflow-y:auto;position:relative;}
+    .modal-title{font-size:17px;font-weight:800;color:var(--primary);margin-bottom:20px;}
+    .modal-close{position:absolute;top:16px;left:16px;background:none;border:none;font-size:18px;cursor:pointer;color:#aab4c0;}
+    .modal-close:hover{color:var(--primary);}
+    /* Attendance */
+    .attend-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:12px;}
+    .attend-card{background:white;border:1.5px solid #e5e9f0;border-radius:10px;padding:16px;text-align:center;}
+    .attend-card .emp-name{font-size:13px;font-weight:700;color:var(--primary);margin-bottom:10px;}
+    .attend-btns{display:flex;gap:5px;justify-content:center;flex-wrap:wrap;}
+    .attend-btn{padding:4px 9px;border-radius:5px;font-size:11px;font-weight:700;cursor:pointer;border:none;}
+    .attend-present{background:#e8f5e9;color:#2e7d32;}
+    .attend-present.sel{background:#2e7d32;color:white;}
+    .attend-absent{background:#ffebee;color:#c62828;}
+    .attend-absent.sel{background:#c62828;color:white;}
+    .attend-leave{background:#fff8e1;color:#e65100;}
+    .attend-leave.sel{background:#e65100;color:white;}
+    /* Chat */
+    .msg-row{padding:12px 16px;border-bottom:1px solid #f0f4f8;display:flex;align-items:flex-start;gap:12px;}
+    .msg-from{font-size:13px;font-weight:700;color:var(--primary);}
+    .msg-text{font-size:12px;color:#7a8ca0;margin-top:2px;}
+    .msg-time{font-size:10px;color:#aab4c0;}
+    .visits-stat-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-bottom:24px;}
+    @media(max-width:900px){
+      .charts-grid{grid-template-columns:1fr;}
+      .form-row-3{grid-template-columns:1fr 1fr;}
+    }
+    @media(max-width:768px){
+      .dash-sidebar{width:100%;position:relative;}
+      .dash-main{margin-right:0;}
+      .dash-layout{flex-direction:column;}
+      .form-row,.form-row-3{grid-template-columns:1fr;}
+      .charts-grid{grid-template-columns:1fr;}
+    }
+  </style>
+  <link rel="stylesheet" href="vip-upgrade.css">
+  <link rel="stylesheet" href="legal-system.css">
+  <link rel="stylesheet" href="final-layout-fixes.css">
+<script src="admin-auth.js"></script>
+  <link rel="stylesheet" href="enterprise-security-forms-notifications.css">
+  <link rel="stylesheet" href="enterprise-bio-geo.css">
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+  <link rel="stylesheet" href="all-pages-organization-fix.css">
+</head>
+<body>
+
+<script>
+(function(){
+  if(!(window.VMAdminAuth && VMAdminAuth.isAdmin())){
+    location.replace('admin.html');
+  }else if(location.search.indexOf('vmAdmin=1')>-1){
+    history.replaceState(null,'','admin-dashboard.html');
+  }
+})();
+</script>
+
+<!-- ADD USER MODAL -->
+<div class="modal-backdrop" id="addUserModal">
+  <div class="modal-box">
+    <button class="modal-close" onclick="closeModal('addUserModal')"><i class="fas fa-times"></i></button>
+    <div class="modal-title"><i class="fas fa-user-plus" style="color:var(--accent);margin-left:8px;"></i> إضافة مستخدم</div>
+    <form onsubmit="submitAddUser(event)">
+      <div class="form-row">
+        <div class="form-group"><label class="form-label">الاسم</label><input type="text" class="form-control" id="nuName" required placeholder="اسم المستخدم" /></div>
+        <div class="form-group"><label class="form-label">البريد الإلكتروني</label><input type="email" class="form-control" id="nuEmail" required placeholder="email@example.com" /></div>
+      </div>
+      <div class="form-row">
+        <div class="form-group"><label class="form-label">رقم الجوال</label><input type="tel" class="form-control" id="nuPhone" placeholder="05xxxxxxxx" /></div>
+        <div class="form-group"><label class="form-label">نوع الحساب</label>
+          <select class="form-control" id="nuRole"><option value="client">عميل</option><option value="admin">أدمن</option></select>
+        </div>
+      </div>
+      <div class="form-group"><label class="form-label">كلمة المرور</label><input type="password" class="form-control" id="nuPass" required placeholder="••••••••" /></div>
+      <button type="submit" class="btn btn-primary"><i class="fas fa-save"></i> حفظ</button>
+    </form>
+  </div>
+</div>
+
+<!-- ADD EMPLOYEE MODAL -->
+<div class="modal-backdrop" id="addEmpModal">
+  <div class="modal-box">
+    <button class="modal-close" onclick="closeModal('addEmpModal')"><i class="fas fa-times"></i></button>
+    <div class="modal-title"><i class="fas fa-user-tie" style="color:var(--accent);margin-left:8px;"></i> إضافة موظف</div>
+    <form onsubmit="submitAddEmp(event)">
+      <div class="form-row">
+        <div class="form-group"><label class="form-label">الاسم الكامل</label><input type="text" class="form-control" id="empName" required /></div>
+        <div class="form-group"><label class="form-label">المسمى الوظيفي</label><input type="text" class="form-control" id="empTitle" required /></div>
+      </div>
+      <div class="form-row">
+        <div class="form-group"><label class="form-label">رقم الجوال</label><input type="tel" class="form-control" id="empPhone" /></div>
+        <div class="form-group"><label class="form-label">البريد الإلكتروني</label><input type="email" class="form-control" id="empEmail" /></div>
+      </div>
+      <div class="form-row">
+        <div class="form-group"><label class="form-label">الراتب الأساسي</label><input type="number" class="form-control" id="empSalary" placeholder="0" /></div>
+        <div class="form-group"><label class="form-label">تاريخ التعيين</label><input type="date" class="form-control" id="empHireDate" /></div>
+      </div>
+      <button type="submit" class="btn btn-primary"><i class="fas fa-save"></i> حفظ</button>
+    </form>
+  </div>
+</div>
+
+<!-- VIEW ORDER MODAL -->
+<div class="modal-backdrop" id="viewOrderModal">
+  <div class="modal-box">
+    <button class="modal-close" onclick="closeModal('viewOrderModal')"><i class="fas fa-times"></i></button>
+    <div class="modal-title"><i class="fas fa-clipboard-list" style="color:var(--accent);margin-left:8px;"></i> تفاصيل الطلب</div>
+    <div id="orderDetailContent"></div>
+  </div>
+</div>
+
+<div class="dash-layout">
+
+  <!-- SIDEBAR -->
+  <aside class="dash-sidebar">
+    <div class="sidebar-logo">
+      <div class="logo-text"><i class="fas fa-eye" style="color:#c9a227;margin-left:8px;"></i>VISION MEDIA</div>
+      <div class="logo-sub">لوحة تحكم الأدمن</div>
+    </div>
+    <div class="sidebar-admin">
+      <div class="admin-avatar">AD</div>
+      <div>
+        <div class="admin-name">المدير العام</div>
+        <div class="admin-role"><i class="fas fa-shield-alt" style="font-size:9px;"></i> أدمن النظام</div>
+      </div>
+    </div>
+    <nav style="flex:1;padding:8px 0;overflow-y:auto;">
+      <div class="nav-section-title">الإدارة الرئيسية</div>
+      <a class="dash-nav-link active" onclick="showPanel('p-dashboard',this)"><i class="fas fa-tachometer-alt"></i> لوحة التحكم</a>
+      <a class="dash-nav-link" onclick="showPanel('p-orders',this)"><i class="fas fa-clipboard-list"></i> الطلبات <span class="badge-count-red" id="ordBadge">0</span></a>
+      <a class="dash-nav-link" onclick="showPanel('p-quotes',this)"><i class="fas fa-file-invoice-dollar"></i> عروض الأسعار</a>
+      <a class="dash-nav-link" onclick="showPanel('p-messages',this)"><i class="fas fa-comments"></i> الرسائل</a>
+      <a class="dash-nav-link" onclick="showPanel('p-users',this)"><i class="fas fa-users"></i> المستخدمون</a>
+      <div class="nav-section-title">المحتوى</div>
+      <a class="dash-nav-link" onclick="showPanel('p-services',this)"><i class="fas fa-cogs"></i> إدارة الخدمات</a>
+      <a class="dash-nav-link" onclick="showPanel('p-portfolio',this)"><i class="fas fa-images"></i> الأعمال / Portfolio</a>
+      <a class="dash-nav-link" onclick="showPanel('p-articles',this)"><i class="fas fa-newspaper"></i> المقالات</a>
+      <a class="dash-nav-link" onclick="showPanel('p-clients',this)"><i class="fas fa-handshake"></i> العملاء والشركاء</a>
+      <div class="nav-section-title">الموارد البشرية</div>
+      <a class="dash-nav-link" onclick="showPanel('p-employees',this)"><i class="fas fa-user-tie"></i> الموظفون</a>
+      <a class="dash-nav-link" onclick="showPanel('p-attendance',this)"><i class="fas fa-calendar-check"></i> الحضور والانصراف</a>
+      <a class="dash-nav-link" onclick="showPanel('p-salaries',this)"><i class="fas fa-money-bill"></i> الرواتب</a>
+      <div class="nav-section-title">التحليلات والإعدادات</div>
+      <a class="dash-nav-link" onclick="showPanel('p-visits',this)"><i class="fas fa-chart-bar"></i> الزيارات</a>
+      <a class="dash-nav-link" onclick="showPanel('p-notifications',this)"><i class="fas fa-bell"></i> الإشعارات</a>
+      <a class="dash-nav-link" onclick="showPanel('p-cms',this)"><i class="fas fa-layer-group"></i> CMS كامل</a>
+      <a class="dash-nav-link" onclick="showPanel('p-chat-ai',this)"><i class="fas fa-headset"></i> الشات و AI</a>
+      <a class="dash-nav-link" onclick="showPanel('p-reviews',this)"><i class="fas fa-star"></i> التقييمات</a>
+      <a class="dash-nav-link" onclick="showPanel('p-settings',this)"><i class="fas fa-sliders-h"></i> إعدادات الموقع</a>
+      <div class="nav-section-title">البصمة والموقع</div>
+      <a class="dash-nav-link" onclick="showPanel('p-biometric-management',this)"><i class="fas fa-fingerprint"></i> إدارة البصمة</a>
+      <a class="dash-nav-link" onclick="showPanel('p-geo-settings',this)"><i class="fas fa-map-location-dot"></i> إعدادات الموقع الجغرافي</a>
+      <a class="dash-nav-link" onclick="showPanel('p-reactivation-requests',this)"><i class="fas fa-user-shield"></i> طلبات إعادة التفعيل <span class="badge-count-red" id="reactivationBadge">0</span></a>
+      <a class="dash-nav-link" onclick="showPanel('p-employee-map',this)"><i class="fas fa-map-marked-alt"></i> خريطة الموظفين</a>
+      <div class="nav-section-title">أقسام منفصلة</div>
+      <a class="dash-nav-link" href="admin-employees.html"><i class="fas fa-user-tie"></i> صفحة إدارة الموظفين</a>
+      <a class="dash-nav-link" href="admin-attendance.html"><i class="fas fa-calendar-check"></i> صفحة الحضور</a>
+      <a class="dash-nav-link" href="admin-locations.html"><i class="fas fa-location-dot"></i> صفحة المواقع</a>
+      <a class="dash-nav-link" href="admin-permissions.html"><i class="fas fa-key"></i> صفحة الصلاحيات</a>
+
+      <div style="padding:14px 0 8px;">
+        <a class="dash-nav-link" onclick="handleAdminLogout()" style="color:rgba(255,100,100,0.8);"><i class="fas fa-sign-out-alt"></i> تسجيل الخروج</a>
+      </div>
+    </nav>
+  </aside>
+
+  <!-- MAIN -->
+  <main class="dash-main">
+    <header class="dash-header">
+      <div style="font-size:15px;font-weight:700;color:var(--primary);" id="adminHeaderTitle">
+        <i class="fas fa-tachometer-alt" style="color:var(--accent);margin-left:8px;"></i> لوحة التحكم
+      </div>
+      <div style="display:flex;align-items:center;gap:14px;">
+        <span style="font-size:11px;color:#7a8ca0;" id="adminHeaderDate"></span>
+        <span style="font-size:11px;color:#fff;background:var(--accent);padding:3px 10px;border-radius:20px;font-weight:700;">أدمن</span>
+        <div class="admin-avatar" style="width:34px;height:34px;font-size:12px;">AD</div>
+      </div>
+    </header>
+
+    <div class="dash-content">
+
+      <!-- ═══════════════════════════════════════════════════ -->
+      <!-- PANEL 1: DASHBOARD -->
+      <!-- ═══════════════════════════════════════════════════ -->
+      <div class="panel active" id="p-dashboard">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;">
+          <div>
+            <div class="page-title">لوحة تحكم الأدمن</div>
+            <div class="page-sub" id="dashDate"></div>
+          </div>
+          <button class="btn btn-accent" onclick="refreshDashboard()"><i class="fas fa-sync-alt"></i> تحديث البيانات</button>
+        </div>
+
+        <div class="stats-grid">
+          <div class="stat-card">
+            <div class="stat-icon" style="background:#e3f0ff;color:#1565c0;"><i class="fas fa-clipboard-list"></i></div>
+            <div class="stat-num" id="ds-totalOrders">0</div>
+            <div class="stat-label">إجمالي الطلبات</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-icon" style="background:#fce4ec;color:#c62828;"><i class="fas fa-exclamation-circle"></i></div>
+            <div class="stat-num" id="ds-newOrders">0</div>
+            <div class="stat-label">طلبات جديدة</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-icon" style="background:#e8f5e9;color:#2e7d32;"><i class="fas fa-users"></i></div>
+            <div class="stat-num" id="ds-users">0</div>
+            <div class="stat-label">المستخدمون المسجلون</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-icon" style="background:#fff3e0;color:#e65100;"><i class="fas fa-eye"></i></div>
+            <div class="stat-num" id="ds-todayVisits">0</div>
+            <div class="stat-label">زيارات اليوم</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-icon" style="background:#f3e5f5;color:#7b1fa2;"><i class="fas fa-chart-line"></i></div>
+            <div class="stat-num" id="ds-totalVisits">0</div>
+            <div class="stat-label">إجمالي الزيارات</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-icon" style="background:rgba(201,162,39,0.15);color:#9a7606;"><i class="fas fa-file-invoice-dollar"></i></div>
+            <div class="stat-num" id="ds-quotes">0</div>
+            <div class="stat-label">عروض الأسعار</div>
+          </div>
+        </div>
+
+        <div class="charts-grid">
+          <div class="chart-placeholder">
+            <i class="fas fa-chart-bar"></i>
+            إحصائيات الطلبات الشهرية<br/><small>سيتم ربطه بـ Chart.js</small>
+          </div>
+          <div class="chart-placeholder">
+            <i class="fas fa-chart-pie"></i>
+            توزيع أنواع الخدمات<br/><small>سيتم ربطه بـ Chart.js</small>
+          </div>
+        </div>
+
+        <div class="card" style="padding:0;overflow:hidden;margin-bottom:20px;">
+          <div style="padding:18px 20px;border-bottom:1px solid #f0f4f8;display:flex;align-items:center;justify-content:space-between;">
+            <div class="card-title" style="margin:0;"><i class="fas fa-history" style="color:var(--accent);"></i> آخر 10 طلبات</div>
+            <button class="btn btn-sm btn-outline" onclick="showPanel('p-orders',document.querySelector('[onclick=\'showPanel(\\\'p-orders\\\',this)\']]\')">عرض الكل <i class="fas fa-arrow-left"></i></button>
+          </div>
+          <table class="dash-table">
+            <thead><tr><th>#</th><th>الاسم</th><th>الخدمة</th><th>التاريخ</th><th>الحالة</th><th>تغيير الحالة</th></tr></thead>
+            <tbody id="dashOrdersBody"><tr><td colspan="6" style="text-align:center;color:#aab4c0;padding:24px;">لا توجد طلبات</td></tr></tbody>
+          </table>
+        </div>
+
+        <div class="card" style="padding:0;overflow:hidden;">
+          <div style="padding:18px 20px;border-bottom:1px solid #f0f4f8;">
+            <div class="card-title" style="margin:0;"><i class="fas fa-chart-bar" style="color:var(--accent);"></i> آخر الزيارات</div>
+          </div>
+          <table class="dash-table">
+            <thead><tr><th>الصفحة</th><th>التاريخ</th><th>الوقت</th><th>الجهاز</th></tr></thead>
+            <tbody id="dashVisitsBody"><tr><td colspan="4" style="text-align:center;color:#aab4c0;padding:24px;">لا توجد زيارات مسجلة</td></tr></tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- ═══════════════════════════════════════════════════ -->
+      <!-- PANEL 2: ORDERS -->
+      <!-- ═══════════════════════════════════════════════════ -->
+      <div class="panel" id="p-orders">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;">
+          <div>
+            <div class="page-title"><i class="fas fa-clipboard-list" style="color:var(--accent);margin-left:8px;"></i> إدارة الطلبات</div>
+            <div class="page-sub">عرض وإدارة جميع الطلبات الواردة</div>
+          </div>
+          <button class="btn btn-outline btn-sm" onclick="if(typeof VM!=='undefined'&&VM.notify)VM.notify('تصدير البيانات - قريباً','info');else alert('قريباً');">
+            <i class="fas fa-download"></i> تصدير
+          </button>
+        </div>
+        <div class="filter-tabs">
+          <div class="filter-tab active" onclick="adminFilterOrders('all',this)">الكل</div>
+          <div class="filter-tab" onclick="adminFilterOrders('new',this)">جديد</div>
+          <div class="filter-tab" onclick="adminFilterOrders('review',this)">قيد المراجعة</div>
+          <div class="filter-tab" onclick="adminFilterOrders('progress',this)">جاري التنفيذ</div>
+          <div class="filter-tab" onclick="adminFilterOrders('done',this)">مكتمل</div>
+          <div class="filter-tab" onclick="adminFilterOrders('rejected',this)">مرفوض</div>
+        </div>
+        <div class="card" style="padding:0;overflow:hidden;">
+          <table class="dash-table">
+            <thead>
+              <tr>
+                <th>#</th><th>رقم الطلب</th><th>الاسم</th><th>الجوال</th><th>الخدمة</th><th>نوع الخدمة</th>
+                <th>الميزانية</th><th>التاريخ</th><th>الحالة</th><th>إجراءات</th>
+              </tr>
+            </thead>
+            <tbody id="adminOrdersBody"><tr><td colspan="10" style="text-align:center;color:#aab4c0;padding:24px;">لا توجد طلبات</td></tr></tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- ═══════════════════════════════════════════════════ -->
+      <!-- PANEL 3: QUOTES -->
+      <!-- ═══════════════════════════════════════════════════ -->
+      <div class="panel" id="p-quotes">
+        <div class="page-title"><i class="fas fa-file-invoice-dollar" style="color:var(--accent);margin-left:8px;"></i> عروض الأسعار</div>
+        <div class="page-sub">طلبات عروض الأسعار الواردة</div>
+        <div class="card" style="padding:0;overflow:hidden;">
+          <table class="dash-table">
+            <thead><tr><th>#</th><th>الاسم</th><th>الجوال</th><th>البريد</th><th>الخدمة</th><th>الميزانية</th><th>التاريخ</th><th>إجراءات</th></tr></thead>
+            <tbody id="quotesBody"><tr><td colspan="8" style="text-align:center;color:#aab4c0;padding:24px;">لا توجد عروض أسعار</td></tr></tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- ═══════════════════════════════════════════════════ -->
+      <!-- PANEL 4: MESSAGES -->
+      <!-- ═══════════════════════════════════════════════════ -->
+      <div class="panel" id="p-messages">
+        <div class="page-title"><i class="fas fa-comments" style="color:var(--accent);margin-left:8px;"></i> الرسائل الواردة</div>
+        <div class="page-sub">رسائل العملاء والمراسلات</div>
+        <div class="card" style="padding:0;overflow:hidden;">
+          <table class="dash-table">
+            <thead><tr><th>#</th><th>المُرسل</th><th>الرسالة</th><th>الوقت</th><th>الحالة</th><th>إجراءات</th></tr></thead>
+            <tbody id="messagesBody">
+              <tr>
+                <td>1</td>
+                <td>عميل جديد</td>
+                <td>أريد الاستفسار عن خدمات التصميم</td>
+                <td>اليوم</td>
+                <td><span class="badge badge-new">جديدة</span></td>
+                <td><button class="btn btn-sm btn-success" onclick="replyMessage(this)"><i class="fas fa-reply"></i> رد</button></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- ═══════════════════════════════════════════════════ -->
+      <!-- PANEL 5: USERS -->
+      <!-- ═══════════════════════════════════════════════════ -->
+      <div class="panel" id="p-users">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;">
+          <div>
+            <div class="page-title"><i class="fas fa-users" style="color:var(--accent);margin-left:8px;"></i> المستخدمون</div>
+            <div class="page-sub">إدارة حسابات المستخدمين</div>
+          </div>
+          <button class="btn btn-primary" onclick="openModal('addUserModal')"><i class="fas fa-user-plus"></i> إضافة مستخدم</button>
+        </div>
+        <div class="card" style="padding:0;overflow:hidden;">
+          <table class="dash-table">
+            <thead><tr><th>#</th><th>الاسم</th><th>البريد الإلكتروني</th><th>الجوال</th><th>نوع الحساب</th><th>تاريخ التسجيل</th><th>إجراءات</th></tr></thead>
+            <tbody id="usersBody">
+              <tr>
+                <td>1</td><td>admin@visionmedia.sa</td><td>admin@visionmedia.sa</td><td>0543944248</td>
+                <td><span class="badge badge-admin">أدمن</span></td><td>اليوم</td>
+                <td><button class="btn btn-sm btn-danger" onclick="deleteUser(0,this)"><i class="fas fa-trash"></i></button></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- ═══════════════════════════════════════════════════ -->
+      <!-- PANEL 6: SERVICES -->
+      <!-- ═══════════════════════════════════════════════════ -->
+      <div class="panel" id="p-services">
+        <div class="page-title"><i class="fas fa-cogs" style="color:var(--accent);margin-left:8px;"></i> إدارة الخدمات</div>
+        <div class="page-sub">تحرير وإضافة خدمات الشركة</div>
+        <div id="servicesList" class="card" style="padding:0;overflow:hidden;">
+          <table class="dash-table">
+            <thead><tr><th>#</th><th>اسم الخدمة</th><th>الأيقونة</th><th>عدد الخدمات الفرعية</th><th>إجراءات</th></tr></thead>
+            <tbody id="servicesBody"></tbody>
+          </table>
+        </div>
+        <div class="card" id="serviceEditForm" style="display:none;">
+          <div class="card-title"><i class="fas fa-edit" style="color:var(--accent);"></i> <span id="serviceFormTitle">تحرير الخدمة</span></div>
+          <div class="form-row">
+            <div class="form-group"><label class="form-label">اسم الخدمة</label><input type="text" class="form-control" id="svcName" /></div>
+            <div class="form-group"><label class="form-label">الأيقونة (Font Awesome class)</label><input type="text" class="form-control" id="svcIcon" placeholder="fas fa-ad" /></div>
+          </div>
+          <div class="form-group"><label class="form-label">وصف الخدمة</label><textarea class="form-control" id="svcDesc" rows="3"></textarea></div>
+          <div class="form-group"><label class="form-label">الخدمات الفرعية (كل خدمة في سطر)</label><textarea class="form-control" id="svcSubs" rows="5" placeholder="خدمة فرعية 1&#10;خدمة فرعية 2"></textarea></div>
+          <div style="display:flex;gap:10px;">
+            <button class="btn btn-primary" onclick="saveService()"><i class="fas fa-save"></i> حفظ</button>
+            <button class="btn btn-outline" onclick="document.getElementById('serviceEditForm').style.display='none';"><i class="fas fa-times"></i> إلغاء</button>
+          </div>
+        </div>
+        <button class="btn btn-accent" onclick="openNewService()"><i class="fas fa-plus"></i> إضافة خدمة جديدة</button>
+      </div>
+
+      <!-- ═══════════════════════════════════════════════════ -->
+      <!-- PANEL 7: PORTFOLIO -->
+      <!-- ═══════════════════════════════════════════════════ -->
+      <div class="panel" id="p-portfolio">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;">
+          <div>
+            <div class="page-title"><i class="fas fa-images" style="color:var(--accent);margin-left:8px;"></i> الأعمال / Portfolio</div>
+            <div class="page-sub">إدارة أعمال الشركة المنجزة</div>
+          </div>
+          <button class="btn btn-primary" onclick="togglePortfolioForm()"><i class="fas fa-plus"></i> إضافة عمل جديد</button>
+        </div>
+        <div class="card" id="portfolioFormCard" style="display:none;">
+          <div class="card-title"><i class="fas fa-plus-circle" style="color:var(--accent);"></i> إضافة عمل جديد</div>
+          <div class="form-row">
+            <div class="form-group"><label class="form-label">العنوان</label><input type="text" class="form-control" id="ptTitle" /></div>
+            <div class="form-group"><label class="form-label">اسم العميل</label><input type="text" class="form-control" id="ptClient" /></div>
+          </div>
+          <div class="form-row">
+            <div class="form-group"><label class="form-label">التصنيف</label><input type="text" class="form-control" id="ptCategory" placeholder="تصميم، إعلانات، ..." /></div>
+            <div class="form-group"><label class="form-label">تاريخ الإنجاز</label><input type="date" class="form-control" id="ptDate" /></div>
+          </div>
+          <div class="form-group"><label class="form-label">الوصف</label><textarea class="form-control" id="ptDesc" rows="3"></textarea></div>
+          <button class="btn btn-primary" onclick="savePortfolio()"><i class="fas fa-save"></i> حفظ</button>
+        </div>
+        <div class="card" style="padding:0;overflow:hidden;">
+          <table class="dash-table">
+            <thead><tr><th>#</th><th>العنوان</th><th>العميل</th><th>التصنيف</th><th>تاريخ الإنجاز</th><th>إجراءات</th></tr></thead>
+            <tbody id="portfolioBody"><tr><td colspan="6" style="text-align:center;color:#aab4c0;padding:24px;">لا توجد أعمال بعد</td></tr></tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- ═══════════════════════════════════════════════════ -->
+      <!-- PANEL 8: ARTICLES -->
+      <!-- ═══════════════════════════════════════════════════ -->
+      <div class="panel" id="p-articles">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;">
+          <div>
+            <div class="page-title"><i class="fas fa-newspaper" style="color:var(--accent);margin-left:8px;"></i> المقالات</div>
+            <div class="page-sub">إدارة مقالات ومدونة الشركة</div>
+          </div>
+          <button class="btn btn-primary" onclick="toggleArticleForm()"><i class="fas fa-plus"></i> مقال جديد</button>
+        </div>
+        <div class="card" id="articleFormCard" style="display:none;">
+          <div class="card-title"><i class="fas fa-pen" style="color:var(--accent);"></i> <span id="articleFormTitle">كتابة مقال جديد</span></div>
+          <input type="hidden" id="articleEditIdx" value="-1" />
+          <div class="form-row">
+            <div class="form-group"><label class="form-label">عنوان المقال</label><input type="text" class="form-control" id="artTitle" /></div>
+            <div class="form-group"><label class="form-label">التصنيف</label><input type="text" class="form-control" id="artCategory" placeholder="تسويق، تصميم، ..." /></div>
+          </div>
+          <div class="form-group"><label class="form-label">تاريخ النشر</label><input type="date" class="form-control" id="artDate" style="max-width:240px;"/></div>
+          <div class="form-group"><label class="form-label">محتوى المقال</label><textarea class="form-control" id="artContent" rows="6"></textarea></div>
+          <div style="display:flex;gap:10px;">
+            <button class="btn btn-primary" onclick="saveArticle()"><i class="fas fa-save"></i> نشر المقال</button>
+            <button class="btn btn-outline" onclick="document.getElementById('articleFormCard').style.display='none';document.getElementById('articleEditIdx').value='-1';document.getElementById('articleFormTitle').textContent='كتابة مقال جديد';"><i class="fas fa-times"></i> إلغاء</button>
+          </div>
+        </div>
+        <div class="card" style="padding:0;overflow:hidden;">
+          <table class="dash-table">
+            <thead><tr><th>#</th><th>العنوان</th><th>التصنيف</th><th>تاريخ النشر</th><th>إجراءات</th></tr></thead>
+            <tbody id="articlesBody"><tr><td colspan="5" style="text-align:center;color:#aab4c0;padding:24px;">لا توجد مقالات</td></tr></tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- ═══════════════════════════════════════════════════ -->
+      <!-- PANEL 9: CLIENTS -->
+      <!-- ═══════════════════════════════════════════════════ -->
+      <div class="panel" id="p-clients">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;">
+          <div>
+            <div class="page-title"><i class="fas fa-handshake" style="color:var(--accent);margin-left:8px;"></i> العملاء والشركاء</div>
+            <div class="page-sub">إدارة قائمة العملاء والشركاء</div>
+          </div>
+          <button class="btn btn-primary" onclick="toggleClientForm()"><i class="fas fa-plus"></i> إضافة عميل</button>
+        </div>
+        <div class="card" id="clientFormCard" style="display:none;">
+          <div class="card-title"><i class="fas fa-plus-circle" style="color:var(--accent);"></i> بيانات العميل / الشريك</div>
+          <div class="form-row">
+            <div class="form-group"><label class="form-label">الاسم</label><input type="text" class="form-control" id="clName" /></div>
+            <div class="form-group"><label class="form-label">الشركة / الجهة</label><input type="text" class="form-control" id="clCompany" /></div>
+          </div>
+          <div class="form-row">
+            <div class="form-group"><label class="form-label">البريد الإلكتروني</label><input type="email" class="form-control" id="clEmail" /></div>
+            <div class="form-group"><label class="form-label">رقم الجوال</label><input type="tel" class="form-control" id="clPhone" /></div>
+          </div>
+          <div class="form-group"><label class="form-label">نوع</label>
+            <select class="form-control" id="clType" style="max-width:240px;"><option value="client">عميل</option><option value="partner">شريك</option></select>
+          </div>
+          <button class="btn btn-primary" onclick="saveClient()"><i class="fas fa-save"></i> حفظ</button>
+        </div>
+        <div class="card" style="padding:0;overflow:hidden;">
+          <table class="dash-table">
+            <thead><tr><th>#</th><th>الاسم</th><th>الشركة</th><th>البريد</th><th>الجوال</th><th>النوع</th><th>إجراءات</th></tr></thead>
+            <tbody id="clientsBody"><tr><td colspan="7" style="text-align:center;color:#aab4c0;padding:24px;">لا توجد بيانات</td></tr></tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- ═══════════════════════════════════════════════════ -->
+      <!-- PANEL 10: VISITS -->
+      <!-- ═══════════════════════════════════════════════════ -->
+      <div class="panel" id="p-visits">
+        <div class="page-title"><i class="fas fa-chart-bar" style="color:var(--accent);margin-left:8px;"></i> إحصائيات الزيارات</div>
+        <div class="page-sub">تتبع زيارات الموقع</div>
+        <div class="visits-stat-grid">
+          <div class="stat-card"><div class="stat-icon" style="background:#e3f0ff;color:#1565c0;"><i class="fas fa-calendar-day"></i></div><div class="stat-num" id="visToday">0</div><div class="stat-label">زيارات اليوم</div></div>
+          <div class="stat-card"><div class="stat-icon" style="background:#e8f5e9;color:#2e7d32;"><i class="fas fa-calendar-week"></i></div><div class="stat-num" id="visWeek">0</div><div class="stat-label">هذا الأسبوع</div></div>
+          <div class="stat-card"><div class="stat-icon" style="background:#fff3e0;color:#e65100;"><i class="fas fa-calendar-alt"></i></div><div class="stat-num" id="visMonth">0</div><div class="stat-label">هذا الشهر</div></div>
+        </div>
+        <div class="card" style="padding:0;overflow:hidden;">
+          <table class="dash-table">
+            <thead><tr><th>#</th><th>الصفحة</th><th>التاريخ</th><th>الوقت</th><th>الجهاز</th><th>المصدر</th></tr></thead>
+            <tbody id="visitsBody"><tr><td colspan="6" style="text-align:center;color:#aab4c0;padding:24px;">لا توجد زيارات مسجلة</td></tr></tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- ═══════════════════════════════════════════════════ -->
+      <!-- PANEL 11: EMPLOYEES -->
+      <!-- ═══════════════════════════════════════════════════ -->
+      <div class="panel" id="p-employees">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;">
+          <div>
+            <div class="page-title"><i class="fas fa-user-tie" style="color:var(--accent);margin-left:8px;"></i> الموظفون</div>
+            <div class="page-sub">إدارة بيانات الموظفين</div>
+          </div>
+          <button class="btn btn-primary" onclick="openModal('addEmpModal')"><i class="fas fa-user-plus"></i> إضافة موظف</button>
+        </div>
+        <div class="card" style="padding:0;overflow:hidden;">
+          <table class="dash-table">
+            <thead><tr><th>#</th><th>الاسم</th><th>المسمى الوظيفي</th><th>الجوال</th><th>البريد الإلكتروني</th><th>الراتب</th><th>تاريخ التعيين</th><th>إجراءات</th></tr></thead>
+            <tbody id="employeesBody"><tr><td colspan="8" style="text-align:center;color:#aab4c0;padding:24px;">لا يوجد موظفون</td></tr></tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- ═══════════════════════════════════════════════════ -->
+      <!-- PANEL 12: ATTENDANCE -->
+      <!-- ═══════════════════════════════════════════════════ -->
+      <div class="panel" id="p-attendance">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;">
+          <div>
+            <div class="page-title"><i class="fas fa-calendar-check" style="color:var(--accent);margin-left:8px;"></i> الحضور والانصراف</div>
+            <div class="page-sub">تسجيل الحضور اليومي للموظفين</div>
+          </div>
+          <div style="display:flex;align-items:center;gap:10px;">
+            <input type="date" class="form-control" id="attendDate" style="width:180px;" />
+            <button class="btn btn-accent" onclick="saveAttendance()"><i class="fas fa-save"></i> حفظ الحضور</button>
+          </div>
+        </div>
+        <div style="display:flex;gap:16px;margin-bottom:20px;">
+          <div class="stat-card" style="flex:1;"><div class="stat-num" id="attPresent" style="color:#2e7d32;">0</div><div class="stat-label">حاضر</div></div>
+          <div class="stat-card" style="flex:1;"><div class="stat-num" id="attAbsent" style="color:#c62828;">0</div><div class="stat-label">غائب</div></div>
+          <div class="stat-card" style="flex:1;"><div class="stat-num" id="attLeave" style="color:#e65100;">0</div><div class="stat-label">إجازة</div></div>
+        </div>
+        <div class="attend-grid" id="attendGrid">
+          <div style="text-align:center;color:#aab4c0;grid-column:1/-1;padding:32px;">أضف موظفين أولاً من قسم الموظفين</div>
+        </div>
+      </div>
+
+      <!-- ═══════════════════════════════════════════════════ -->
+      <!-- PANEL 13: SALARIES -->
+      <!-- ═══════════════════════════════════════════════════ -->
+      <div class="panel" id="p-salaries">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;">
+          <div>
+            <div class="page-title"><i class="fas fa-money-bill" style="color:var(--accent);margin-left:8px;"></i> الرواتب</div>
+            <div class="page-sub">إدارة رواتب الموظفين</div>
+          </div>
+          <div style="display:flex;align-items:center;gap:10px;">
+            <label class="form-label" style="margin:0;">الشهر:</label>
+            <input type="month" class="form-control" id="salaryMonth" style="width:180px;" />
+            <button class="btn btn-accent" onclick="calcSalaries()"><i class="fas fa-calculator"></i> احتساب</button>
+          </div>
+        </div>
+        <div class="card" style="padding:0;overflow:hidden;">
+          <table class="dash-table">
+            <thead><tr><th>#</th><th>الموظف</th><th>الراتب الأساسي</th><th>البدلات</th><th>الخصومات</th><th>الصافي</th><th>إجراءات</th></tr></thead>
+            <tbody id="salariesBody"><tr><td colspan="7" style="text-align:center;color:#aab4c0;padding:24px;">لا توجد بيانات رواتب</td></tr></tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- ═══════════════════════════════════════════════════ -->
+      <!-- PANEL 14: NOTIFICATIONS -->
+      <!-- ═══════════════════════════════════════════════════ -->
+      <div class="panel" id="p-notifications">
+        <div class="page-title"><i class="fas fa-bell" style="color:var(--accent);margin-left:8px;"></i> إرسال الإشعارات</div>
+        <div class="page-sub">إرسال إشعارات للمستخدمين</div>
+        <div class="card">
+          <div class="card-title"><i class="fas fa-paper-plane" style="color:var(--accent);"></i> إشعار جديد</div>
+          <div class="form-group">
+            <label class="form-label">المستلم</label>
+            <select class="form-control" id="notifTarget" style="max-width:300px;">
+              <option value="all">جميع المستخدمين</option>
+              <option value="clients">العملاء فقط</option>
+              <option value="specific">مستخدم محدد</option>
+            </select>
+          </div>
+          <div class="form-group" id="specificUserGroup" style="display:none;">
+            <label class="form-label">البريد الإلكتروني للمستخدم</label>
+            <input type="email" class="form-control" id="notifUserEmail" placeholder="email@example.com" style="max-width:300px;" />
+          </div>
+          <div class="form-group">
+            <label class="form-label">عنوان الإشعار</label>
+            <input type="text" class="form-control" id="notifTitle" placeholder="عنوان الإشعار" />
+          </div>
+          <div class="form-group">
+            <label class="form-label">نص الإشعار</label>
+            <textarea class="form-control" id="notifText" rows="4" placeholder="اكتب نص الإشعار هنا..."></textarea>
+          </div>
+          <button class="btn btn-primary" onclick="sendNotification()"><i class="fas fa-paper-plane"></i> إرسال الإشعار</button>
+        </div>
+        <div class="card">
+          <div class="card-title"><i class="fas fa-history" style="color:var(--accent);"></i> سجل الإشعارات المُرسلة</div>
+          <div id="notifLog">
+            <div style="text-align:center;color:#aab4c0;padding:24px;">لم يتم إرسال أي إشعارات بعد</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ═══════════════════════════════════════════════════ -->
+      <!-- PANEL 15: SETTINGS -->
+      <!-- ═══════════════════════════════════════════════════ -->
+
+      <div class="panel" id="p-cms">
+        <div class="page-title">نظام التحكم الكامل CMS</div><p class="page-sub">تحكم في النصوص، البنرات، الألوان، الأزرار، ترتيب الأقسام، الصفحات والسياسات بدون تعديل الكود.</p>
+        <div class="stats-grid"><div class="stat-card"><div class="stat-icon" style="background:#e3f0ff;color:#1565c0"><i class="fas fa-file"></i></div><div class="stat-num" id="cmsPagesCount">0</div><div class="stat-label">صفحات</div></div><div class="stat-card"><div class="stat-icon" style="background:#fff8e1;color:#f57c00"><i class="fas fa-layer-group"></i></div><div class="stat-num" id="cmsSectionsCount">0</div><div class="stat-label">أقسام</div></div></div>
+        <div class="form-row"><div class="card"><div class="card-title"><i class="fas fa-plus"></i> إضافة / تعديل صفحة</div><input class="form-control" id="cmsPageTitle" placeholder="عنوان الصفحة"><br><input class="form-control" id="cmsPageSlug" placeholder="الرابط مثل offers"><br><textarea class="form-control" id="cmsPageContent" rows="5" placeholder="محتوى الصفحة"></textarea><br><button class="btn btn-accent" onclick="saveCmsPage()">حفظ الصفحة</button></div><div class="card"><div class="card-title"><i class="fas fa-sort"></i> إضافة قسم</div><input class="form-control" id="cmsSectionTitle" placeholder="عنوان القسم"><br><select class="form-control" id="cmsSectionPosition"><option>أعلى</option><option>أسفل</option><option>قبل قسم</option><option>بعد قسم</option></select><br><textarea class="form-control" id="cmsSectionContent" rows="5" placeholder="محتوى القسم"></textarea><br><button class="btn btn-primary" onclick="saveCmsSection()">حفظ القسم</button></div></div>
+        <div class="card"><div class="card-title"><i class="fas fa-table"></i> العناصر المحفوظة</div><div id="cmsList"></div></div>
+      </div>
+      <div class="panel" id="p-chat-ai">
+        <div class="page-title">الشات المباشر ومساعد AI</div><p class="page-sub">نظام دعم فني لحفظ المحادثات والملفات، مع وضع AI أو أدمن.</p>
+        <div class="form-row"><div class="card"><div class="card-title"><i class="fas fa-robot"></i> إعدادات المساعد</div><label><input type="checkbox" id="aiEnabled" checked> تفعيل مساعد AI في صفحة العميل</label><br><br><textarea class="form-control" id="aiPrompt" rows="6">أنت مساعد VISION MEDIA. أجب عن الخدمات والأسعار والطلبات باحترافية وباللهجة العربية الواضحة.</textarea><br><button class="btn btn-accent" onclick="saveAiSettings()">حفظ إعدادات AI</button></div><div class="card"><div class="card-title"><i class="fas fa-comments"></i> المحادثات</div><div id="chatAdminList">لا توجد محادثات بعد</div><br><input class="form-control" id="adminChatReply" placeholder="اكتب رد الأدمن"><br><button class="btn btn-primary" onclick="sendAdminChatDemo()">إرسال رد تجريبي</button></div></div>
+      </div>
+      <div class="panel" id="p-reviews">
+        <div class="page-title">إدارة التقييمات</div><p class="page-sub">قبول، رفض، حذف، وإظهار التقييمات والنجوم.</p>
+        <div class="card"><button class="btn btn-accent" onclick="addDemoReview()">إضافة تقييم تجريبي</button><br><br><div id="reviewsList"></div></div>
+      </div>
+
+
+      <div class="panel" id="p-biometric-management">
+        <div class="page-title"><i class="fas fa-fingerprint"></i> إدارة البصمة وPasskeys</div>
+        <p class="page-sub">إدارة مفاتيح WebAuthn الآمنة وطلبات إعادة التفعيل بدون حفظ صورة البصمة.</p>
+        <div class="stats-grid">
+          <div class="stat-card"><div class="stat-icon" style="background:#e3f0ff;color:#1565c0"><i class="fas fa-fingerprint"></i></div><div class="stat-num" id="bioCredCount">0</div><div class="stat-label">بصمات مفعلة</div></div>
+          <div class="stat-card"><div class="stat-icon" style="background:#fff8e1;color:#e65100"><i class="fas fa-clock"></i></div><div class="stat-num" id="bioReqCount">0</div><div class="stat-label">طلبات معلقة</div></div>
+          <div class="stat-card"><div class="stat-icon" style="background:#ffebee;color:#c62828"><i class="fas fa-ban"></i></div><div class="stat-num" id="bioDisabledCount">0</div><div class="stat-label">بصمات معطلة</div></div>
+        </div>
+        <div class="card"><div class="card-title"><i class="fas fa-table"></i> المستخدمون والبصمة</div><div class="table-wrap"><table class="dash-table"><thead><tr><th>المستخدم</th><th>الدور</th><th>حالة البصمة</th><th>الجهاز الأساسي</th><th>آخر تحديث</th><th>إجراءات</th></tr></thead><tbody id="biometricAdminRows"></tbody></table></div></div>
+      </div>
+      <div class="panel" id="p-geo-settings">
+        <div class="page-title"><i class="fas fa-map-location-dot"></i> إعدادات الموقع الجغرافي</div>
+        <p class="page-sub">تحديد الفروع ونطاق الحضور ومواقع الموظفين المسموح بها.</p>
+        <div class="card"><div class="card-title"><i class="fas fa-building"></i> موقع الشركة والفروع</div>
+          <div class="form-row-3"><div class="form-group"><label class="form-label">اسم الفرع</label><input id="branchName" class="form-control" placeholder="الفرع الرئيسي"></div><div class="form-group"><label class="form-label">خط العرض</label><input id="branchLat" class="form-control" placeholder="21.543"></div><div class="form-group"><label class="form-label">خط الطول</label><input id="branchLng" class="form-control" placeholder="39.172"></div></div>
+          <div class="form-row"><div class="form-group"><label class="form-label">نطاق الحضور بالمتر</label><input id="branchRadius" class="form-control" type="number" value="250"></div><div class="form-group"><label class="form-label">السماح العام خارج النطاق</label><select id="branchAllowOutside" class="form-control"><option value="false">ممنوع</option><option value="true">مسموح</option></select></div></div>
+          <button class="btn btn-accent" onclick="VMGeoBioAdmin.saveBranch()"><i class="fas fa-save"></i> حفظ الفرع</button>
+          <button class="btn btn-outline" onclick="VMGeoBioAdmin.useCurrentCompanyLocation()"><i class="fas fa-location-crosshairs"></i> استخدام موقعي الحالي</button>
+        </div>
+        <div class="card"><div class="card-title"><i class="fas fa-map"></i> الخريطة</div><div id="adminBranchMap" class="vm-map"></div></div>
+        <div class="card"><div class="card-title"><i class="fas fa-list"></i> الفروع المسجلة</div><div class="table-wrap"><table class="dash-table"><thead><tr><th>الفرع</th><th>الإحداثيات</th><th>النطاق</th><th>خارج النطاق</th><th>إجراءات</th></tr></thead><tbody id="branchRows"></tbody></table></div></div>
+      </div>
+      <div class="panel" id="p-reactivation-requests">
+        <div class="page-title"><i class="fas fa-user-shield"></i> طلبات إعادة التفعيل</div>
+        <p class="page-sub">طلبات تغيير البصمة، الجهاز الأساسي، أو الموقع الأساسي.</p>
+        <div class="card"><div class="filter-tabs"><span class="filter-tab active" onclick="VMGeoBioAdmin.renderRequests('all')">الكل</span><span class="filter-tab" onclick="VMGeoBioAdmin.renderRequests('biometric')">البصمة</span><span class="filter-tab" onclick="VMGeoBioAdmin.renderRequests('location')">الموقع</span><span class="filter-tab" onclick="VMGeoBioAdmin.renderRequests('device')">الجهاز</span></div><div class="table-wrap"><table class="dash-table"><thead><tr><th>الاسم</th><th>النوع</th><th>الوقت</th><th>القديم</th><th>الجديد</th><th>السبب</th><th>الحالة</th><th>إجراءات</th></tr></thead><tbody id="reactivationRows"></tbody></table></div></div>
+      </div>
+      <div class="panel" id="p-employee-map">
+        <div class="page-title"><i class="fas fa-map-marked-alt"></i> خريطة الموظفين</div>
+        <p class="page-sub">عرض مواقع الموظفين والفروع ونقاط الحضور والانصراف.</p>
+        <div class="card"><div id="employeeLiveMap" class="vm-map vm-map-lg"></div></div>
+        <div class="card"><div class="card-title"><i class="fas fa-users"></i> مواقع الموظفين المسجلة</div><div class="table-wrap"><table class="dash-table"><thead><tr><th>الموظف</th><th>الموقع الأساسي</th><th>آخر حضور</th><th>آخر انصراف</th><th>السماح خارج النطاق</th><th>إجراءات</th></tr></thead><tbody id="employeeLocationRows"></tbody></table></div></div>
+      </div>
+
+      <div class="panel" id="p-settings">
+        <div class="page-title"><i class="fas fa-sliders-h" style="color:var(--accent);margin-left:8px;"></i> إعدادات الموقع</div>
+        <div class="page-sub">إعدادات الشركة والموقع الإلكتروني</div>
+        <form onsubmit="saveSettings(event)">
+          <div class="card">
+            <div class="card-title"><i class="fas fa-building" style="color:var(--accent);"></i> بيانات الشركة</div>
+            <div class="form-row">
+              <div class="form-group"><label class="form-label">اسم الشركة</label><input type="text" class="form-control" id="stCompany" value="VISION MEDIA" /></div>
+              <div class="form-group"><label class="form-label">الشعار النصي</label><input type="text" class="form-control" id="stLogoText" value="VISION MEDIA" /></div>
+            </div>
+            <div class="form-row">
+              <div class="form-group"><label class="form-label">البريد الإلكتروني</label><input type="email" class="form-control" id="stEmail" value="waelelsaydahmed@gmail.com" /></div>
+              <div class="form-group"><label class="form-label">رقم الهاتف</label><input type="tel" class="form-control" id="stPhone" value="0543944248" /></div>
+            </div>
+            <div class="form-row">
+              <div class="form-group"><label class="form-label">واتساب</label><input type="tel" class="form-control" id="stWhatsapp" value="0543944248" /></div>
+              <div class="form-group"><label class="form-label">اللون الأساسي</label><input type="color" class="form-control" id="stColor1" value="#0d1b2e" style="height:42px;" /></div>
+            </div>
+            <div class="form-row">
+              <div class="form-group"><label class="form-label">اللون التمييزي</label><input type="color" class="form-control" id="stColor2" value="#c9a227" style="height:42px;" /></div>
+            </div>
+            <div class="form-group"><label class="form-label">وصف الشركة</label><textarea class="form-control" id="stDesc" rows="3" placeholder="وصف مختصر عن الشركة وخدماتها...">شركة VISION MEDIA - رائدة في مجال الإعلان والتسويق الرقمي</textarea></div>
+          </div>
+
+          <div class="card">
+            <div class="card-title"><i class="fas fa-share-alt" style="color:var(--accent);"></i> روابط التواصل الاجتماعي</div>
+            <div class="form-row">
+              <div class="form-group"><label class="form-label"><i class="fab fa-twitter" style="color:#1da1f2;"></i> تويتر / X</label><input type="url" class="form-control" id="stTwitter" placeholder="https://twitter.com/..." /></div>
+              <div class="form-group"><label class="form-label"><i class="fab fa-instagram" style="color:#e1306c;"></i> إنستجرام</label><input type="url" class="form-control" id="stInstagram" placeholder="https://instagram.com/..." /></div>
+            </div>
+            <div class="form-row">
+              <div class="form-group"><label class="form-label"><i class="fab fa-facebook" style="color:#1877f2;"></i> فيسبوك</label><input type="url" class="form-control" id="stFacebook" placeholder="https://facebook.com/..." /></div>
+              <div class="form-group"><label class="form-label"><i class="fab fa-snapchat" style="color:#fffc00;text-shadow:0 0 2px #aaa;"></i> سناب شات</label><input type="url" class="form-control" id="stSnapchat" placeholder="https://snapchat.com/add/..." /></div>
+            </div>
+            <div class="form-row">
+              <div class="form-group"><label class="form-label"><i class="fab fa-tiktok"></i> تيك توك</label><input type="url" class="form-control" id="stTiktok" placeholder="https://tiktok.com/@..." /></div>
+              <div class="form-group"><label class="form-label"><i class="fab fa-linkedin" style="color:#0a66c2;"></i> لينكد إن</label><input type="url" class="form-control" id="stLinkedin" placeholder="https://linkedin.com/company/..." /></div>
+            </div>
+          </div>
+
+          <button type="submit" class="btn btn-primary" style="padding:12px 28px;font-size:14px;"><i class="fas fa-save"></i> حفظ جميع الإعدادات</button>
+        </form>
+      </div>
+
+    </div><!-- /dash-content -->
+  </main>
+</div>
+
+<script src="core.js"></script>
+<script src="locationsData.js"></script>
+<script>
+// ── Utilities ──────────────────────────────────────────────────────────────
+function sv(k,v){try{if(typeof VM!=='undefined'&&VM.storage)VM.storage.set(k,v);else localStorage.setItem('vm_'+k,JSON.stringify(v));}catch(e){}}
+function gv(k,def){try{if(typeof VM!=='undefined'&&VM.storage)return VM.storage.get(k)||def;return JSON.parse(localStorage.getItem('vm_'+k)||'null')||def;}catch(e){return def;}}
+function notify(msg,type){if(typeof VM!=='undefined'&&VM.notify)VM.notify(msg,type||'success');else alert(msg);}
+function fmtDate(d){if(!d)return'—';try{return new Date(d).toLocaleDateString('ar-SA');}catch(e){return d;}}
+function statusBadge(s){const map={new:'badge-new جديد',review:'badge-review قيد المراجعة',progress:'badge-progress جاري التنفيذ',done:'badge-done مكتمل',rejected:'badge-rejected مرفوض'};const v=map[s]||('badge-new '+(s||'جديد'));const p=v.split(' ');return`<span class="badge ${p[0]}">${p.slice(1).join(' ')}</span>`;}
+function escHtml(t){if(!t)return'';return String(t).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
+
+// ── Panel switcher ─────────────────────────────────────────────────────────
+const panelMeta={
+  'p-dashboard':{title:'لوحة التحكم',icon:'fa-tachometer-alt'},
+  'p-orders':{title:'الطلبات',icon:'fa-clipboard-list'},
+  'p-quotes':{title:'عروض الأسعار',icon:'fa-file-invoice-dollar'},
+  'p-messages':{title:'الرسائل',icon:'fa-comments'},
+  'p-users':{title:'المستخدمون',icon:'fa-users'},
+  'p-services':{title:'إدارة الخدمات',icon:'fa-cogs'},
+  'p-portfolio':{title:'الأعمال / Portfolio',icon:'fa-images'},
+  'p-articles':{title:'المقالات',icon:'fa-newspaper'},
+  'p-clients':{title:'العملاء والشركاء',icon:'fa-handshake'},
+  'p-visits':{title:'الزيارات',icon:'fa-chart-bar'},
+  'p-employees':{title:'الموظفون',icon:'fa-user-tie'},
+  'p-attendance':{title:'الحضور والانصراف',icon:'fa-calendar-check'},
+  'p-salaries':{title:'الرواتب',icon:'fa-money-bill'},
+  'p-notifications':{title:'الإشعارات',icon:'fa-bell'},
+  'p-cms':{title:'CMS كامل',icon:'fa-layer-group'},
+  'p-chat-ai':{title:'الشات و AI',icon:'fa-headset'},
+  'p-reviews':{title:'التقييمات',icon:'fa-star'},
+  'p-settings':{title:'إعدادات الموقع',icon:'fa-sliders-h'}
+};
+function showPanel(id,el){
+  document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.dash-nav-link').forEach(l=>l.classList.remove('active'));
+  var p=document.getElementById(id);if(p)p.classList.add('active');
+  if(el)el.classList.add('active');
+  var meta=panelMeta[id]||{title:'',icon:'fa-circle'};
+  document.getElementById('adminHeaderTitle').innerHTML=`<i class="fas ${meta.icon}" style="color:var(--accent);margin-left:8px;"></i> ${meta.title}`;
+  if(id==='p-dashboard')refreshDashboard();
+  if(id==='p-orders')renderAdminOrders();
+  if(id==='p-quotes')renderQuotes();
+  if(id==='p-messages')renderMessages();
+  if(id==='p-users')renderUsers();
+  if(id==='p-services')renderServices();
+  if(id==='p-portfolio')renderPortfolio();
+  if(id==='p-articles')renderArticles();
+  if(id==='p-clients')renderClients();
+  if(id==='p-visits')renderVisits();
+  if(id==='p-employees')renderEmployees();
+  if(id==='p-attendance')renderAttendance();
+  if(id==='p-salaries')renderSalaries();
+  if(id==='p-notifications')renderNotifLog();
+  if(id==='p-settings')loadSettings();
+}
+
+// ── Modal helpers ──────────────────────────────────────────────────────────
+function openModal(id){document.getElementById(id).classList.add('open');}
+function closeModal(id){document.getElementById(id).classList.remove('open');}
+document.addEventListener('click',function(e){if(e.target.classList.contains('modal-backdrop'))e.target.classList.remove('open');});
+
+// ── Dashboard Init ─────────────────────────────────────────────────────────
+document.addEventListener('DOMContentLoaded',function(){
+  var now=new Date();
+  document.getElementById('adminHeaderDate').textContent=now.toLocaleDateString('ar-SA',{weekday:'long',year:'numeric',month:'long',day:'numeric'});
+  document.getElementById('dashDate').textContent=now.toLocaleDateString('ar-SA',{weekday:'long',year:'numeric',month:'long',day:'numeric'});
+  document.getElementById('attendDate').value=now.toISOString().slice(0,10);
+  document.getElementById('salaryMonth').value=now.toISOString().slice(0,7);
+  refreshDashboard();
+});
+
+function refreshDashboard(){
+  var orders=gv('orders',[]);
+  var users=gv('users',[]);
+  var visits=gv('visits',[]);
+  var quotes=gv('quotes',[]);
+  var today=new Date().toDateString();
+  var todayVisits=visits.filter(function(v){try{return new Date(v.date).toDateString()===today;}catch(e){return false;}});
+  document.getElementById('ds-totalOrders').textContent=orders.length;
+  document.getElementById('ds-newOrders').textContent=orders.filter(function(o){return o.status==='new'||!o.status;}).length;
+  document.getElementById('ds-users').textContent=users.length;
+  document.getElementById('ds-todayVisits').textContent=todayVisits.length;
+  document.getElementById('ds-totalVisits').textContent=visits.length;
+  document.getElementById('ds-quotes').textContent=quotes.length;
+  document.getElementById('ordBadge').textContent=orders.filter(function(o){return o.status==='new'||!o.status;}).length;
+  renderDashOrders(orders.slice(-10).reverse());
+  renderDashVisits(visits.slice(-5).reverse());
+}
+
+function renderDashOrders(orders){
+  var tb=document.getElementById('dashOrdersBody');
+  if(!orders||!orders.length){tb.innerHTML='<tr><td colspan="6" style="text-align:center;color:#aab4c0;padding:24px;">لا توجد طلبات</td></tr>';return;}
+  tb.innerHTML=orders.map(function(o,i){
+    return`<tr>
+      <td>${i+1}</td>
+      <td>${escHtml(o.name||o.email||'—')}</td>
+      <td>${escHtml(o.service||'—')}</td>
+      <td>${fmtDate(o.date||o.createdAt)}</td>
+      <td>${statusBadge(o.status)}</td>
+      <td><select class="form-control" style="padding:4px 8px;font-size:11px;width:130px;" onchange="updateOrderStatus(${i},this.value)">
+        <option value="new" ${(o.status==='new'||!o.status)?'selected':''}>جديد</option>
+        <option value="review" ${o.status==='review'?'selected':''}>قيد المراجعة</option>
+        <option value="progress" ${o.status==='progress'?'selected':''}>جاري التنفيذ</option>
+        <option value="done" ${o.status==='done'?'selected':''}>مكتمل</option>
+        <option value="rejected" ${o.status==='rejected'?'selected':''}>مرفوض</option>
+      </select></td>
+    </tr>`;
+  }).join('');
+}
+
+function renderDashVisits(visits){
+  var tb=document.getElementById('dashVisitsBody');
+  if(!visits||!visits.length){tb.innerHTML='<tr><td colspan="4" style="text-align:center;color:#aab4c0;padding:24px;">لا توجد زيارات</td></tr>';return;}
+  tb.innerHTML=visits.map(function(v,i){
+    return`<tr><td>${escHtml(v.page||'/')}</td><td>${fmtDate(v.date)}</td><td>${escHtml(v.time||'—')}</td><td>${escHtml(v.device||'—')}</td></tr>`;
+  }).join('');
+}
+
+// ── ORDERS ─────────────────────────────────────────────────────────────────
+var adminOrderFilter='all';
+function adminFilterOrders(f,el){
+  adminOrderFilter=f;
+  document.querySelectorAll('#p-orders .filter-tab').forEach(function(t){t.classList.remove('active');});
+  if(el)el.classList.add('active');
+  renderAdminOrders();
+}
+function renderAdminOrders(){
+  var orders=gv('orders',[]);
+  if(adminOrderFilter!=='all')orders=orders.filter(function(o){return o.status===adminOrderFilter||(adminOrderFilter==='new'&&!o.status);});
+  var tb=document.getElementById('adminOrdersBody');
+  if(!orders||!orders.length){tb.innerHTML='<tr><td colspan="10" style="text-align:center;color:#aab4c0;padding:24px;">لا توجد طلبات</td></tr>';return;}
+  tb.innerHTML=orders.map(function(o,i){
+    return`<tr>
+      <td>${i+1}</td>
+      <td><strong style="color:var(--accent);">#${escHtml(String(o.id||i+1))}</strong></td>
+      <td>${escHtml(o.name||'—')}</td>
+      <td>${escHtml(o.phone||'—')}</td>
+      <td>${escHtml(o.service||'—')}</td>
+      <td>${escHtml(o.subService||o.type||'—')}</td>
+      <td>${escHtml(o.budget||'—')}</td>
+      <td>${fmtDate(o.date||o.createdAt)}</td>
+      <td><select class="form-control" style="padding:4px 8px;font-size:11px;width:130px;" onchange="updateOrderStatus(${i},this.value)">
+        <option value="new" ${(o.status==='new'||!o.status)?'selected':''}>جديد</option>
+        <option value="review" ${o.status==='review'?'selected':''}>قيد المراجعة</option>
+        <option value="progress" ${o.status==='progress'?'selected':''}>جاري التنفيذ</option>
+        <option value="done" ${o.status==='done'?'selected':''}>مكتمل</option>
+        <option value="rejected" ${o.status==='rejected'?'selected':''}>مرفوض</option>
+      </select></td>
+      <td style="white-space:nowrap;">
+        <button class="btn btn-sm btn-success" onclick="viewOrderDetail(${i})" title="عرض"><i class="fas fa-eye"></i></button>
+        <button class="btn btn-sm btn-danger" onclick="deleteOrder(${i})" title="حذف" style="margin-right:4px;"><i class="fas fa-trash"></i></button>
+      </td>
+    </tr>`;
+  }).join('');
+}
+
+function updateOrderStatus(idx,status){
+  var orders=gv('orders',[]);
+  // idx is position in current filtered view; use actual index from full array
+  var all=gv('orders',[]);
+  var filtered=adminOrderFilter==='all'?all:all.filter(function(o,i){return o.status===adminOrderFilter||(adminOrderFilter==='new'&&!o.status);});
+  var target=filtered[idx];
+  if(!target)return;
+  var fullIdx=all.indexOf(target);
+  if(fullIdx>=0){all[fullIdx].status=status;sv('orders',all);}
+  notify('تم تحديث حالة الطلب','success');
+  renderAdminOrders();
+  document.getElementById('ordBadge').textContent=all.filter(function(o){return o.status==='new'||!o.status;}).length;
+}
+
+function viewOrderDetail(idx){
+  var all=gv('orders',[]);
+  var filtered=adminOrderFilter==='all'?all:all.filter(function(o){return o.status===adminOrderFilter||(adminOrderFilter==='new'&&!o.status);});
+  var o=filtered[idx];
+  if(!o)return;
+  var html=`<div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">`;
+  var fields=[['الاسم',o.name],['رقم الجوال',o.phone],['البريد',o.email],['الخدمة',o.service],['نوع الخدمة',o.subService||o.type],['الميزانية',o.budget],['التاريخ',fmtDate(o.date||o.createdAt)],['الحالة',o.status||'new']];
+  fields.forEach(function(f){html+=`<div><div style="font-size:11px;color:#7a8ca0;margin-bottom:3px;">${f[0]}</div><div style="font-size:13px;font-weight:700;color:var(--primary);">${escHtml(f[1]||'—')}</div></div>`;});
+  html+=`</div>`;
+  if(o.message||o.notes)html+=`<div style="margin-top:16px;"><div style="font-size:11px;color:#7a8ca0;margin-bottom:4px;">الرسالة / الملاحظات</div><div style="font-size:13px;background:#f8fafc;padding:12px;border-radius:8px;">${escHtml(o.message||o.notes)}</div></div>`;
+  document.getElementById('orderDetailContent').innerHTML=html;
+  openModal('viewOrderModal');
+}
+
+function deleteOrder(idx){
+  if(!confirm('هل أنت متأكد من حذف هذا الطلب؟'))return;
+  var all=gv('orders',[]);
+  var filtered=adminOrderFilter==='all'?all:all.filter(function(o){return o.status===adminOrderFilter||(adminOrderFilter==='new'&&!o.status);});
+  var target=filtered[idx];
+  if(!target)return;
+  var fullIdx=all.indexOf(target);
+  if(fullIdx>=0){all.splice(fullIdx,1);sv('orders',all);}
+  notify('تم حذف الطلب','success');
+  renderAdminOrders();
+}
+
+// ── QUOTES ─────────────────────────────────────────────────────────────────
+function renderQuotes(){
+  var quotes=gv('quotes',[]);
+  var tb=document.getElementById('quotesBody');
+  if(!quotes||!quotes.length){tb.innerHTML='<tr><td colspan="8" style="text-align:center;color:#aab4c0;padding:24px;">لا توجد عروض أسعار</td></tr>';return;}
+  tb.innerHTML=quotes.map(function(q,i){
+    return`<tr>
+      <td>${i+1}</td><td>${escHtml(q.name||'—')}</td><td>${escHtml(q.phone||'—')}</td>
+      <td>${escHtml(q.email||'—')}</td><td>${escHtml(q.service||'—')}</td>
+      <td>${escHtml(q.budget||'—')}</td><td>${fmtDate(q.date||q.createdAt)}</td>
+      <td><button class="btn btn-sm btn-danger" onclick="deleteQuote(${i})"><i class="fas fa-trash"></i></button></td>
+    </tr>`;
+  }).join('');
+}
+function deleteQuote(i){
+  if(!confirm('حذف هذا العرض؟'))return;
+  var q=gv('quotes',[]);q.splice(i,1);sv('quotes',q);renderQuotes();notify('تم الحذف','success');
+}
+
+// ── MESSAGES ───────────────────────────────────────────────────────────────
+function renderMessages(){
+  var msgs=gv('messages',[]);
+  var tb=document.getElementById('messagesBody');
+  var base=[{from:'عميل جديد',text:'أريد الاستفسار عن خدمات التصميم',time:'اليوم',read:false}];
+  var all=msgs.length?msgs:base;
+  tb.innerHTML=all.map(function(m,i){
+    return`<tr>
+      <td>${i+1}</td><td>${escHtml(m.from||'—')}</td><td>${escHtml(m.text||'—')}</td>
+      <td>${escHtml(m.time||m.date||'—')}</td>
+      <td>${m.read?'<span class="badge badge-done">مقروءة</span>':'<span class="badge badge-new">جديدة</span>'}</td>
+      <td><button class="btn btn-sm btn-success" onclick="replyMessage(this)"><i class="fas fa-reply"></i> رد</button></td>
+    </tr>`;
+  }).join('');
+}
+function replyMessage(btn){notify('سيتم فتح نافذة الرد قريباً','info');}
+
+// ── USERS ──────────────────────────────────────────────────────────────────
+function renderUsers(){
+  var users=gv('users',[]);
+  var tb=document.getElementById('usersBody');
+  var base=[{name:'المدير العام',email:'admin@visionmedia.sa',phone:'0543944248',role:'admin',createdAt:new Date().toISOString()}];
+  var all=users.length?users:base;
+  tb.innerHTML=all.map(function(u,i){
+    return`<tr>
+      <td>${i+1}</td><td>${escHtml(u.name||'—')}</td><td>${escHtml(u.email||'—')}</td>
+      <td>${escHtml(u.phone||'—')}</td>
+      <td>${u.role==='admin'?'<span class="badge badge-admin">أدمن</span>':'<span class="badge badge-client">عميل</span>'}</td>
+      <td>${fmtDate(u.createdAt||u.date)}</td>
+      <td>
+        <button class="btn btn-sm btn-danger" onclick="deleteUserRecord(${i})"><i class="fas fa-trash"></i></button>
+      </td>
+    </tr>`;
+  }).join('');
+}
+function submitAddUser(e){
+  e.preventDefault();
+  var users=gv('users',[]);
+  var newUser={name:document.getElementById('nuName').value,email:document.getElementById('nuEmail').value,phone:document.getElementById('nuPhone').value,role:document.getElementById('nuRole').value,password:document.getElementById('nuPass').value,createdAt:new Date().toISOString()};
+  users.push(newUser);sv('users',users);
+  closeModal('addUserModal');e.target.reset();
+  renderUsers();notify('تم إضافة المستخدم بنجاح','success');
+}
+function deleteUserRecord(i){
+  if(!confirm('حذف هذا المستخدم؟'))return;
+  var users=gv('users',[]);
+  if(!users.length)return;
+  users.splice(i,1);sv('users',users);renderUsers();notify('تم الحذف','success');
+}
+function deleteUser(i,btn){deleteUserRecord(i);}
+
+// ── SERVICES ───────────────────────────────────────────────────────────────
+var defaultServices=[
+  {name:'إعلانات السوشيال ميديا',icon:'fas fa-share-alt',desc:'إدارة حملات إعلانية متكاملة على جميع المنصات',subs:['فيسبوك','إنستجرام','تويتر','تيك توك','سناب شات']},
+  {name:'تصميم الهوية البصرية',icon:'fas fa-palette',desc:'تصميم شعارات وهويات بصرية احترافية',subs:['تصميم الشعار','الهوية الكاملة','بطاقات الأعمال','الملفات التعريفية']},
+  {name:'إنتاج الفيديو والموشن',icon:'fas fa-film',desc:'إنتاج فيديوهات ومحتوى مرئي إبداعي',subs:['إعلانات تلفزيونية','فيديوهات موشن جرافيك','ريلز ومحتوى سوشيال']},
+  {name:'تطوير المواقع',icon:'fas fa-code',desc:'تصميم وتطوير مواقع إلكترونية احترافية',subs:['موقع شركات','متجر إلكتروني','صفحة هبوط','موقع شخصي']},
+  {name:'إدارة السوشيال ميديا',icon:'fas fa-hashtag',desc:'إدارة منصات التواصل الاجتماعي',subs:['جدولة المحتوى','الردود والتفاعل','التقارير الشهرية']},
+  {name:'التصوير الفوتوغرافي',icon:'fas fa-camera',desc:'تصوير منتجات وأشخاص وفعاليات',subs:['تصوير منتجات','تصوير فعاليات','تصوير أفراد']},
+  {name:'الطباعة والدعاية',icon:'fas fa-print',desc:'طباعة مواد دعائية وتسويقية',subs:['بروشورات','لافتات','مطبوعات تجارية']},
+  {name:'استشارات التسويق',icon:'fas fa-chart-line',desc:'استشارات وخطط تسويقية متكاملة',subs:['تحليل السوق','خطة التسويق','استشارات SEO']},
+  {name:'حملات جوجل',icon:'fab fa-google',desc:'إعلانات جوجل وحملات البحث المدفوع',subs:['Google Ads','Google Display','YouTube Ads']},
+  {name:'تصميم UI/UX',icon:'fas fa-mobile-alt',desc:'تصميم واجهات المستخدم وتجربة المستخدم',subs:['تصميم تطبيقات','تصميم مواقع','نماذج أولية']},
+  {name:'المحتوى الإبداعي',icon:'fas fa-pen-nib',desc:'كتابة وإنتاج محتوى إبداعي',subs:['كتابة محتوى','ترجمة','سيناريو']},
+  {name:'البث المباشر',icon:'fas fa-broadcast-tower',desc:'خدمات البث المباشر والتغطية',subs:['بث مباشر','تغطية فعاليات']},
+  {name:'تطبيقات الجوال',icon:'fas fa-tablet-alt',desc:'تطوير تطبيقات iOS وAndroid',subs:['iOS','Android','React Native']},
+  {name:'الإعلانات الخارجية',icon:'fas fa-ad',desc:'لوحات إعلانية ومواد خارجية',subs:['لوحات ليد','إعلانات مطارات','إعلانات طرق']},
+  {name:'العلاقات العامة',icon:'fas fa-bullhorn',desc:'خدمات العلاقات العامة والإعلام',subs:['بيانات صحفية','تغطية إعلامية','إدارة السمعة']}
+];
+var editingServiceIdx=-1;
+function renderServices(){
+  var svcs=gv('services',defaultServices);
+  var tb=document.getElementById('servicesBody');
+  tb.innerHTML=svcs.map(function(s,i){
+    return`<tr>
+      <td>${i+1}</td>
+      <td><i class="${escHtml(s.icon)}" style="color:var(--accent);margin-left:6px;"></i>${escHtml(s.name)}</td>
+      <td><code style="font-size:11px;">${escHtml(s.icon)}</code></td>
+      <td>${(s.subs||[]).length} خدمة</td>
+      <td><button class="btn btn-sm btn-warning" onclick="editService(${i})"><i class="fas fa-edit"></i> تعديل</button></td>
+    </tr>`;
+  }).join('');
+}
+function editService(i){
+  var svcs=gv('services',defaultServices);
+  var s=svcs[i];editingServiceIdx=i;
+  document.getElementById('svcName').value=s.name||'';
+  document.getElementById('svcIcon').value=s.icon||'';
+  document.getElementById('svcDesc').value=s.desc||'';
+  document.getElementById('svcSubs').value=(s.subs||[]).join('\n');
+  document.getElementById('serviceFormTitle').textContent='تحرير: '+s.name;
+  document.getElementById('serviceEditForm').style.display='block';
+  document.getElementById('serviceEditForm').scrollIntoView({behavior:'smooth'});
+}
+function openNewService(){
+  editingServiceIdx=-1;
+  document.getElementById('svcName').value='';document.getElementById('svcIcon').value='';
+  document.getElementById('svcDesc').value='';document.getElementById('svcSubs').value='';
+  document.getElementById('serviceFormTitle').textContent='إضافة خدمة جديدة';
+  document.getElementById('serviceEditForm').style.display='block';
+  document.getElementById('serviceEditForm').scrollIntoView({behavior:'smooth'});
+}
+function saveService(){
+  var svcs=gv('services',defaultServices);
+  var svc={name:document.getElementById('svcName').value,icon:document.getElementById('svcIcon').value,desc:document.getElementById('svcDesc').value,subs:document.getElementById('svcSubs').value.split('\n').map(function(s){return s.trim();}).filter(Boolean)};
+  if(editingServiceIdx>=0)svcs[editingServiceIdx]=svc;else svcs.push(svc);
+  sv('services',svcs);document.getElementById('serviceEditForm').style.display='none';
+  renderServices();notify('تم حفظ الخدمة بنجاح','success');
+}
+
+// ── PORTFOLIO ──────────────────────────────────────────────────────────────
+function togglePortfolioForm(){var f=document.getElementById('portfolioFormCard');f.style.display=f.style.display==='none'?'block':'none';}
+function renderPortfolio(){
+  var items=gv('portfolio',[]);
+  var tb=document.getElementById('portfolioBody');
+  if(!items.length){tb.innerHTML='<tr><td colspan="6" style="text-align:center;color:#aab4c0;padding:24px;">لا توجد أعمال بعد</td></tr>';return;}
+  tb.innerHTML=items.map(function(p,i){
+    return`<tr><td>${i+1}</td><td>${escHtml(p.title||'—')}</td><td>${escHtml(p.client||'—')}</td><td>${escHtml(p.category||'—')}</td><td>${fmtDate(p.date)}</td>
+    <td><button class="btn btn-sm btn-danger" onclick="deletePortfolio(${i})"><i class="fas fa-trash"></i></button></td></tr>`;
+  }).join('');
+}
+function savePortfolio(){
+  var items=gv('portfolio',[]);
+  items.push({title:document.getElementById('ptTitle').value,client:document.getElementById('ptClient').value,category:document.getElementById('ptCategory').value,date:document.getElementById('ptDate').value,desc:document.getElementById('ptDesc').value});
+  sv('portfolio',items);document.getElementById('portfolioFormCard').style.display='none';
+  renderPortfolio();notify('تم حفظ العمل بنجاح','success');
+}
+function deletePortfolio(i){if(!confirm('حذف هذا العمل؟'))return;var items=gv('portfolio',[]);items.splice(i,1);sv('portfolio',items);renderPortfolio();notify('تم الحذف','success');}
+
+// ── ARTICLES ───────────────────────────────────────────────────────────────
+function toggleArticleForm(){var f=document.getElementById('articleFormCard');f.style.display=f.style.display==='none'?'block':'none';}
+function renderArticles(){
+  var articles=gv('articles',[]);
+  var tb=document.getElementById('articlesBody');
+  if(!articles.length){tb.innerHTML='<tr><td colspan="5" style="text-align:center;color:#aab4c0;padding:24px;">لا توجد مقالات</td></tr>';return;}
+  tb.innerHTML=articles.map(function(a,i){
+    return`<tr><td>${i+1}</td><td>${escHtml(a.title||'—')}</td><td>${escHtml(a.category||'—')}</td><td>${fmtDate(a.date)}</td>
+    <td style="white-space:nowrap;">
+      <button class="btn btn-sm btn-warning" onclick="editArticle(${i})" style="margin-left:4px;"><i class="fas fa-edit"></i></button>
+      <button class="btn btn-sm btn-danger" onclick="deleteArticle(${i})"><i class="fas fa-trash"></i></button>
+    </td></tr>`;
+  }).join('');
+}
+function editArticle(i){
+  var articles=gv('articles',[]);var a=articles[i];
+  document.getElementById('artTitle').value=a.title||'';
+  document.getElementById('artCategory').value=a.category||'';
+  document.getElementById('artDate').value=a.date||'';
+  document.getElementById('artContent').value=a.content||'';
+  document.getElementById('articleEditIdx').value=i;
+  document.getElementById('articleFormTitle').textContent='تعديل المقال';
+  document.getElementById('articleFormCard').style.display='block';
+  document.getElementById('articleFormCard').scrollIntoView({behavior:'smooth'});
+}
+function saveArticle(){
+  var articles=gv('articles',[]);
+  var idx=parseInt(document.getElementById('articleEditIdx').value);
+  var art={title:document.getElementById('artTitle').value,category:document.getElementById('artCategory').value,date:document.getElementById('artDate').value,content:document.getElementById('artContent').value};
+  if(idx>=0)articles[idx]=art;else articles.push(art);
+  sv('articles',articles);document.getElementById('articleFormCard').style.display='none';
+  document.getElementById('articleEditIdx').value='-1';document.getElementById('articleFormTitle').textContent='كتابة مقال جديد';
+  renderArticles();notify('تم حفظ المقال بنجاح','success');
+}
+function deleteArticle(i){if(!confirm('حذف هذا المقال؟'))return;var articles=gv('articles',[]);articles.splice(i,1);sv('articles',articles);renderArticles();notify('تم الحذف','success');}
+
+// ── CLIENTS ────────────────────────────────────────────────────────────────
+function toggleClientForm(){var f=document.getElementById('clientFormCard');f.style.display=f.style.display==='none'?'block':'none';}
+function renderClients(){
+  var clients=gv('clients',[]);
+  var tb=document.getElementById('clientsBody');
+  if(!clients.length){tb.innerHTML='<tr><td colspan="7" style="text-align:center;color:#aab4c0;padding:24px;">لا توجد بيانات</td></tr>';return;}
+  tb.innerHTML=clients.map(function(c,i){
+    return`<tr><td>${i+1}</td><td>${escHtml(c.name||'—')}</td><td>${escHtml(c.company||'—')}</td><td>${escHtml(c.email||'—')}</td><td>${escHtml(c.phone||'—')}</td>
+    <td>${c.type==='partner'?'<span class="badge badge-admin">شريك</span>':'<span class="badge badge-client">عميل</span>'}</td>
+    <td><button class="btn btn-sm btn-danger" onclick="deleteClient(${i})"><i class="fas fa-trash"></i></button></td></tr>`;
+  }).join('');
+}
+function saveClient(){
+  var clients=gv('clients',[]);
+  clients.push({name:document.getElementById('clName').value,company:document.getElementById('clCompany').value,email:document.getElementById('clEmail').value,phone:document.getElementById('clPhone').value,type:document.getElementById('clType').value});
+  sv('clients',clients);document.getElementById('clientFormCard').style.display='none';
+  renderClients();notify('تم الحفظ بنجاح','success');
+}
+function deleteClient(i){if(!confirm('حذف هذا العميل؟'))return;var cl=gv('clients',[]);cl.splice(i,1);sv('clients',cl);renderClients();notify('تم الحذف','success');}
+
+// ── VISITS ─────────────────────────────────────────────────────────────────
+function renderVisits(){
+  var visits=gv('visits',[]);
+  var now=new Date();var today=now.toDateString();
+  var weekAgo=new Date(now.getTime()-7*24*60*60*1000);
+  var monthAgo=new Date(now.getFullYear(),now.getMonth(),1);
+  document.getElementById('visToday').textContent=visits.filter(function(v){try{return new Date(v.date).toDateString()===today;}catch(e){return false;}}).length;
+  document.getElementById('visWeek').textContent=visits.filter(function(v){try{return new Date(v.date)>=weekAgo;}catch(e){return false;}}).length;
+  document.getElementById('visMonth').textContent=visits.filter(function(v){try{return new Date(v.date)>=monthAgo;}catch(e){return false;}}).length;
+  var tb=document.getElementById('visitsBody');
+  if(!visits.length){tb.innerHTML='<tr><td colspan="6" style="text-align:center;color:#aab4c0;padding:24px;">لا توجد زيارات مسجلة</td></tr>';return;}
+  tb.innerHTML=visits.slice().reverse().slice(0,50).map(function(v,i){
+    return`<tr><td>${i+1}</td><td>${escHtml(v.page||'/')}</td><td>${fmtDate(v.date)}</td><td>${escHtml(v.time||'—')}</td><td>${escHtml(v.device||'—')}</td><td>${escHtml(v.source||'—')}</td></tr>`;
+  }).join('');
+}
+
+// ── EMPLOYEES ──────────────────────────────────────────────────────────────
+function renderEmployees(){
+  var emps=gv('employees',[]);
+  var tb=document.getElementById('employeesBody');
+  if(!emps.length){tb.innerHTML='<tr><td colspan="8" style="text-align:center;color:#aab4c0;padding:24px;">لا يوجد موظفون</td></tr>';return;}
+  tb.innerHTML=emps.map(function(e,i){
+    return`<tr><td>${i+1}</td><td>${escHtml(e.name||'—')}</td><td>${escHtml(e.title||'—')}</td><td>${escHtml(e.phone||'—')}</td><td>${escHtml(e.email||'—')}</td>
+    <td>${escHtml(e.salary?e.salary+' ريال':'—')}</td><td>${fmtDate(e.hireDate)}</td>
+    <td><button class="btn btn-sm btn-danger" onclick="deleteEmployee(${i})"><i class="fas fa-trash"></i></button></td></tr>`;
+  }).join('');
+}
+function submitAddEmp(e){
+  e.preventDefault();
+  var emps=gv('employees',[]);
+  emps.push({name:document.getElementById('empName').value,title:document.getElementById('empTitle').value,phone:document.getElementById('empPhone').value,email:document.getElementById('empEmail').value,salary:document.getElementById('empSalary').value,hireDate:document.getElementById('empHireDate').value});
+  sv('employees',emps);closeModal('addEmpModal');e.target.reset();
+  renderEmployees();notify('تم إضافة الموظف بنجاح','success');
+}
+function deleteEmployee(i){
+  if(!confirm('حذف هذا الموظف؟'))return;
+  var emps=gv('employees',[]);emps.splice(i,1);sv('employees',emps);renderEmployees();notify('تم الحذف','success');
+}
+
+// ── ATTENDANCE ─────────────────────────────────────────────────────────────
+function renderAttendance(){
+  var emps=gv('employees',[]);
+  var grid=document.getElementById('attendGrid');
+  if(!emps.length){grid.innerHTML='<div style="text-align:center;color:#aab4c0;grid-column:1/-1;padding:32px;">أضف موظفين أولاً من قسم الموظفين</div>';return;}
+  var date=document.getElementById('attendDate').value||new Date().toISOString().slice(0,10);
+  var saved=gv('attendance_'+date,{});
+  grid.innerHTML=emps.map(function(emp,i){
+    var status=saved[i]||'';
+    return`<div class="attend-card">
+      <div class="emp-name">${escHtml(emp.name)}</div>
+      <div style="font-size:10px;color:#aab4c0;margin-bottom:8px;">${escHtml(emp.title||'')}</div>
+      <div class="attend-btns">
+        <button class="attend-btn attend-present ${status==='present'?'sel':''}" onclick="setAttend(${i},'present',this)">${status==='present'?'✓ ':''}حاضر</button>
+        <button class="attend-btn attend-absent ${status==='absent'?'sel':''}" onclick="setAttend(${i},'absent',this)">${status==='absent'?'✗ ':''}غائب</button>
+        <button class="attend-btn attend-leave ${status==='leave'?'sel':''}" onclick="setAttend(${i},'leave',this)">إجازة</button>
+      </div>
+    </div>`;
+  }).join('');
+  updateAttendSummary(saved,emps.length);
+}
+function setAttend(idx,status,btn){
+  var date=document.getElementById('attendDate').value||new Date().toISOString().slice(0,10);
+  var saved=gv('attendance_'+date,{});
+  saved[idx]=status;sv('attendance_'+date,saved);
+  var parentCard=btn.closest('.attend-card');
+  parentCard.querySelectorAll('.attend-btn').forEach(function(b){b.classList.remove('sel');b.textContent=b.textContent.replace(/^[✓✗] /,'');});
+  btn.classList.add('sel');
+  var emps=gv('employees',[]);
+  updateAttendSummary(saved,emps.length);
+}
+function updateAttendSummary(saved,total){
+  var vals=Object.values(saved);
+  document.getElementById('attPresent').textContent=vals.filter(function(v){return v==='present';}).length;
+  document.getElementById('attAbsent').textContent=vals.filter(function(v){return v==='absent';}).length;
+  document.getElementById('attLeave').textContent=vals.filter(function(v){return v==='leave';}).length;
+}
+function saveAttendance(){notify('تم حفظ سجل الحضور','success');}
+
+// ── SALARIES ───────────────────────────────────────────────────────────────
+function renderSalaries(){calcSalaries();}
+function calcSalaries(){
+  var emps=gv('employees',[]);
+  var tb=document.getElementById('salariesBody');
+  if(!emps.length){tb.innerHTML='<tr><td colspan="7" style="text-align:center;color:#aab4c0;padding:24px;">لا توجد بيانات رواتب</td></tr>';return;}
+  tb.innerHTML=emps.map(function(emp,i){
+    var base=parseFloat(emp.salary||0);
+    var allowances=base*0.25;
+    var deductions=base*0.05;
+    var net=base+allowances-deductions;
+    return`<tr>
+      <td>${i+1}</td><td>${escHtml(emp.name)}</td>
+      <td>${base.toLocaleString('ar-SA')} ريال</td>
+      <td>${allowances.toLocaleString('ar-SA')} ريال</td>
+      <td>${deductions.toLocaleString('ar-SA')} ريال</td>
+      <td><strong style="color:#2e7d32;">${net.toLocaleString('ar-SA')} ريال</strong></td>
+      <td><button class="btn btn-sm btn-outline" onclick="printSalary(${i})"><i class="fas fa-print"></i></button></td>
+    </tr>`;
+  }).join('');
+}
+function printSalary(i){notify('طباعة قسيمة الراتب - قريباً','info');}
+
+// ── NOTIFICATIONS ──────────────────────────────────────────────────────────
+document.getElementById('notifTarget').addEventListener('change',function(){
+  document.getElementById('specificUserGroup').style.display=this.value==='specific'?'block':'none';
+});
+function sendNotification(){
+  var title=document.getElementById('notifTitle').value.trim();
+  var text=document.getElementById('notifText').value.trim();
+  if(!title||!text){notify('الرجاء ملء جميع الحقول','error');return;}
+  var log=gv('notifLog',[]);
+  log.push({title,text,target:document.getElementById('notifTarget').value,date:new Date().toISOString()});
+  sv('notifLog',log);
+  document.getElementById('notifTitle').value='';document.getElementById('notifText').value='';
+  renderNotifLog();notify('تم إرسال الإشعار بنجاح','success');
+}
+function renderNotifLog(){
+  var log=gv('notifLog',[]);
+  var el=document.getElementById('notifLog');
+  if(!log.length){el.innerHTML='<div style="text-align:center;color:#aab4c0;padding:24px;">لم يتم إرسال أي إشعارات بعد</div>';return;}
+  el.innerHTML=log.slice().reverse().map(function(n,i){
+    return`<div style="padding:14px 18px;border-bottom:1px solid #f0f4f8;display:flex;align-items:flex-start;gap:12px;">
+      <div style="width:36px;height:36px;border-radius:50%;background:rgba(201,162,39,0.15);display:flex;align-items:center;justify-content:center;color:var(--accent);font-size:15px;flex-shrink:0;"><i class="fas fa-bell"></i></div>
+      <div style="flex:1;">
+        <div style="font-size:13px;font-weight:700;color:var(--primary);">${escHtml(n.title)}</div>
+        <div style="font-size:12px;color:#7a8ca0;margin-top:2px;">${escHtml(n.text)}</div>
+        <div style="font-size:10px;color:#aab4c0;margin-top:4px;">${fmtDate(n.date)} · ${n.target==='all'?'جميع المستخدمين':n.target==='clients'?'العملاء':n.target}</div>
+      </div>
+      <button class="btn btn-sm btn-danger" onclick="deleteNotifLog(${log.length-1-i})"><i class="fas fa-trash"></i></button>
+    </div>`;
+  }).join('');
+}
+function deleteNotifLog(i){
+  var log=gv('notifLog',[]);log.splice(i,1);sv('notifLog',log);renderNotifLog();
+}
+
+// ── SETTINGS ───────────────────────────────────────────────────────────────
+function loadSettings(){
+  var s=gv('siteSettings',{});
+  if(s.company)document.getElementById('stCompany').value=s.company;
+  if(s.logoText)document.getElementById('stLogoText').value=s.logoText;
+  if(s.email)document.getElementById('stEmail').value=s.email;
+  if(s.phone)document.getElementById('stPhone').value=s.phone;
+  if(s.whatsapp)document.getElementById('stWhatsapp').value=s.whatsapp;
+  if(s.color1)document.getElementById('stColor1').value=s.color1;
+  if(s.color2)document.getElementById('stColor2').value=s.color2;
+  if(s.desc)document.getElementById('stDesc').value=s.desc;
+  if(s.twitter)document.getElementById('stTwitter').value=s.twitter;
+  if(s.instagram)document.getElementById('stInstagram').value=s.instagram;
+  if(s.facebook)document.getElementById('stFacebook').value=s.facebook;
+  if(s.snapchat)document.getElementById('stSnapchat').value=s.snapchat;
+  if(s.tiktok)document.getElementById('stTiktok').value=s.tiktok;
+  if(s.linkedin)document.getElementById('stLinkedin').value=s.linkedin;
+}
+function saveSettings(e){
+  e.preventDefault();
+  var s={
+    company:document.getElementById('stCompany').value,
+    logoText:document.getElementById('stLogoText').value,
+    email:document.getElementById('stEmail').value,
+    phone:document.getElementById('stPhone').value,
+    whatsapp:document.getElementById('stWhatsapp').value,
+    color1:document.getElementById('stColor1').value,
+    color2:document.getElementById('stColor2').value,
+    desc:document.getElementById('stDesc').value,
+    twitter:document.getElementById('stTwitter').value,
+    instagram:document.getElementById('stInstagram').value,
+    facebook:document.getElementById('stFacebook').value,
+    snapchat:document.getElementById('stSnapchat').value,
+    tiktok:document.getElementById('stTiktok').value,
+    linkedin:document.getElementById('stLinkedin').value
+  };
+  sv('siteSettings',s);
+  notify('تم حفظ إعدادات الموقع بنجاح','success');
+}
+
+
+// ── FULL CMS / AI / REVIEWS EXTENSIONS ─────────────────────────────────────
+function saveCmsPage(){var pages=gv('cmsPages',[]);pages.push({id:Date.now(),title:document.getElementById('cmsPageTitle').value,slug:document.getElementById('cmsPageSlug').value,content:document.getElementById('cmsPageContent').value,visible:true,createdAt:new Date().toISOString()});sv('cmsPages',pages);renderCms();notify('تم حفظ الصفحة','success');}
+function saveCmsSection(){var sections=gv('cmsSections',[]);sections.push({id:Date.now(),title:document.getElementById('cmsSectionTitle').value,position:document.getElementById('cmsSectionPosition').value,content:document.getElementById('cmsSectionContent').value,visible:true,createdAt:new Date().toISOString()});sv('cmsSections',sections);renderCms();notify('تم حفظ القسم','success');}
+function renderCms(){var pages=gv('cmsPages',[]),sections=gv('cmsSections',[]);var pc=document.getElementById('cmsPagesCount'),sc=document.getElementById('cmsSectionsCount'),list=document.getElementById('cmsList');if(pc)pc.textContent=pages.length;if(sc)sc.textContent=sections.length;if(list)list.innerHTML=[...pages.map(x=>({type:'صفحة',...x})),...sections.map(x=>({type:'قسم',...x}))].map(x=>`<div style="padding:12px;border-bottom:1px solid #eee;display:flex;justify-content:space-between;gap:10px"><b>${x.type}: ${escHtml(x.title||'بدون عنوان')}</b><span>${x.visible?'ظاهر':'مخفي'} · ${x.createdAt?fmtDate(x.createdAt):''}</span></div>`).join('')||'لا توجد عناصر';}
+function saveAiSettings(){sv('aiSettings',{enabled:document.getElementById('aiEnabled').checked,prompt:document.getElementById('aiPrompt').value});notify('تم حفظ إعدادات المساعد','success');}
+function sendAdminChatDemo(){var m=document.getElementById('adminChatReply').value.trim();if(!m)return notify('اكتب الرد أولاً','error');var chats=gv('supportChats',[]);chats.push({from:'admin',text:m,createdAt:new Date().toISOString()});sv('supportChats',chats);renderChatAdmin();notify('تم حفظ الرد','success');}
+function renderChatAdmin(){var el=document.getElementById('chatAdminList');if(el){var chats=gv('supportChats',[]);el.innerHTML=chats.slice(-8).map(c=>`<div style="padding:10px;border-radius:10px;background:#f8fafc;margin-bottom:8px"><b>${c.from==='admin'?'الأدمن':'العميل'}:</b> ${escHtml(c.text||'')}</div>`).join('')||'لا توجد محادثات بعد';}}
+function addDemoReview(){var r=gv('reviews',[]);r.push({id:Date.now(),name:'عميل VISION MEDIA',stars:5,text:'خدمة ممتازة وسرعة في التنفيذ',status:'pending'});sv('reviews',r);renderReviews();}
+function setReviewStatus(id,status){var r=gv('reviews',[]);var x=r.find(a=>a.id==id);if(x)x.status=status;sv('reviews',r);renderReviews();}
+function deleteReview(id){var r=gv('reviews',[]).filter(a=>a.id!=id);sv('reviews',r);renderReviews();}
+function renderReviews(){var el=document.getElementById('reviewsList');if(el){var r=gv('reviews',[]);el.innerHTML=r.map(x=>`<div style="padding:14px;border-bottom:1px solid #eee"><b>${escHtml(x.name)}</b> — ${'★'.repeat(x.stars||5)} <span class="badge ${x.status==='approved'?'badge-progress':'badge-review'}">${x.status}</span><p>${escHtml(x.text)}</p><button class="btn btn-sm btn-success" onclick="setReviewStatus(${x.id},'approved')">قبول</button> <button class="btn btn-sm btn-warning" onclick="setReviewStatus(${x.id},'rejected')">رفض</button> <button class="btn btn-sm btn-danger" onclick="deleteReview(${x.id})">حذف</button></div>`).join('')||'لا توجد تقييمات';}}
+setTimeout(function(){renderCms();renderChatAdmin();renderReviews();},300);
+
+// ── LOGOUT ─────────────────────────────────────────────────────────────────
+function handleAdminLogout(){
+  if(confirm('هل أنت متأكد من تسجيل الخروج؟')){
+    if(window.VMAdminAuth){VMAdminAuth.logout();return;}
+    if(typeof VM!=='undefined'&&VM.auth&&VM.auth.logout)VM.auth.logout();
+    else{localStorage.removeItem('vm_currentUser');localStorage.removeItem('vm_admin_session');localStorage.removeItem('currentUser');sessionStorage.clear();document.cookie='vm_admin_ok=; path=/; max-age=0';window.location.href='admin.html';}
+  }
+}
+</script>
+<script src="vip-upgrade.js"></script>
+<script src="legal-system.js"></script>
+<script src="final-layout-fixes.js"></script>
+<script src="admin-enterprise.js"></script>
+<script src="admin-enterprise-v2.js"></script>
+<script src="enterprise-attendance-system.js"></script>
+<script src="enterprise-security-forms-notifications.js"></script>
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script src="enterprise-bio-geo.js"></script>
+<script src="vm-biometric-map-only.js"></script></body>
+</html>

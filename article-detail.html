@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>VISION MEDIA | شركة دعاية وإعلان احترافية</title>
+  <meta name="description" content="VISION MEDIA - شركة متخصصة في التسويق الرقمي وتصميم الهوية التجارية وإنتاج المحتوى الإعلاني الاحترافي">
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="pages.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <style>
+    /* ---- Marquee ---- */
+    .marquee-section { background: var(--accent); padding: 14px 0; overflow: hidden; }
+    .marquee-track { display: flex; gap: 60px; animation: marquee 25s linear infinite; white-space: nowrap; }
+    .marquee-item { display: flex; align-items: center; gap: 10px; font-weight: 700; font-size: 14px; color: var(--primary); }
+    .marquee-item i { font-size: 12px; }
+    @keyframes marquee { from{transform:translateX(0)} to{transform:translateX(-50%)} }
+
+    /* ---- Services Grid Home ---- */
+    .services-home { background: var(--off-white); }
+    .services-home-grid { display: grid; grid-template-columns: repeat(5,1fr); gap: 18px; }
+    @media(max-width:1100px){ .services-home-grid{grid-template-columns:repeat(3,1fr);} }
+    @media(max-width:700px){ .services-home-grid{grid-template-columns:repeat(2,1fr);} }
+    @media(max-width:400px){ .services-home-grid{grid-template-columns:1fr;} }
+
+    /* ---- Why Us ---- */
+    .why-us-grid { display: grid; grid-template-columns: repeat(4,1fr); gap: 24px; }
+    .why-card { text-align: center; padding: 40px 20px; background: var(--white); border-radius: var(--radius-lg); box-shadow: var(--shadow); transition: var(--transition); }
+    .why-card:hover { transform: translateY(-8px); box-shadow: var(--shadow-lg); }
+    .why-icon { width: 70px; height: 70px; border-radius: 50%; background: linear-gradient(135deg,var(--primary-light),var(--primary)); display: flex; align-items: center; justify-content: center; margin: 0 auto 18px; font-size: 26px; color: var(--accent); }
+    .why-card h4 { color: var(--primary); margin-bottom: 10px; font-size: 15px; }
+    .why-card p { font-size: 13.5px; color: var(--text-muted); }
+    @media(max-width:900px){ .why-us-grid{grid-template-columns:repeat(2,1fr);} }
+    @media(max-width:500px){ .why-us-grid{grid-template-columns:1fr;} }
+
+    /* ---- Process ---- */
+    .process-section { background: var(--dark); }
+    .process-grid { display: grid; grid-template-columns: repeat(5,1fr); gap: 0; position: relative; }
+    .process-grid::before { content:''; position:absolute; top:40px; right:10%; left:10%; height:2px; background:linear-gradient(90deg,var(--accent),transparent); }
+    .process-step { text-align: center; padding: 20px; position: relative; }
+    .process-num { width: 80px; height: 80px; border-radius: 50%; background: linear-gradient(135deg,var(--accent),var(--accent-light)); color: var(--primary); font-size: 24px; font-weight: 900; display: flex; align-items: center; justify-content: center; margin: 0 auto 16px; box-shadow: 0 4px 20px rgba(201,162,39,0.4); }
+    .process-step h4 { color: var(--white); font-size: 14px; margin-bottom: 8px; }
+    .process-step p { color: rgba(255,255,255,0.55); font-size: 12.5px; }
+    @media(max-width:900px){ .process-grid{grid-template-columns:repeat(3,1fr);} .process-grid::before{display:none;} }
+    @media(max-width:500px){ .process-grid{grid-template-columns:1fr 1fr;} }
+
+    /* ---- Portfolio Preview ---- */
+    .portfolio-grid-home { display: grid; grid-template-columns: repeat(3,1fr); gap: 20px; }
+    .portfolio-item { border-radius: var(--radius-lg); overflow: hidden; position: relative; aspect-ratio: 4/3; cursor: pointer; }
+    .portfolio-item img { width:100%; height:100%; object-fit:cover; transition: transform 0.5s ease; }
+    .portfolio-item:hover img { transform: scale(1.08); }
+    .portfolio-overlay { position:absolute; inset:0; background:linear-gradient(to top,rgba(13,27,46,0.9),transparent); display:flex; flex-direction:column; justify-content:flex-end; padding:20px; opacity:0; transition:var(--transition); }
+    .portfolio-item:hover .portfolio-overlay { opacity:1; }
+    .portfolio-overlay h4 { color:var(--white); font-size:15px; margin-bottom:4px; }
+    .portfolio-overlay span { color:var(--accent); font-size:12px; }
+    @media(max-width:768px){ .portfolio-grid-home{grid-template-columns:repeat(2,1fr);} }
+    @media(max-width:480px){ .portfolio-grid-home{grid-template-columns:1fr;} }
+
+    /* ---- Clients ---- */
+    .clients-logos { display: flex; align-items: center; justify-content: center; gap: 40px; flex-wrap: wrap; }
+    .client-logo { width: 120px; height: 60px; background: var(--light); border-radius: 10px; display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 13px; color: var(--gray); transition: var(--transition); border: 1px solid var(--border); }
+    .client-logo:hover { background: var(--primary); color: var(--accent); transform: translateY(-4px); }
+
+    /* ---- Blog Preview ---- */
+    .blog-card { background: var(--white); border-radius: var(--radius-lg); overflow: hidden; box-shadow: var(--shadow); transition: var(--transition); border: 1px solid var(--border); }
+    .blog-card:hover { transform: translateY(-6px); box-shadow: var(--shadow-lg); }
+    .blog-card-img { aspect-ratio: 16/9; overflow: hidden; }
+    .blog-card-img img { width:100%; height:100%; object-fit:cover; transition: transform 0.5s; }
+    .blog-card:hover .blog-card-img img { transform: scale(1.06); }
+    .blog-card-body { padding: 20px; }
+    .blog-card-tag { display:inline-block; background:rgba(201,162,39,0.12); color:#7c6114; font-size:12px; font-weight:700; padding:4px 12px; border-radius:50px; margin-bottom:10px; }
+    .blog-card-body h4 { color:var(--primary); font-size:15px; margin-bottom:8px; line-height:1.5; }
+    .blog-card-body p { font-size:13px; color:var(--text-muted); margin-bottom:14px; }
+    .blog-card-meta { display:flex; gap:16px; font-size:12px; color:var(--gray); }
+    .blog-card-meta i { color:var(--accent); }
+
+    /* ---- Hero Slides ---- */
+    .hero-slides { position: absolute; inset: 0; }
+    .hero-slide { position: absolute; inset: 0; opacity: 0; transition: opacity 1s ease; }
+    .hero-slide.active { opacity: 1; }
+    .hero-slide-bg { width:100%; height:100%; object-fit:cover; }
+  </style>
+  <link rel="stylesheet" href="vip-upgrade.css">
+  <link rel="stylesheet" href="legal-system.css">
+  <link rel="stylesheet" href="final-layout-fixes.css">
+  <link rel="stylesheet" href="enterprise-security-forms-notifications.css">
+  <link rel="stylesheet" href="all-pages-organization-fix.css">
+</head>
+<body>
+<body
+
+<!-- Header -->
+<header class="header" id="header">
+  <nav class="nav container">
+    <a href="index.html" class="nav-logo">VISION <span class="accent">MEDIA</span></a>
+    <ul class="nav-menu" id="navMenu">
+      <li><a href="index.html" class="nav-link active">الرئيسية</a></li>
+      <li><a href="about.html" class="nav-link">من نحن</a></li>
+      <li class="nav-dropdown">
+        <a href="services.html" class="nav-link">خدماتنا <i class="fas fa-chevron-down"></i></a>
+        <div class="dropdown-menu">
+          <div class="dropdown-grid">
+            <a href="service-detail.html?id=1" class="dropdown-item"><i class="fas fa-bullhorn" style="color:#1a73e8;width:16px"></i> التسويق الإلكتروني</a>
+            <a href="service-detail.html?id=2" class="dropdown-item"><i class="fas fa-share-alt" style="color:#e1306c;width:16px"></i> إدارة السوشيال ميديا</a>
+            <a href="service-detail.html?id=3" class="dropdown-item"><i class="fas fa-ad" style="color:#fbbc04;width:16px"></i> الإعلانات الممولة</a>
+            <a href="service-detail.html?id=4" class="dropdown-item"><i class="fas fa-palette" style="color:#9c27b0;width:16px"></i> تصميم الجرافيك</a>
+            <a href="service-detail.html?id=5" class="dropdown-item"><i class="fas fa-trademark" style="color:#ff6d00;width:16px"></i> تصميم الهوية التجارية</a>
+            <a href="service-detail.html?id=6" class="dropdown-item"><i class="fas fa-laptop-code" style="color:#00897b;width:16px"></i> تصميم المواقع</a>
+            <a href="service-detail.html?id=7" class="dropdown-item"><i class="fas fa-shopping-cart" style="color:#2e7d32;width:16px"></i> المتاجر الإلكترونية</a>
+            <a href="service-detail.html?id=8" class="dropdown-item"><i class="fas fa-film" style="color:#c62828;width:16px"></i> إنتاج الفيديو</a>
+            <a href="service-detail.html?id=9" class="dropdown-item"><i class="fas fa-magic" style="color:#6a1b9a;width:16px"></i> الموشن جرافيك</a>
+            <a href="service-detail.html?id=10" class="dropdown-item"><i class="fas fa-camera" style="color:#1565c0;width:16px"></i> التصوير الاحترافي</a>
+            <a href="service-detail.html?id=11" class="dropdown-item"><i class="fas fa-robot" style="color:#00695c;width:16px"></i> صور الذكاء الاصطناعي</a>
+            <a href="service-detail.html?id=12" class="dropdown-item"><i class="fas fa-microchip" style="color:#bf360c;width:16px"></i> فيديو الذكاء الاصطناعي</a>
+            <a href="service-detail.html?id=13" class="dropdown-item"><i class="fas fa-chart-line" style="color:#f57f17;width:16px"></i> إدارة الحملات</a>
+            <a href="service-detail.html?id=14" class="dropdown-item"><i class="fas fa-pen-nib" style="color:#33691e;width:16px"></i> كتابة المحتوى</a>
+            <a href="service-detail.html?id=15" class="dropdown-item"><i class="fas fa-search" style="color:#1a237e;width:16px"></i> تحسين SEO</a>
+          </div>
+          <div class="dropdown-footer">
+            <a href="services.html" class="btn btn-gold btn-sm">عرض جميع الخدمات &larr;</a>
+          </div>
+        </div>
+      </li>
+      <li><a href="portfolio.html" class="nav-link">أعمالنا</a></li>
+      <li><a href="clients.html" class="nav-link">عملاؤنا</a></li>
+      <li><a href="blog.html" class="nav-link">المقالات</a></li>
+      <li><a href="pricing.html" class="nav-link">التسعيرة</a></li>
+      <li><a href="contact.html" class="nav-link">تواصل معنا</a></li>
+    </ul>
+    <div class="nav-actions">
+      <a href="request-service.html" class="btn btn-gold btn-sm">طلب خدمة</a>
+      <a href="login.html" class="btn btn-outline-white btn-sm" id="loginBtn">دخول</a>
+      <button class="nav-toggle" id="navToggle" aria-label="القائمة">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </nav>
+</header>
+
+<section class="page-hero"><div class="container"><div class="page-hero-content"><h1>تفاصيل المقال</h1><div class="breadcrumb"><a href="index.html">الرئيسية</a><i class="fas fa-chevron-left"></i><a href="blog.html">المقالات</a><i class="fas fa-chevron-left"></i><span>تفاصيل المقال</span></div></div></div></section>
+<section class="section"><div class="container" style="max-width:900px"><article style="background:#fff;border:1px solid #e6ebf2;border-radius:22px;padding:34px;box-shadow:0 14px 40px rgba(13,27,46,.07)"><h2>مقال VISION MEDIA</h2><p>هذه الصفحة مخصصة لعرض تفاصيل المقال عند اختيار أي مقال من الموقع. يمكن ربطها لاحقًا ببيانات المقالات من لوحة الأدمن دون تغيير التصميم الحالي.</p><a class="btn btn-primary" href="blog.html">الرجوع للمقالات</a></article></div></section>
+
+<footer class="footer">
+  <div class="footer-top">
+    <div class="container">
+      <div class="footer-grid">
+        <div class="footer-brand">
+          <a href="index.html" class="footer-logo">VISION <span class="accent">MEDIA</span></a>
+          <p>شركة متخصصة في الدعاية والإعلان وحلول التسويق الرقمي الشاملة. نحول رؤيتك إلى واقع إبداعي يحقق أهدافك.</p>
+          <div class="social-links">
+            <a href="https://www.instagram.com/advertisement_portal.46" target="_blank" title="Instagram"><i class="fab fa-instagram"></i></a>
+            <a href="https://www.facebook.com/share/1DszbP1nTB/" target="_blank" title="Facebook"><i class="fab fa-facebook-f"></i></a>
+            <a href="https://www.snapchat.com/add/wael_elsayd2026" target="_blank" title="Snapchat"><i class="fab fa-snapchat-ghost"></i></a>
+            <a href="https://www.tiktok.com/@waelelsayd3" target="_blank" title="TikTok"><i class="fab fa-tiktok"></i></a>
+            <a href="https://youtube.com/channel/UCA0-OJ461Na9MkTZMmgM48A" target="_blank" title="YouTube"><i class="fab fa-youtube"></i></a>
+            <a href="https://x.com/Adverti556" target="_blank" title="X"><i class="fab fa-x-twitter"></i></a>
+          </div>
+        </div>
+        <div class="footer-links">
+          <h4>روابط سريعة</h4>
+          <ul>
+            <li><a href="index.html">الرئيسية</a></li>
+            <li><a href="about.html">من نحن</a></li>
+            <li><a href="services.html">خدماتنا</a></li>
+            <li><a href="portfolio.html">أعمالنا</a></li>
+            <li><a href="clients.html">عملاؤنا</a></li>
+            <li><a href="blog.html">المقالات</a></li>
+            <li><a href="pricing.html">التسعيرة</a></li>
+          </ul>
+        </div>
+        <div class="footer-links">
+          <h4>خدماتنا</h4>
+          <ul>
+            <li><a href="service-detail.html?id=1">التسويق الإلكتروني</a></li>
+            <li><a href="service-detail.html?id=4">تصميم الجرافيك</a></li>
+            <li><a href="service-detail.html?id=5">الهوية التجارية</a></li>
+            <li><a href="service-detail.html?id=6">تصميم المواقع</a></li>
+            <li><a href="service-detail.html?id=8">إنتاج الفيديو</a></li>
+            <li><a href="service-detail.html?id=15">تحسين SEO</a></li>
+          </ul>
+        </div>
+        <div class="footer-contact">
+          <h4>تواصل معنا</h4>
+          <ul>
+            <li><i class="fab fa-whatsapp"></i> <a href="https://wa.me/966543944248">0543944248</a></li>
+            <li><i class="fas fa-phone"></i> <a href="tel:+966538862064">0538862064</a></li>
+            <li><i class="fas fa-envelope"></i> <a href="mailto:waelelsaydahmed@gmail.com">waelelsaydahmed@gmail.com</a></li>
+            <li><i class="fas fa-map-marker-alt"></i> المملكة العربية السعودية</li>
+          </ul>
+          <a href="request-service.html" class="btn btn-gold btn-sm" style="margin-top:8px;">طلب خدمة الآن</a>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <div class="container">
+      <div class="footer-bottom-inner">
+        <p>&copy; 2025 VISION MEDIA. جميع الحقوق محفوظة</p>
+        <div class="footer-legal">
+          <a href="terms.html">الشروط والأحكام</a>
+          <a href="privacy.html">سياسة الخصوصية</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<!-- WhatsApp Float -->
+<a href="https://wa.me/966543944248" class="whatsapp-float" target="_blank" title="تواصل عبر واتساب">
+  <i class="fab fa-whatsapp"></i>
+</a>
+
+<!-- Back to Top -->
+<button id="backToTop" onclick="window.scrollTo({top:0,behavior:'smooth'})" style="display:none;position:fixed;bottom:100px;left:30px;z-index:999;width:46px;height:46px;border-radius:50%;background:var(--primary);color:var(--white);font-size:18px;box-shadow:var(--shadow);transition:var(--transition);">
+  <i class="fas fa-chevron-up"></i>
+</button>
+
+<script src="core.js"></script>
+<script>
+  // Counter animation
+  function animateCounter(el) {
+    const target = parseInt(el.dataset.count);
+    const suffix = target >= 100 ? '+' : target >= 10 ? '+' : '';
+    let start = 0;
+    const duration = 2000;
+    const step = target / (duration / 16);
+    const timer = setInterval(() => {
+      start += step;
+      if (start >= target) { start = target; clearInterval(timer); }
+      el.textContent = Math.round(start) + suffix;
+    }, 16);
+  }
+  const counterObserver = new IntersectionObserver(entries => {
+    entries.forEach(e => { if(e.isIntersecting) { animateCounter(e.target); counterObserver.unobserve(e.target); } });
+  });
+  document.querySelectorAll('[data-count]').forEach(el => counterObserver.observe(el));
+
+  // Back to top
+  window.addEventListener('scroll', () => {
+    const btn = document.getElementById('backToTop');
+    if(btn) btn.style.display = window.scrollY > 400 ? 'flex' : 'none';
+  });
+
+  // Spinning animation
+  const style = document.createElement('style');
+  style.textContent = '@keyframes spin{from{transform:rotate(0deg)}to{transform:rotate(360deg)}} @keyframes bounce{0%,100%{opacity:1}50%{opacity:0.3}}';
+  document.head.appendChild(style);
+</script>
+<script src="vip-upgrade.js"></script>
+<script src="legal-system.js"></script>
+<script src="final-layout-fixes.js"></script>
+<div style="position:fixed;left:18px;bottom:92px;z-index:9999"><a href="employee.html" title="دخول الموظف" style="display:flex;width:44px;height:44px;align-items:center;justify-content:center;background:#0d1b2e;color:#fff;border-radius:50%;box-shadow:0 10px 30px #0003;text-decoration:none"><i class="fas fa-user-tie"></i></a></div>
+<script src="enterprise-security-forms-notifications.js"></script>
+<script src="vm-biometric-map-only.js"></script></body>
+</html>

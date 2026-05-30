@@ -1,9 +1,12 @@
 rules_version = '2';
-
 service firebase.storage {
   match /b/{bucket}/o {
-    match /{allPaths=**} {
-      allow read, write: if false;
-    }
+    function signedIn(){ return request.auth != null; }
+    function isAdmin(){ return signedIn() && (request.auth.token.admin == true || request.auth.token.email in ['waelelsaydahmed@gmail.com','waelelsaydahmed9916@gmail.com','myway9916@gmail.com','admin@visionmedia.sa']); }
+    match /public/{allPaths=**} { allow read: if true; allow write: if isAdmin(); }
+    match /users/{uid}/{allPaths=**} { allow read, write: if signedIn() && request.auth.uid == uid; }
+    match /orders/{uid}/{allPaths=**} { allow read, write: if signedIn() && (request.auth.uid == uid || isAdmin()); }
+    match /chat/{uid}/{allPaths=**} { allow read, write: if signedIn() && (request.auth.uid == uid || isAdmin()); }
+    match /{allPaths=**} { allow read, write: if false; }
   }
 }

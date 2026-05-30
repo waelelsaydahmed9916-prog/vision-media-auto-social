@@ -1,0 +1,459 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>VISION MEDIA | طلب عرض سعر</title>
+  <link rel="stylesheet" href="style.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+  <style>
+    /* ── Page hero ── */
+    .page-hero{background:linear-gradient(135deg,var(--primary,#0d1b2e) 0%,#162840 100%);padding:100px 0 60px;text-align:center;border-bottom:3px solid var(--accent,#c9a227);}
+    .page-hero h1{font-size:2.4rem;color:#fff;margin-bottom:12px;}
+    .page-hero p{color:rgba(255,255,255,.7);font-size:1.05rem;}
+
+    /* ── Layout ── */
+    .quote-section{padding:60px 0;}
+    .quote-layout{display:grid;grid-template-columns:1fr 300px;gap:36px;align-items:start;}
+    @media(max-width:860px){.quote-layout{grid-template-columns:1fr;}}
+
+    /* ── Form card ── */
+    .quote-card{background:#fff;border-radius:16px;box-shadow:0 4px 30px rgba(0,0,0,.08);padding:40px;}
+    @media(max-width:600px){.quote-card{padding:24px 18px;}}
+    .quote-card h2{font-size:1.3rem;color:var(--primary,#0d1b2e);margin-bottom:28px;padding-bottom:14px;border-bottom:2px solid #f0e8d0;display:flex;align-items:center;gap:10px;}
+    .quote-card h2 i{color:var(--accent,#c9a227);}
+
+    /* ── Fields ── */
+    .form-row{display:grid;grid-template-columns:1fr 1fr;gap:18px;margin-bottom:0;}
+    @media(max-width:600px){.form-row{grid-template-columns:1fr;}}
+    .form-group{margin-bottom:18px;display:flex;flex-direction:column;gap:6px;}
+    .form-group label{font-size:.88rem;font-weight:600;color:#333;}
+    .form-group label span.req{color:#e53935;}
+    .form-group input,.form-group select,.form-group textarea{width:100%;padding:11px 14px;border:1.5px solid #dde;border-radius:8px;font-size:.95rem;font-family:inherit;direction:rtl;transition:.2s;background:#fdfdfd;color:#222;box-sizing:border-box;}
+    .form-group input:focus,.form-group select:focus,.form-group textarea:focus{border-color:var(--accent,#c9a227);outline:none;background:#fffef7;}
+    .form-group textarea{resize:vertical;min-height:120px;}
+    .phone-row{display:grid;grid-template-columns:140px 1fr;gap:10px;}
+    @media(max-width:380px){.phone-row{grid-template-columns:110px 1fr;}}
+
+    /* ── File input ── */
+    .file-input-wrapper{position:relative;border:2px dashed #dde;border-radius:8px;padding:18px;text-align:center;cursor:pointer;transition:.2s;background:#fafafa;}
+    .file-input-wrapper:hover{border-color:var(--accent,#c9a227);background:#fffef7;}
+    .file-input-wrapper input[type=file]{position:absolute;inset:0;opacity:0;cursor:pointer;width:100%;height:100%;}
+    .file-input-wrapper i{font-size:1.5rem;color:#bbb;display:block;margin-bottom:5px;}
+    .file-input-wrapper span{font-size:.84rem;color:#888;}
+    #quoteFileName{font-size:.82rem;color:var(--accent,#c9a227);margin-top:5px;}
+
+    /* ── Submit btn ── */
+    .btn-quote-submit{width:100%;background:var(--accent,#c9a227);color:#0d1b2e;border:none;padding:14px;border-radius:10px;font-size:1.05rem;font-weight:700;cursor:pointer;font-family:inherit;transition:.2s;display:flex;align-items:center;justify-content:center;gap:10px;margin-top:8px;}
+    .btn-quote-submit:hover{filter:brightness(1.1);}
+
+    /* ── Sidebar ── */
+    .sidebar-card{background:#fff;border-radius:14px;box-shadow:0 4px 24px rgba(0,0,0,.08);padding:26px;margin-bottom:22px;}
+    .sidebar-card h4{font-size:1rem;color:var(--primary,#0d1b2e);margin-bottom:16px;display:flex;align-items:center;gap:8px;}
+    .sidebar-card h4 i{color:var(--accent,#c9a227);}
+    .why-item{display:flex;align-items:flex-start;gap:10px;padding:9px 0;border-bottom:1px solid #f5f5f5;font-size:.88rem;color:#444;}
+    .why-item:last-child{border-bottom:none;}
+    .why-item i{color:var(--accent,#c9a227);margin-top:2px;flex-shrink:0;}
+    .response-badge{background:linear-gradient(135deg,var(--primary,#0d1b2e),#1c3455);color:#fff;border-radius:12px;padding:20px;text-align:center;}
+    .response-badge .big-num{font-size:2.8rem;font-weight:800;color:var(--accent,#c9a227);display:block;line-height:1;}
+    .response-badge p{margin:6px 0 0;font-size:.9rem;opacity:.85;}
+    .contact-item{display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid #f5f5f5;font-size:.88rem;}
+    .contact-item:last-of-type{border-bottom:none;}
+    .contact-item i{color:var(--accent,#c9a227);width:18px;text-align:center;}
+    .contact-item a{color:#333;text-decoration:none;}
+    .contact-item a:hover{color:var(--accent,#c9a227);}
+    .btn-whatsapp-sm{display:flex;align-items:center;justify-content:center;gap:8px;background:#25d366;color:#fff;padding:10px;border-radius:8px;text-decoration:none;font-weight:600;margin-top:10px;font-size:.9rem;transition:.2s;}
+    .btn-whatsapp-sm:hover{background:#1ebe5d;}
+
+    /* ── Success ── */
+    .success-msg{display:none;background:#e8f5e9;border:1.5px solid #66bb6a;border-radius:12px;padding:36px;text-align:center;}
+    .success-msg i{font-size:3rem;color:#43a047;display:block;margin-bottom:12px;}
+    .success-msg h3{color:#2e7d32;margin-bottom:8px;}
+    .success-msg p{color:#555;margin-bottom:18px;}
+  </style>
+  <link rel="stylesheet" href="vip-upgrade.css">
+  <link rel="stylesheet" href="legal-system.css">
+  <link rel="stylesheet" href="final-layout-fixes.css">
+  <link rel="stylesheet" href="enterprise-security-forms-notifications.css">
+  <link rel="stylesheet" href="all-pages-organization-fix.css">
+</head>
+<body>
+
+  <!-- ═══════════════ HEADER ═══════════════ -->
+  <header class="header" id="header">
+    <nav class="nav container">
+      <a href="index.html" class="nav-logo">VISION <span class="accent">MEDIA</span></a>
+      <ul class="nav-menu" id="navMenu">
+        <li><a href="index.html" class="nav-link">الرئيسية</a></li>
+        <li><a href="about.html" class="nav-link">من نحن</a></li>
+        <li class="nav-dropdown">
+          <a href="services.html" class="nav-link">خدماتنا <i class="fas fa-chevron-down"></i></a>
+          <div class="dropdown-menu">
+            <div class="dropdown-grid">
+              <a href="service-detail.html?id=1" class="dropdown-item">التسويق الإلكتروني</a>
+              <a href="service-detail.html?id=2" class="dropdown-item">إدارة السوشيال ميديا</a>
+              <a href="service-detail.html?id=3" class="dropdown-item">الإعلانات الممولة</a>
+              <a href="service-detail.html?id=4" class="dropdown-item">تصميم الجرافيك</a>
+              <a href="service-detail.html?id=5" class="dropdown-item">تصميم الهوية التجارية</a>
+              <a href="service-detail.html?id=6" class="dropdown-item">تصميم المواقع</a>
+              <a href="service-detail.html?id=7" class="dropdown-item">المتاجر الإلكترونية</a>
+              <a href="service-detail.html?id=8" class="dropdown-item">إنتاج الفيديو</a>
+              <a href="service-detail.html?id=9" class="dropdown-item">الموشن جرافيك</a>
+              <a href="service-detail.html?id=10" class="dropdown-item">التصوير الاحترافي</a>
+              <a href="service-detail.html?id=11" class="dropdown-item">صور الذكاء الاصطناعي</a>
+              <a href="service-detail.html?id=12" class="dropdown-item">فيديو الذكاء الاصطناعي</a>
+              <a href="service-detail.html?id=13" class="dropdown-item">إدارة الحملات</a>
+              <a href="service-detail.html?id=14" class="dropdown-item">كتابة المحتوى</a>
+              <a href="service-detail.html?id=15" class="dropdown-item">تحسين SEO</a>
+            </div>
+            <div class="dropdown-footer"><a href="services.html" class="btn btn-gold btn-sm">عرض جميع الخدمات</a></div>
+          </div>
+        </li>
+        <li><a href="portfolio.html" class="nav-link">أعمالنا</a></li>
+        <li><a href="clients.html" class="nav-link">عملاؤنا</a></li>
+        <li><a href="blog.html" class="nav-link">المقالات</a></li>
+        <li><a href="pricing.html" class="nav-link">التسعيرة</a></li>
+        <li><a href="contact.html" class="nav-link">تواصل معنا</a></li>
+      </ul>
+      <div class="nav-actions">
+        <a href="request-service.html" class="btn btn-gold btn-sm">طلب خدمة</a>
+        <a href="login.html" class="btn btn-outline-white btn-sm" id="loginBtn">دخول</a>
+        <button class="nav-toggle" id="navToggle"><span></span><span></span><span></span></button>
+      </div>
+    </nav>
+  </header>
+
+  <!-- ═══════════════ HERO ═══════════════ -->
+  <section class="page-hero">
+    <div class="container">
+      <h1><i class="fas fa-tags" style="color:var(--accent,#c9a227);margin-left:12px;"></i>طلب عرض سعر مجاني</h1>
+      <p>أخبرنا بمتطلباتك وسنرسل لك عرض سعر مفصل خلال 24 ساعة</p>
+    </div>
+  </section>
+
+  <!-- ═══════════════ MAIN ═══════════════ -->
+  <section class="quote-section">
+    <div class="container">
+      <div class="quote-layout">
+
+        <!-- ── FORM ── -->
+        <div>
+          <div class="quote-card">
+            <h2><i class="fas fa-file-invoice-dollar"></i>نموذج طلب عرض السعر</h2>
+
+            <form id="quoteForm" novalidate>
+
+              <div class="form-row">
+                <div class="form-group">
+                  <label for="qFullName">الاسم الكامل <span class="req">*</span></label>
+                  <input type="text" id="qFullName" name="fullName" placeholder="أدخل اسمك" required />
+                </div>
+                <div class="form-group">
+                  <label for="qCompany">الشركة / المؤسسة</label>
+                  <input type="text" id="qCompany" name="company" placeholder="اسم الشركة (اختياري)" />
+                </div>
+              </div>
+
+              <div class="form-group">
+                <label>رقم الجوال <span class="req">*</span></label>
+                <div class="phone-row">
+                  <select id="qCountryCode" name="countryCode">
+                    <option value="+966">🇸🇦 +966</option>
+                    <option value="+971">🇦🇪 +971</option>
+                    <option value="+965">🇰🇼 +965</option>
+                    <option value="+973">🇧🇭 +973</option>
+                    <option value="+968">🇴🇲 +968</option>
+                    <option value="+974">🇶🇦 +974</option>
+                    <option value="+20">🇪🇬 +20</option>
+                    <option value="+218">🇱🇾 +218</option>
+                    <option value="+213">🇩🇿 +213</option>
+                  </select>
+                  <input type="tel" id="qPhone" name="phone" placeholder="05XXXXXXXX" required />
+                </div>
+              </div>
+
+              <div class="form-group">
+                <label for="qEmail">البريد الإلكتروني <span class="req">*</span></label>
+                <input type="email" id="qEmail" name="email" placeholder="example@email.com" required />
+              </div>
+
+              <div class="form-row">
+                <div class="form-group">
+                  <label for="qService">الخدمة المطلوبة <span class="req">*</span></label>
+                  <select id="qService" name="service" required onchange="qPopulateSubServices()">
+                    <option value="">اختر الخدمة</option>
+                    <option value="1">التسويق الإلكتروني</option>
+                    <option value="2">إدارة السوشيال ميديا</option>
+                    <option value="3">الإعلانات الممولة</option>
+                    <option value="4">تصميم الجرافيك</option>
+                    <option value="5">تصميم الهوية التجارية</option>
+                    <option value="6">تصميم المواقع</option>
+                    <option value="7">المتاجر الإلكترونية</option>
+                    <option value="8">إنتاج الفيديو</option>
+                    <option value="9">الموشن جرافيك</option>
+                    <option value="10">التصوير الاحترافي</option>
+                    <option value="11">صور الذكاء الاصطناعي</option>
+                    <option value="12">فيديو الذكاء الاصطناعي</option>
+                    <option value="13">إدارة الحملات</option>
+                    <option value="14">كتابة المحتوى</option>
+                    <option value="15">تحسين SEO</option>
+                  </select>
+                </div>
+                <div class="form-group">
+                  <label for="qSubService">نوع الخدمة <span class="req">*</span></label>
+                  <select id="qSubService" name="subService" required>
+                    <option value="">اختر الخدمة أولاً</option>
+                  </select>
+                </div>
+              </div>
+
+              <div class="form-row">
+                <div class="form-group">
+                  <label for="qBudget">الميزانية التقريبية <span class="req">*</span></label>
+                  <select id="qBudget" name="budget" required>
+                    <option value="">اختر الميزانية</option>
+                    <option value="lt500">أقل من 500 ر.س</option>
+                    <option value="500-2000">500 - 2,000 ر.س</option>
+                    <option value="2000-5000">2,000 - 5,000 ر.س</option>
+                    <option value="5000-10000">5,000 - 10,000 ر.س</option>
+                    <option value="gt10000">أكثر من 10,000 ر.س</option>
+                  </select>
+                </div>
+                <div class="form-group">
+                  <label for="qStartTime">متى تريد البدء؟ <span class="req">*</span></label>
+                  <select id="qStartTime" name="startTime" required>
+                    <option value="">اختر الموعد</option>
+                    <option value="immediate">فورًا</option>
+                    <option value="week">خلال أسبوع</option>
+                    <option value="month">خلال شهر</option>
+                    <option value="3months">خلال 3 أشهر</option>
+                    <option value="flexible">مرن</option>
+                  </select>
+                </div>
+              </div>
+
+              <div class="form-group">
+                <label for="qDescription">وصف المشروع <span class="req">*</span></label>
+                <textarea id="qDescription" name="description" placeholder="صف مشروعك: ما الذي تريده؟ ما أهدافك؟ ما التفاصيل التي تراها مهمة؟" required></textarea>
+              </div>
+
+              <div class="form-row">
+                <div class="form-group">
+                  <label for="qHeardFrom">كيف سمعت عنا؟</label>
+                  <select id="qHeardFrom" name="heardFrom">
+                    <option value="">اختر</option>
+                    <option value="social">سوشيال ميديا</option>
+                    <option value="referral">توصية من شخص</option>
+                    <option value="google">جوجل</option>
+                    <option value="other">غير ذلك</option>
+                  </select>
+                </div>
+                <div class="form-group" style="justify-content:flex-end;">
+                  <label>ملف مرجعي <small style="color:#aaa;font-weight:400;">(اختياري)</small></label>
+                  <div class="file-input-wrapper">
+                    <input type="file" id="qAttachFile" name="attachFile" accept="image/*,.pdf,.doc,.docx" onchange="qShowFileName(this)" />
+                    <i class="fas fa-paperclip"></i>
+                    <span>رفع ملف مرجعي</span>
+                    <div id="quoteFileName"></div>
+                  </div>
+                </div>
+              </div>
+
+              <button type="submit" class="btn-quote-submit">
+                <i class="fas fa-paper-plane"></i>
+                طلب عرض السعر
+              </button>
+            </form>
+
+            <div class="success-msg" id="quoteSuccessMsg">
+              <i class="fas fa-check-circle"></i>
+              <h3>تم استلام طلبك بنجاح!</h3>
+              <p>سيتواصل معك فريقنا خلال 24 ساعة بعرض سعر مفصل.</p>
+              <a href="index.html" style="background:var(--accent,#c9a227);color:#0d1b2e;padding:11px 28px;border-radius:8px;font-weight:700;text-decoration:none;display:inline-block;">العودة للرئيسية</a>
+            </div>
+          </div>
+        </div>
+
+        <!-- ── SIDEBAR ── -->
+        <aside>
+          <div class="sidebar-card">
+            <div class="response-badge">
+              <span class="big-num">24</span>
+              <p>ساعة - وقت الرد على طلبك</p>
+            </div>
+          </div>
+
+          <div class="sidebar-card">
+            <h4><i class="fas fa-star"></i> لماذا تطلب عرضًا منا؟</h4>
+            <div class="why-item"><i class="fas fa-check-circle"></i><span>عروض أسعار مفصلة وشفافة بدون رسوم خفية</span></div>
+            <div class="why-item"><i class="fas fa-check-circle"></i><span>فريق متخصص يحلل احتياجاتك ويقدم أفضل حل</span></div>
+            <div class="why-item"><i class="fas fa-check-circle"></i><span>عرض السعر مجاني تمامًا وبدون أي التزام</span></div>
+          </div>
+
+          <div class="sidebar-card">
+            <h4><i class="fas fa-headset"></i> تحدث معنا مباشرةً</h4>
+            <div class="contact-item"><i class="fas fa-phone"></i><a href="tel:+966538862064">0538862064</a></div>
+            <div class="contact-item"><i class="fas fa-envelope"></i><a href="mailto:waelelsaydahmed@gmail.com">البريد الإلكتروني</a></div>
+            <a href="https://wa.me/966543944248" class="btn-whatsapp-sm" target="_blank"><i class="fab fa-whatsapp"></i>واتساب: 0543944248</a>
+          </div>
+        </aside>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════════ FOOTER ═══════════════ -->
+  <footer class="footer">
+    <div class="footer-top"><div class="container"><div class="footer-grid">
+      <div class="footer-brand">
+        <a href="index.html" class="footer-logo">VISION <span class="accent">MEDIA</span></a>
+        <p>شركة متخصصة في الدعاية والإعلان وحلول التسويق الرقمي الشاملة.</p>
+        <div class="social-links">
+          <a href="https://www.instagram.com/advertisement_portal.46" target="_blank"><i class="fab fa-instagram"></i></a>
+          <a href="https://www.facebook.com/share/1DszbP1nTB/" target="_blank"><i class="fab fa-facebook-f"></i></a>
+          <a href="https://www.snapchat.com/add/wael_elsayd2026" target="_blank"><i class="fab fa-snapchat-ghost"></i></a>
+          <a href="https://www.tiktok.com/@waelelsayd3" target="_blank"><i class="fab fa-tiktok"></i></a>
+          <a href="https://youtube.com/channel/UCA0-OJ461Na9MkTZMmgM48A" target="_blank"><i class="fab fa-youtube"></i></a>
+          <a href="https://x.com/Adverti556" target="_blank"><i class="fab fa-x-twitter"></i></a>
+        </div>
+      </div>
+      <div class="footer-links"><h4>روابط سريعة</h4><ul>
+        <li><a href="index.html">الرئيسية</a></li><li><a href="about.html">من نحن</a></li>
+        <li><a href="services.html">خدماتنا</a></li><li><a href="portfolio.html">أعمالنا</a></li>
+        <li><a href="pricing.html">التسعيرة</a></li><li><a href="contact.html">تواصل معنا</a></li>
+      </ul></div>
+      <div class="footer-links"><h4>خدماتنا</h4><ul>
+        <li><a href="service-detail.html?id=1">التسويق الإلكتروني</a></li>
+        <li><a href="service-detail.html?id=4">تصميم الجرافيك</a></li>
+        <li><a href="service-detail.html?id=6">تصميم المواقع</a></li>
+        <li><a href="service-detail.html?id=8">إنتاج الفيديو</a></li>
+        <li><a href="service-detail.html?id=15">تحسين SEO</a></li>
+      </ul></div>
+      <div class="footer-contact"><h4>تواصل معنا</h4><ul>
+        <li><i class="fab fa-whatsapp"></i> <a href="https://wa.me/966543944248">0543944248</a></li>
+        <li><i class="fas fa-phone"></i> <a href="tel:+966538862064">0538862064</a></li>
+        <li><i class="fas fa-envelope"></i> <a href="mailto:waelelsaydahmed@gmail.com">waelelsaydahmed@gmail.com</a></li>
+      </ul>
+      <a href="request-service.html" class="btn btn-gold btn-sm" style="margin-top:12px;">طلب خدمة</a>
+      </div>
+    </div></div></div>
+    <div class="footer-bottom"><div class="container"><div class="footer-bottom-inner">
+      <p>&copy; 2025 VISION MEDIA. جميع الحقوق محفوظة</p>
+      <div class="footer-legal"><a href="terms.html">الشروط والأحكام</a><a href="privacy.html">سياسة الخصوصية</a></div>
+    </div></div></div>
+  </footer>
+  <a href="https://wa.me/966543944248" class="whatsapp-float" target="_blank"><i class="fab fa-whatsapp"></i></a>
+  <script src="core.js"></script>
+
+  <script>
+  /* ════════════════════════════════════════
+     Sub-services map
+  ════════════════════════════════════════ */
+  const qSubServicesMap = {
+    "1": ["استراتيجية التسويق الإلكتروني","تسويق عبر البريد الإلكتروني","تسويق بالمحتوى","التسويق بالعمولة"],
+    "2": ["إدارة إنستغرام","إدارة فيسبوك","إدارة تيك توك","إدارة سناب شات","إدارة تويتر/X","إدارة متعدد المنصات"],
+    "3": ["إعلانات جوجل Google Ads","إعلانات فيسبوك Facebook Ads","إعلانات سناب شات Snap Ads","إعلانات تيك توك TikTok Ads","إعلانات تويتر/X Ads"],
+    "4": ["تصميم منشورات سوشيال ميديا","تصميم بنرات إعلانية","تصميم مطبوعات","تصميم إنفوجرافيك","تصميم عروض تقديمية"],
+    "5": ["تصميم شعار Logo","دليل الهوية البصرية","أدوات العلامة التجارية","إعادة تصميم الهوية"],
+    "6": ["موقع معرض أعمال","موقع شركة","موقع صفحة هبوط","موقع مدونة","لوحة إدارة مخصصة"],
+    "7": ["متجر WooCommerce","متجر Shopify","متجر مخصص","بوابة دفع إلكتروني"],
+    "8": ["إنتاج فيديو إعلاني","فيديو تعريفي بالشركة","فيديو منتجات","فيديو يوتيوب","فيديو قصير للسوشيال ميديا"],
+    "9": ["موشن جرافيك 2D","موشن جرافيك 3D","إنفوجرافيك متحرك","مقدمات فيديو (Intro/Outro)"],
+    "10": ["تصوير منتجات","تصوير فعاليات","تصوير شخصي","تصوير معماري"],
+    "11": ["توليد صور AI للمنتجات","توليد صور AI إبداعية","تحسين صور بالذكاء الاصطناعي"],
+    "12": ["توليد فيديو AI قصير","توليد فيديو AI إعلاني","تحسين جودة فيديو AI"],
+    "13": ["إدارة حملة سوشيال ميديا","إدارة حملة إعلانات مدفوعة","إدارة حملة بريد إلكتروني","تقارير وتحليلات الحملة"],
+    "14": ["كتابة مقالات SEO","كتابة محتوى سوشيال ميديا","كتابة سكريبت فيديو","كتابة محتوى موقع","ترجمة محتوى"],
+    "15": ["تحسين On-Page SEO","بناء الروابط Link Building","تحسين السرعة والأداء","بحث الكلمات المفتاحية","تقارير SEO"]
+  };
+
+  function qPopulateSubServices() {
+    const id = document.getElementById('qService').value;
+    const sel = document.getElementById('qSubService');
+    sel.innerHTML = '<option value="">اختر نوع الخدمة</option>';
+    if (id && qSubServicesMap[id]) {
+      qSubServicesMap[id].forEach(sub => {
+        const opt = document.createElement('option');
+        opt.value = sub;
+        opt.textContent = sub;
+        sel.appendChild(opt);
+      });
+    }
+  }
+
+  function qShowFileName(input) {
+    document.getElementById('quoteFileName').textContent = input.files.length ? input.files[0].name : '';
+  }
+
+  /* ════════════════════════════════════════
+     Form submit
+  ════════════════════════════════════════ */
+  document.getElementById('quoteForm').addEventListener('submit', function(e) {
+    e.preventDefault();
+
+    const name    = document.getElementById('qFullName').value.trim();
+    const phone   = document.getElementById('qPhone').value.trim();
+    const email   = document.getElementById('qEmail').value.trim();
+    const service = document.getElementById('qService').value;
+    const sub     = document.getElementById('qSubService').value;
+    const budget  = document.getElementById('qBudget').value;
+    const start   = document.getElementById('qStartTime').value;
+    const desc    = document.getElementById('qDescription').value.trim();
+
+    if (!name)  { alert('يرجى إدخال الاسم الكامل'); return; }
+    if (!phone) { alert('يرجى إدخال رقم الجوال'); return; }
+    if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) { alert('يرجى إدخال بريد إلكتروني صحيح'); return; }
+    if (!service) { alert('يرجى اختيار الخدمة المطلوبة'); return; }
+    if (!sub)   { alert('يرجى اختيار نوع الخدمة'); return; }
+    if (!budget){ alert('يرجى اختيار الميزانية التقريبية'); return; }
+    if (!start) { alert('يرجى اختيار وقت البدء'); return; }
+    if (!desc)  { alert('يرجى كتابة وصف المشروع'); return; }
+
+    const serviceEl = document.getElementById('qService');
+    const formData = {
+      id: 'QUO-' + Date.now(),
+      date: new Date().toISOString(),
+      name,
+      phone: document.getElementById('qCountryCode').value + phone,
+      email,
+      company: document.getElementById('qCompany').value.trim(),
+      serviceId: service,
+      serviceName: serviceEl.options[serviceEl.selectedIndex].text,
+      subService: sub,
+      budget,
+      startTime: start,
+      description: desc,
+      heardFrom: document.getElementById('qHeardFrom').value,
+      status: 'pending'
+    };
+
+    try {
+      if (typeof VM !== 'undefined' && VM.storage && VM.storage.push) {
+        VM.storage.push('quotes', formData);
+      } else {
+        const quotes = JSON.parse(localStorage.getItem('vm_quotes') || '[]');
+        quotes.push(formData);
+        localStorage.setItem('vm_quotes', JSON.stringify(quotes));
+      }
+    } catch(err) {
+      const quotes = JSON.parse(localStorage.getItem('vm_quotes') || '[]');
+      quotes.push(formData);
+      localStorage.setItem('vm_quotes', JSON.stringify(quotes));
+    }
+
+    try {
+      if (typeof VM !== 'undefined' && VM.notify) {
+        VM.notify('تم استلام طلب عرض السعر! سنتواصل معك خلال 24 ساعة.', 'success');
+      }
+    } catch(err) {}
+
+    document.getElementById('quoteForm').style.display = 'none';
+    document.getElementById('quoteSuccessMsg').style.display = 'block';
+  });
+  </script>
+<script src="vip-upgrade.js"></script>
+<script src="legal-system.js"></script>
+<script src="final-layout-fixes.js"></script>
+<script src="enterprise-security-forms-notifications.js"></script>
+</body>
+</html>

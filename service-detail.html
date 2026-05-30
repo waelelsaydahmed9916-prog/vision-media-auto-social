@@ -1,0 +1,1344 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>VISION MEDIA | تفاصيل الخدمة</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+  <link rel="stylesheet" href="style.css" />
+  <style>
+    :root {
+      --primary: #0d1b2e;
+      --primary-light: #162540;
+      --accent: #c9a227;
+      --accent-light: #e0b93d;
+      --white: #ffffff;
+      --gray-100: #f8f9fa;
+      --gray-200: #e9ecef;
+      --gray-400: #adb5bd;
+      --gray-600: #6c757d;
+      --gray-800: #343a40;
+      --text: #1a1a2e;
+      --shadow: 0 4px 24px rgba(13,27,46,0.10);
+      --shadow-lg: 0 8px 40px rgba(13,27,46,0.18);
+      --radius: 14px;
+      --radius-sm: 8px;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body { font-family: 'Cairo', sans-serif; background: var(--gray-100); color: var(--text); direction: rtl; }
+
+    .container { width: 100%; max-width: 1200px; margin: 0 auto; padding: 0 20px; }
+
+    /* ─── LOADING ─── */
+    .page-loading {
+      position: fixed; inset: 0; background: var(--primary);
+      display: flex; flex-direction: column; align-items: center; justify-content: center;
+      z-index: 9999; transition: opacity .5s, visibility .5s;
+    }
+    .page-loading.hidden { opacity: 0; visibility: hidden; }
+    .loader-logo { font-size: 2rem; font-weight: 900; color: var(--white); letter-spacing: 2px; margin-bottom: 24px; }
+    .loader-logo .accent { color: var(--accent); }
+    .loader-spinner { width: 48px; height: 48px; border: 4px solid rgba(201,162,39,.3); border-top-color: var(--accent); border-radius: 50%; animation: spin .8s linear infinite; }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    /* ─── BREADCRUMB ─── */
+    .breadcrumb-bar { background: var(--primary); padding: 14px 0; }
+    .breadcrumb { display: flex; align-items: center; gap: 8px; font-size: .85rem; flex-wrap: wrap; }
+    .breadcrumb a { color: var(--gray-400); text-decoration: none; transition: color .2s; }
+    .breadcrumb a:hover { color: var(--accent); }
+    .breadcrumb .sep { color: var(--gray-600); font-size: .75rem; }
+    .breadcrumb .current { color: var(--accent); font-weight: 600; }
+
+    /* ─── PAGE HERO ─── */
+    .page-hero {
+      background: linear-gradient(135deg, var(--primary) 0%, #1a2f4a 60%, #0d1b2e 100%);
+      padding: 80px 0 60px;
+      position: relative;
+      overflow: hidden;
+    }
+    .page-hero::before {
+      content: '';
+      position: absolute; inset: 0;
+      background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23c9a227' fill-opacity='0.04'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+    }
+    .page-hero .container { position: relative; z-index: 1; }
+    .hero-content { display: flex; align-items: center; gap: 32px; }
+    .hero-icon-wrap {
+      width: 100px; height: 100px; border-radius: 24px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 2.8rem; flex-shrink: 0;
+      background: linear-gradient(135deg, var(--accent), var(--accent-light));
+      box-shadow: 0 8px 32px rgba(201,162,39,.4);
+    }
+    .hero-icon-wrap i { color: var(--primary); }
+    .hero-text h1 { font-size: 2.4rem; font-weight: 800; color: var(--white); margin-bottom: 10px; }
+    .hero-text p { font-size: 1.05rem; color: rgba(255,255,255,.72); max-width: 540px; line-height: 1.8; }
+    .hero-badge {
+      display: inline-flex; align-items: center; gap: 6px;
+      background: rgba(201,162,39,.15); border: 1px solid rgba(201,162,39,.3);
+      color: var(--accent); font-size: .78rem; font-weight: 700;
+      padding: 5px 14px; border-radius: 50px; margin-bottom: 12px;
+    }
+
+    /* ─── MAIN LAYOUT ─── */
+    .service-layout { display: grid; grid-template-columns: 1fr 380px; gap: 32px; padding: 50px 0 70px; align-items: start; }
+    .service-main { display: flex; flex-direction: column; gap: 32px; }
+    .service-sidebar { position: sticky; top: 90px; }
+
+    /* ─── CARDS ─── */
+    .card {
+      background: var(--white); border-radius: var(--radius);
+      box-shadow: var(--shadow); overflow: hidden;
+    }
+    .card-header {
+      padding: 22px 28px 18px;
+      border-bottom: 2px solid var(--gray-200);
+      display: flex; align-items: center; gap: 12px;
+    }
+    .card-header-icon { color: var(--accent); font-size: 1.3rem; }
+    .card-header h2, .card-header h3 { font-size: 1.2rem; font-weight: 700; color: var(--primary); }
+    .card-body { padding: 28px; }
+
+    /* ─── DESCRIPTION ─── */
+    .service-description p { font-size: 1rem; color: var(--gray-600); line-height: 2; margin-bottom: 14px; }
+    .service-description p:last-child { margin-bottom: 0; }
+
+    /* ─── INCLUDES LIST ─── */
+    .includes-list { list-style: none; display: flex; flex-direction: column; gap: 12px; }
+    .includes-list li {
+      display: flex; align-items: flex-start; gap: 12px;
+      font-size: .95rem; color: var(--gray-800); line-height: 1.7;
+    }
+    .includes-list li .check-icon {
+      width: 22px; height: 22px; border-radius: 50%; flex-shrink: 0;
+      background: linear-gradient(135deg, var(--accent), var(--accent-light));
+      display: flex; align-items: center; justify-content: center;
+      font-size: .65rem; color: var(--primary); margin-top: 2px;
+    }
+
+    /* ─── WHY US ─── */
+    .why-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+    .why-item {
+      background: var(--gray-100); border-radius: var(--radius-sm);
+      padding: 18px 16px; display: flex; align-items: flex-start; gap: 12px;
+      transition: background .2s, transform .2s;
+    }
+    .why-item:hover { background: #fff3cc; transform: translateY(-2px); }
+    .why-item-icon {
+      width: 40px; height: 40px; border-radius: 10px; flex-shrink: 0;
+      background: linear-gradient(135deg, var(--accent), var(--accent-light));
+      display: flex; align-items: center; justify-content: center;
+      font-size: .95rem; color: var(--primary);
+    }
+    .why-item h4 { font-size: .9rem; font-weight: 700; color: var(--primary); margin-bottom: 4px; }
+    .why-item p { font-size: .8rem; color: var(--gray-600); line-height: 1.6; }
+
+    /* ─── FAQ ─── */
+    .faq-list { display: flex; flex-direction: column; gap: 12px; }
+    .faq-item { border: 1px solid var(--gray-200); border-radius: var(--radius-sm); overflow: hidden; }
+    .faq-question {
+      width: 100%; background: none; border: none; cursor: pointer;
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 18px 22px; text-align: right;
+      font-family: 'Cairo', sans-serif; font-size: .97rem; font-weight: 700;
+      color: var(--primary); transition: background .2s;
+    }
+    .faq-question:hover { background: var(--gray-100); }
+    .faq-question.open { background: var(--primary); color: var(--white); }
+    .faq-question .faq-icon { color: var(--accent); transition: transform .3s; font-size: .85rem; flex-shrink: 0; }
+    .faq-question.open .faq-icon { transform: rotate(180deg); }
+    .faq-answer {
+      max-height: 0; overflow: hidden; transition: max-height .35s ease, padding .3s;
+      font-size: .9rem; color: var(--gray-600); line-height: 1.9;
+      padding: 0 22px;
+    }
+    .faq-answer.open { max-height: 300px; padding: 14px 22px 18px; }
+
+    /* ─── RELATED SERVICES ─── */
+    .related-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
+    .related-card {
+      background: var(--white); border-radius: var(--radius-sm);
+      padding: 22px 16px; text-align: center;
+      border: 2px solid var(--gray-200);
+      text-decoration: none; color: inherit;
+      transition: border-color .2s, transform .2s, box-shadow .2s;
+      display: flex; flex-direction: column; align-items: center; gap: 10px;
+    }
+    .related-card:hover { border-color: var(--accent); transform: translateY(-4px); box-shadow: var(--shadow); }
+    .related-card-icon {
+      width: 52px; height: 52px; border-radius: 14px;
+      background: linear-gradient(135deg, rgba(201,162,39,.15), rgba(201,162,39,.08));
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1.3rem; color: var(--accent);
+    }
+    .related-card span { font-size: .88rem; font-weight: 600; color: var(--primary); }
+
+    /* ─── SIDEBAR ORDER CARD ─── */
+    .order-card { background: var(--white); border-radius: var(--radius); box-shadow: var(--shadow-lg); overflow: hidden; }
+    .order-card-header {
+      background: linear-gradient(135deg, var(--primary), #1a2f4a);
+      padding: 24px 24px 20px; text-align: center;
+    }
+    .order-card-icon { font-size: 2.2rem; color: var(--accent); margin-bottom: 10px; }
+    .order-card-header h3 { font-size: 1.25rem; font-weight: 800; color: var(--white); margin-bottom: 6px; }
+    .order-price {
+      display: inline-block; background: rgba(201,162,39,.15);
+      border: 1px solid rgba(201,162,39,.4); color: var(--accent);
+      font-size: 1rem; font-weight: 700; padding: 6px 20px; border-radius: 50px; margin-top: 8px;
+    }
+    .order-card-body { padding: 22px; }
+    .sub-services-title { font-size: .88rem; font-weight: 700; color: var(--primary); margin-bottom: 12px; }
+    .sub-services-list { display: flex; flex-direction: column; gap: 8px; margin-bottom: 20px; max-height: 260px; overflow-y: auto; }
+    .sub-services-list::-webkit-scrollbar { width: 4px; }
+    .sub-services-list::-webkit-scrollbar-thumb { background: var(--gray-200); border-radius: 4px; }
+    .sub-radio-label {
+      display: flex; align-items: center; gap: 10px; cursor: pointer;
+      padding: 10px 14px; border-radius: var(--radius-sm); border: 1.5px solid var(--gray-200);
+      font-size: .88rem; color: var(--gray-800); transition: border-color .2s, background .2s;
+    }
+    .sub-radio-label:hover { border-color: var(--accent); background: rgba(201,162,39,.06); }
+    .sub-radio-label input[type="radio"] { display: none; }
+    .sub-radio-label.selected { border-color: var(--accent); background: rgba(201,162,39,.10); color: var(--primary); font-weight: 600; }
+    .sub-radio-dot {
+      width: 18px; height: 18px; border-radius: 50%; border: 2px solid var(--gray-400);
+      flex-shrink: 0; display: flex; align-items: center; justify-content: center;
+      transition: border-color .2s;
+    }
+    .sub-radio-dot::after { content: ''; width: 8px; height: 8px; background: var(--accent); border-radius: 50%; opacity: 0; transition: opacity .2s; }
+    .sub-radio-label.selected .sub-radio-dot { border-color: var(--accent); }
+    .sub-radio-label.selected .sub-radio-dot::after { opacity: 1; }
+
+    .order-divider { height: 1px; background: var(--gray-200); margin: 16px 0; }
+    .btn-full { display: block; width: 100%; text-align: center; }
+    .btn-gold {
+      background: linear-gradient(135deg, var(--accent), var(--accent-light));
+      color: var(--primary); font-family: 'Cairo', sans-serif;
+      font-size: .95rem; font-weight: 800; padding: 13px 20px; border-radius: var(--radius-sm);
+      text-decoration: none; border: none; cursor: pointer;
+      transition: transform .2s, box-shadow .2s;
+      box-shadow: 0 4px 14px rgba(201,162,39,.4);
+    }
+    .btn-gold:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(201,162,39,.5); }
+    .btn-whatsapp {
+      display: flex; align-items: center; justify-content: center; gap: 8px;
+      background: #25d366; color: var(--white); font-family: 'Cairo', sans-serif;
+      font-size: .88rem; font-weight: 700; padding: 11px 20px; border-radius: var(--radius-sm);
+      text-decoration: none; margin-top: 10px; transition: background .2s;
+    }
+    .btn-whatsapp:hover { background: #1ebe5d; }
+    .btn-phone {
+      display: flex; align-items: center; justify-content: center; gap: 8px;
+      background: var(--primary); color: var(--white); font-family: 'Cairo', sans-serif;
+      font-size: .88rem; font-weight: 700; padding: 11px 20px; border-radius: var(--radius-sm);
+      text-decoration: none; margin-top: 10px; transition: background .2s;
+    }
+    .btn-phone:hover { background: var(--primary-light); }
+
+    /* ─── PORTFOLIO SECTION ─── */
+    .section-title-wrap { text-align: center; margin-bottom: 40px; }
+    .section-tag {
+      display: inline-flex; align-items: center; gap: 6px;
+      font-size: .8rem; font-weight: 700; color: var(--accent);
+      background: rgba(201,162,39,.1); border: 1px solid rgba(201,162,39,.25);
+      padding: 5px 16px; border-radius: 50px; margin-bottom: 12px;
+    }
+    .section-title { font-size: 2rem; font-weight: 800; color: var(--primary); margin-bottom: 10px; }
+    .section-desc { font-size: 1rem; color: var(--gray-600); max-width: 520px; margin: 0 auto; }
+
+    .portfolio-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; }
+    .portfolio-card {
+      border-radius: var(--radius); overflow: hidden; background: var(--white);
+      box-shadow: var(--shadow); transition: transform .25s, box-shadow .25s;
+    }
+    .portfolio-card:hover { transform: translateY(-6px); box-shadow: var(--shadow-lg); }
+    .portfolio-thumb {
+      height: 180px; display: flex; align-items: center; justify-content: center;
+      font-size: 3rem; position: relative; overflow: hidden;
+    }
+    .portfolio-thumb::after {
+      content: ''; position: absolute; inset: 0;
+      background: linear-gradient(to bottom, transparent 40%, rgba(13,27,46,.6));
+    }
+    .portfolio-card-body { padding: 16px 18px; }
+    .portfolio-card-title { font-size: .95rem; font-weight: 700; color: var(--primary); margin-bottom: 4px; }
+    .portfolio-card-tag {
+      font-size: .78rem; color: var(--accent); font-weight: 600;
+      background: rgba(201,162,39,.1); padding: 3px 10px; border-radius: 50px;
+    }
+
+    /* ─── CTA SECTION ─── */
+    .cta-section {
+      background: linear-gradient(135deg, var(--primary) 0%, #1a2f4a 100%);
+      padding: 70px 0;
+    }
+    .cta-inner { text-align: center; }
+    .cta-inner h2 { font-size: 2rem; font-weight: 800; color: var(--white); margin-bottom: 14px; }
+    .cta-inner p { font-size: 1rem; color: rgba(255,255,255,.7); margin-bottom: 30px; }
+    .cta-btns { display: flex; align-items: center; justify-content: center; gap: 14px; flex-wrap: wrap; }
+    .btn-outline-white {
+      border: 2px solid rgba(255,255,255,.4); color: var(--white);
+      font-family: 'Cairo', sans-serif; font-size: .92rem; font-weight: 700;
+      padding: 11px 26px; border-radius: var(--radius-sm); text-decoration: none;
+      transition: border-color .2s, background .2s;
+    }
+    .btn-outline-white:hover { border-color: var(--white); background: rgba(255,255,255,.08); }
+
+    /* ─── ERROR STATE ─── */
+    .error-state { text-align: center; padding: 80px 20px; }
+    .error-state i { font-size: 4rem; color: var(--gray-400); margin-bottom: 20px; }
+    .error-state h2 { font-size: 1.6rem; font-weight: 700; color: var(--primary); margin-bottom: 10px; }
+    .error-state p { color: var(--gray-600); margin-bottom: 24px; }
+
+    /* ─── WHATSAPP FLOAT ─── */
+    .whatsapp-float {
+      position: fixed; bottom: 28px; left: 28px; z-index: 999;
+      width: 56px; height: 56px; background: #25d366; border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1.6rem; color: var(--white); text-decoration: none;
+      box-shadow: 0 4px 20px rgba(37,211,102,.5);
+      transition: transform .2s; animation: float 3s ease-in-out infinite;
+    }
+    .whatsapp-float:hover { transform: scale(1.1); }
+    @keyframes float { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-6px)} }
+
+    /* ─── RESPONSIVE ─── */
+    @media (max-width: 1024px) {
+      .service-layout { grid-template-columns: 1fr; }
+      .service-sidebar { position: static; }
+      .why-grid { grid-template-columns: 1fr 1fr; }
+    }
+    @media (max-width: 768px) {
+      .hero-content { flex-direction: column; text-align: center; }
+      .hero-text h1 { font-size: 1.8rem; }
+      .related-grid { grid-template-columns: 1fr 1fr; }
+      .portfolio-grid { grid-template-columns: 1fr 1fr; }
+      .why-grid { grid-template-columns: 1fr; }
+    }
+    @media (max-width: 480px) {
+      .related-grid, .portfolio-grid { grid-template-columns: 1fr; }
+    }
+  </style>
+  <link rel="stylesheet" href="vip-upgrade.css">
+  <link rel="stylesheet" href="legal-system.css">
+  <link rel="stylesheet" href="final-layout-fixes.css">
+  <link rel="stylesheet" href="enterprise-security-forms-notifications.css">
+  <link rel="stylesheet" href="all-pages-organization-fix.css">
+</head>
+<body>
+
+  <!-- LOADING -->
+  <div class="page-loading" id="pageLoading">
+    <div class="loader-logo">VISION <span class="accent">MEDIA</span></div>
+    <div class="loader-spinner"></div>
+  </div>
+
+  <!-- HEADER -->
+  <header class="header" id="header">
+    <nav class="nav container">
+      <a href="index.html" class="nav-logo">VISION <span class="accent">MEDIA</span></a>
+      <ul class="nav-menu" id="navMenu">
+        <li><a href="index.html" class="nav-link">الرئيسية</a></li>
+        <li><a href="about.html" class="nav-link">من نحن</a></li>
+        <li class="nav-dropdown">
+          <a href="services.html" class="nav-link active">خدماتنا <i class="fas fa-chevron-down"></i></a>
+          <div class="dropdown-menu">
+            <div class="dropdown-grid">
+              <a href="service-detail.html?id=1" class="dropdown-item">التسويق الإلكتروني</a>
+              <a href="service-detail.html?id=2" class="dropdown-item">إدارة السوشيال ميديا</a>
+              <a href="service-detail.html?id=3" class="dropdown-item">الإعلانات الممولة</a>
+              <a href="service-detail.html?id=4" class="dropdown-item">تصميم الجرافيك</a>
+              <a href="service-detail.html?id=5" class="dropdown-item">تصميم الهوية التجارية</a>
+              <a href="service-detail.html?id=6" class="dropdown-item">تصميم المواقع</a>
+              <a href="service-detail.html?id=7" class="dropdown-item">المتاجر الإلكترونية</a>
+              <a href="service-detail.html?id=8" class="dropdown-item">إنتاج الفيديو</a>
+              <a href="service-detail.html?id=9" class="dropdown-item">الموشن جرافيك</a>
+              <a href="service-detail.html?id=10" class="dropdown-item">التصوير الاحترافي</a>
+              <a href="service-detail.html?id=11" class="dropdown-item">صور الذكاء الاصطناعي</a>
+              <a href="service-detail.html?id=12" class="dropdown-item">فيديو الذكاء الاصطناعي</a>
+              <a href="service-detail.html?id=13" class="dropdown-item">إدارة الحملات</a>
+              <a href="service-detail.html?id=14" class="dropdown-item">كتابة المحتوى</a>
+              <a href="service-detail.html?id=15" class="dropdown-item">تحسين SEO</a>
+            </div>
+            <div class="dropdown-footer"><a href="services.html" class="btn btn-gold btn-sm">عرض جميع الخدمات</a></div>
+          </div>
+        </li>
+        <li><a href="portfolio.html" class="nav-link">أعمالنا</a></li>
+        <li><a href="clients.html" class="nav-link">عملاؤنا</a></li>
+        <li><a href="blog.html" class="nav-link">المقالات</a></li>
+        <li><a href="pricing.html" class="nav-link">التسعيرة</a></li>
+        <li><a href="contact.html" class="nav-link">تواصل معنا</a></li>
+      </ul>
+      <div class="nav-actions">
+        <a href="request-service.html" class="btn btn-gold btn-sm">طلب خدمة</a>
+        <a href="login.html" class="btn btn-outline-white btn-sm" id="loginBtn">دخول</a>
+        <button class="nav-toggle" id="navToggle"><span></span><span></span><span></span></button>
+      </div>
+    </nav>
+  </header>
+
+  <!-- BREADCRUMB -->
+  <div class="breadcrumb-bar">
+    <div class="container">
+      <nav class="breadcrumb">
+        <a href="index.html">الرئيسية</a>
+        <span class="sep"><i class="fas fa-chevron-left"></i></span>
+        <a href="services.html">خدماتنا</a>
+        <span class="sep"><i class="fas fa-chevron-left"></i></span>
+        <span class="current" id="breadcrumbCurrent">تفاصيل الخدمة</span>
+      </nav>
+    </div>
+  </div>
+
+  <!-- PAGE HERO -->
+  <section class="page-hero" id="pageHero">
+    <div class="container">
+      <div class="hero-content">
+        <div class="hero-icon-wrap" id="heroIcon">
+          <i class="fas fa-star"></i>
+        </div>
+        <div class="hero-text">
+          <div class="hero-badge"><i class="fas fa-gem"></i> خدمة احترافية</div>
+          <h1 id="heroTitle">تفاصيل الخدمة</h1>
+          <p id="heroDesc">نقدم لك أفضل الحلول الاحترافية المصممة خصيصاً لتحقيق أهدافك التسويقية.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- MAIN CONTENT -->
+  <main id="mainContent">
+    <div id="errorState" class="error-state container" style="display:none;">
+      <i class="fas fa-exclamation-circle"></i>
+      <h2>الخدمة غير موجودة</h2>
+      <p>عذراً، لم نتمكن من العثور على الخدمة المطلوبة. يرجى التحقق من الرابط أو العودة إلى صفحة الخدمات.</p>
+      <a href="services.html" class="btn btn-gold">عرض جميع الخدمات</a>
+    </div>
+
+    <div class="container" id="serviceContent">
+      <div class="service-layout">
+
+        <!-- RIGHT: MAIN COLUMN -->
+        <div class="service-main">
+
+          <!-- DESCRIPTION -->
+          <div class="card">
+            <div class="card-header">
+              <i class="fas fa-info-circle card-header-icon"></i>
+              <h2>نبذة عن الخدمة</h2>
+            </div>
+            <div class="card-body">
+              <div class="service-description" id="serviceDescription">
+                <p>يتم تحميل تفاصيل الخدمة...</p>
+              </div>
+            </div>
+          </div>
+
+          <!-- WHAT'S INCLUDED -->
+          <div class="card">
+            <div class="card-header">
+              <i class="fas fa-check-double card-header-icon"></i>
+              <h2>ماذا تشمل هذه الخدمة؟</h2>
+            </div>
+            <div class="card-body">
+              <ul class="includes-list" id="includesList"></ul>
+            </div>
+          </div>
+
+          <!-- WHY CHOOSE US -->
+          <div class="card">
+            <div class="card-header">
+              <i class="fas fa-trophy card-header-icon"></i>
+              <h2>لماذا تختار VISION MEDIA؟</h2>
+            </div>
+            <div class="card-body">
+              <div class="why-grid">
+                <div class="why-item">
+                  <div class="why-item-icon"><i class="fas fa-medal"></i></div>
+                  <div>
+                    <h4>خبرة واسعة</h4>
+                    <p>أكثر من 7 سنوات في مجال الإعلان والتسويق الرقمي.</p>
+                  </div>
+                </div>
+                <div class="why-item">
+                  <div class="why-item-icon"><i class="fas fa-users"></i></div>
+                  <div>
+                    <h4>فريق متخصص</h4>
+                    <p>نخبة من المصممين والمسوقين المحترفين.</p>
+                  </div>
+                </div>
+                <div class="why-item">
+                  <div class="why-item-icon"><i class="fas fa-clock"></i></div>
+                  <div>
+                    <h4>تسليم في الوقت</h4>
+                    <p>نلتزم بالمواعيد المتفق عليها دون تأخير.</p>
+                  </div>
+                </div>
+                <div class="why-item">
+                  <div class="why-item-icon"><i class="fas fa-shield-alt"></i></div>
+                  <div>
+                    <h4>ضمان الجودة</h4>
+                    <p>نضمن رضاك الكامل أو نعيد العمل مجاناً.</p>
+                  </div>
+                </div>
+                <div class="why-item">
+                  <div class="why-item-icon"><i class="fas fa-chart-line"></i></div>
+                  <div>
+                    <h4>نتائج مثبتة</h4>
+                    <p>سجل حافل بالنجاحات عبر 300+ عميل راضٍ.</p>
+                  </div>
+                </div>
+                <div class="why-item">
+                  <div class="why-item-icon"><i class="fas fa-headset"></i></div>
+                  <div>
+                    <h4>دعم مستمر</h4>
+                    <p>نحن بجانبك قبل وأثناء وبعد تسليم المشروع.</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- FAQ -->
+          <div class="card">
+            <div class="card-header">
+              <i class="fas fa-question-circle card-header-icon"></i>
+              <h2>الأسئلة الشائعة</h2>
+            </div>
+            <div class="card-body">
+              <div class="faq-list" id="faqList"></div>
+            </div>
+          </div>
+
+          <!-- RELATED SERVICES -->
+          <div class="card">
+            <div class="card-header">
+              <i class="fas fa-th-large card-header-icon"></i>
+              <h2>خدمات ذات صلة</h2>
+            </div>
+            <div class="card-body">
+              <div class="related-grid" id="relatedGrid"></div>
+            </div>
+          </div>
+
+        </div><!-- end service-main -->
+
+        <!-- LEFT: SIDEBAR -->
+        <aside class="service-sidebar">
+          <div class="order-card">
+            <div class="order-card-header">
+              <div class="order-card-icon" id="sidebarIcon"><i class="fas fa-star"></i></div>
+              <h3 id="sidebarTitle">اسم الخدمة</h3>
+              <div class="order-price">اتفق معنا</div>
+            </div>
+            <div class="order-card-body">
+              <p class="sub-services-title"><i class="fas fa-list-ul" style="color:var(--accent);margin-left:6px;"></i> اختر الخدمة الفرعية:</p>
+              <div class="sub-services-list" id="subServicesList"></div>
+              <div class="order-divider"></div>
+              <a href="#" class="btn btn-gold btn-full" id="orderBtn">
+                <i class="fas fa-paper-plane" style="margin-left:6px;"></i> اطلب هذه الخدمة
+              </a>
+              <a href="https://wa.me/966543944248" class="btn-whatsapp btn-full" target="_blank">
+                <i class="fab fa-whatsapp"></i> تواصل عبر واتساب
+              </a>
+              <a href="tel:+966543944248" class="btn-phone btn-full">
+                <i class="fas fa-phone"></i> اتصل بنا الآن
+              </a>
+              <div class="order-divider"></div>
+              <div style="font-size:.78rem;color:var(--gray-600);text-align:center;line-height:1.7;">
+                <i class="fas fa-lock" style="color:var(--accent);"></i> بياناتك محمية وآمنة بالكامل<br/>
+                <i class="fas fa-star" style="color:var(--accent);"></i> أكثر من 300 عميل راضٍ
+              </div>
+            </div>
+          </div>
+        </aside>
+
+      </div>
+    </div>
+  </main>
+
+  <!-- PORTFOLIO SECTION -->
+  <section style="padding: 60px 0; background: var(--white);" id="portfolioSection">
+    <div class="container">
+      <div class="section-title-wrap">
+        <div class="section-tag"><i class="fas fa-briefcase"></i> معرض الأعمال</div>
+        <h2 class="section-title">أعمال ذات صلة</h2>
+        <p class="section-desc">نماذج من أعمالنا المنجزة في هذا المجال</p>
+      </div>
+      <div class="portfolio-grid" id="portfolioGrid"></div>
+    </div>
+  </section>
+
+  <!-- CTA SECTION -->
+  <section class="cta-section">
+    <div class="container">
+      <div class="cta-inner">
+        <div class="section-tag" style="justify-content:center;margin-bottom:16px;"><i class="fas fa-rocket"></i> ابدأ الآن</div>
+        <h2>هل أنت مستعد للانطلاق؟</h2>
+        <p>تواصل معنا اليوم واحصل على استشارة مجانية لمناقشة مشروعك</p>
+        <div class="cta-btns">
+          <a href="request-service.html" class="btn btn-gold">اطلب خدمتك الآن</a>
+          <a href="contact.html" class="btn-outline-white">تواصل معنا</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer class="footer">
+    <div class="footer-top"><div class="container"><div class="footer-grid">
+      <div class="footer-brand">
+        <a href="index.html" class="footer-logo">VISION <span class="accent">MEDIA</span></a>
+        <p>شركة متخصصة في الدعاية والإعلان وحلول التسويق الرقمي الشاملة.</p>
+        <div class="social-links">
+          <a href="https://www.instagram.com/advertisement_portal.46" target="_blank"><i class="fab fa-instagram"></i></a>
+          <a href="https://www.facebook.com/share/1DszbP1nTB/" target="_blank"><i class="fab fa-facebook-f"></i></a>
+          <a href="https://www.snapchat.com/add/wael_elsayd2026" target="_blank"><i class="fab fa-snapchat-ghost"></i></a>
+          <a href="https://www.tiktok.com/@waelelsayd3" target="_blank"><i class="fab fa-tiktok"></i></a>
+          <a href="https://youtube.com/channel/UCA0-OJ461Na9MkTZMmgM48A" target="_blank"><i class="fab fa-youtube"></i></a>
+          <a href="https://x.com/Adverti556" target="_blank"><i class="fab fa-x-twitter"></i></a>
+        </div>
+      </div>
+      <div class="footer-links"><h4>روابط سريعة</h4><ul>
+        <li><a href="index.html">الرئيسية</a></li><li><a href="about.html">من نحن</a></li>
+        <li><a href="services.html">خدماتنا</a></li><li><a href="portfolio.html">أعمالنا</a></li>
+        <li><a href="pricing.html">التسعيرة</a></li><li><a href="contact.html">تواصل معنا</a></li>
+      </ul></div>
+      <div class="footer-links"><h4>خدماتنا</h4><ul>
+        <li><a href="service-detail.html?id=1">التسويق الإلكتروني</a></li>
+        <li><a href="service-detail.html?id=4">تصميم الجرافيك</a></li>
+        <li><a href="service-detail.html?id=6">تصميم المواقع</a></li>
+        <li><a href="service-detail.html?id=8">إنتاج الفيديو</a></li>
+        <li><a href="service-detail.html?id=15">تحسين SEO</a></li>
+      </ul></div>
+      <div class="footer-contact"><h4>تواصل معنا</h4><ul>
+        <li><i class="fab fa-whatsapp"></i> <a href="https://wa.me/966543944248">0543944248</a></li>
+        <li><i class="fas fa-phone"></i> <a href="tel:+966538862064">0538862064</a></li>
+        <li><i class="fas fa-envelope"></i> <a href="mailto:waelelsaydahmed@gmail.com">waelelsaydahmed@gmail.com</a></li>
+      </ul>
+      <a href="request-service.html" class="btn btn-gold btn-sm" style="margin-top:12px;">طلب خدمة</a>
+      </div>
+    </div></div></div>
+    <div class="footer-bottom"><div class="container"><div class="footer-bottom-inner">
+      <p>&copy; 2025 VISION MEDIA. جميع الحقوق محفوظة</p>
+      <div class="footer-legal"><a href="terms.html">الشروط والأحكام</a><a href="privacy.html">سياسة الخصوصية</a></div>
+    </div></div></div>
+  </footer>
+
+  <a href="https://wa.me/966543944248" class="whatsapp-float" target="_blank"><i class="fab fa-whatsapp"></i></a>
+
+  <script src="core.js"></script>
+  <script>
+  (function () {
+
+    /* ── WAIT FOR VM.services (defined in core.js) ── */
+    function init() {
+      /* Hide loader */
+      setTimeout(function () {
+        var loader = document.getElementById('pageLoading');
+        if (loader) loader.classList.add('hidden');
+      }, 600);
+
+      var params = new URLSearchParams(window.location.search);
+      var id = parseInt(params.get('id'), 10);
+
+      /* Fallback service data if core.js hasn't defined VM.services */
+      var fallbackServices = buildFallbackServices();
+      var services = (window.VM && window.VM.services) ? window.VM.services : fallbackServices;
+      var service = services.find(function (s) { return s.id === id; });
+
+      if (!service) {
+        document.getElementById('errorState').style.display = 'block';
+        document.getElementById('serviceContent').style.display = 'none';
+        document.getElementById('pageHero').style.display = 'none';
+        document.querySelector('.breadcrumb-bar').style.display = 'none';
+        document.getElementById('portfolioSection').style.display = 'none';
+        return;
+      }
+
+      /* PAGE TITLE */
+      document.title = 'VISION MEDIA | ' + service.name;
+
+      /* BREADCRUMB */
+      document.getElementById('breadcrumbCurrent').textContent = service.name;
+
+      /* HERO */
+      document.getElementById('heroTitle').textContent = service.name;
+      document.getElementById('heroDesc').textContent = service.heroDesc || service.description;
+      document.getElementById('heroIcon').innerHTML = '<i class="' + service.icon + '"></i>';
+
+      /* SIDEBAR */
+      document.getElementById('sidebarIcon').innerHTML = '<i class="' + service.icon + '"></i>';
+      document.getElementById('sidebarTitle').textContent = service.name;
+
+      /* ORDER BUTTON */
+      document.getElementById('orderBtn').href =
+        'request-service.html?service=' + encodeURIComponent(service.name) + '&id=' + id;
+
+      /* DESCRIPTION */
+      var descEl = document.getElementById('serviceDescription');
+      descEl.innerHTML = '';
+      (service.fullDescription || [service.description]).forEach(function (para) {
+        var p = document.createElement('p');
+        p.textContent = para;
+        descEl.appendChild(p);
+      });
+
+      /* INCLUDES LIST */
+      var incEl = document.getElementById('includesList');
+      incEl.innerHTML = '';
+      (service.includes || []).forEach(function (item) {
+        var li = document.createElement('li');
+        li.innerHTML = '<span class="check-icon"><i class="fas fa-check"></i></span><span>' + item + '</span>';
+        incEl.appendChild(li);
+      });
+
+      /* SUB-SERVICES */
+      var subEl = document.getElementById('subServicesList');
+      subEl.innerHTML = '';
+      (service.subServices || []).forEach(function (sub, idx) {
+        var label = document.createElement('label');
+        label.className = 'sub-radio-label' + (idx === 0 ? ' selected' : '');
+        label.innerHTML =
+          '<input type="radio" name="subService" value="' + sub + '"' + (idx === 0 ? ' checked' : '') + '>' +
+          '<span class="sub-radio-dot"></span>' +
+          '<span>' + sub + '</span>';
+        label.addEventListener('click', function () {
+          subEl.querySelectorAll('.sub-radio-label').forEach(function (l) { l.classList.remove('selected'); });
+          label.classList.add('selected');
+        });
+        subEl.appendChild(label);
+      });
+
+      /* FAQ */
+      var faqEl = document.getElementById('faqList');
+      faqEl.innerHTML = '';
+      (service.faq || []).forEach(function (item) {
+        var div = document.createElement('div');
+        div.className = 'faq-item';
+        div.innerHTML =
+          '<button class="faq-question"><span>' + item.q + '</span><i class="fas fa-chevron-down faq-icon"></i></button>' +
+          '<div class="faq-answer"><p>' + item.a + '</p></div>';
+        var btn = div.querySelector('.faq-question');
+        var ans = div.querySelector('.faq-answer');
+        btn.addEventListener('click', function () {
+          var isOpen = btn.classList.contains('open');
+          /* Close all */
+          faqEl.querySelectorAll('.faq-question').forEach(function (b) { b.classList.remove('open'); });
+          faqEl.querySelectorAll('.faq-answer').forEach(function (a) { a.classList.remove('open'); });
+          if (!isOpen) { btn.classList.add('open'); ans.classList.add('open'); }
+        });
+        faqEl.appendChild(div);
+      });
+
+      /* RELATED SERVICES */
+      var relEl = document.getElementById('relatedGrid');
+      relEl.innerHTML = '';
+      var related = services.filter(function (s) { return s.id !== id; }).slice(0, 3);
+      related.forEach(function (s) {
+        var a = document.createElement('a');
+        a.className = 'related-card';
+        a.href = 'service-detail.html?id=' + s.id;
+        a.innerHTML =
+          '<div class="related-card-icon"><i class="' + s.icon + '"></i></div>' +
+          '<span>' + s.name + '</span>';
+        relEl.appendChild(a);
+      });
+
+      /* PORTFOLIO */
+      var portEl = document.getElementById('portfolioGrid');
+      portEl.innerHTML = '';
+      var portfolioItems = service.portfolio || buildDefaultPortfolio(service);
+      portfolioItems.forEach(function (p) {
+        var div = document.createElement('div');
+        div.className = 'portfolio-card';
+        div.innerHTML =
+          '<div class="portfolio-thumb" style="background:' + p.bg + ';">' +
+            '<span style="font-size:3rem;position:relative;z-index:1;">' + p.emoji + '</span>' +
+          '</div>' +
+          '<div class="portfolio-card-body">' +
+            '<div class="portfolio-card-title">' + p.title + '</div>' +
+            '<span class="portfolio-card-tag">' + p.tag + '</span>' +
+          '</div>';
+        portEl.appendChild(div);
+      });
+    }
+
+    /* ── FALLBACK DATA (used if core.js does not define VM.services) ── */
+    function buildFallbackServices() {
+      return [
+        {
+          id: 1, name: 'التسويق الإلكتروني',
+          icon: 'fas fa-bullhorn',
+          heroDesc: 'استراتيجيات تسويقية شاملة تضع علامتك التجارية في قمة المشهد الرقمي.',
+          description: 'نقدم حلول تسويق إلكتروني متكاملة تشمل التخطيط الاستراتيجي وتنفيذ الحملات وقياس الأداء.',
+          fullDescription: [
+            'نقدم خدمة التسويق الإلكتروني الشاملة التي تساعد علامتك التجارية على الوصول إلى جمهورها المستهدف بكفاءة عالية وتكلفة مناسبة.',
+            'يعمل فريقنا المتخصص على بناء استراتيجية تسويقية مخصصة لكل عميل، مع متابعة دقيقة للنتائج وتحسين مستمر للحملات لضمان أعلى عائد على الاستثمار.',
+            'نؤمن بأن التسويق الناجح يبدأ بفهم عميق لجمهورك وسوقك، لذلك نجري دراسة متأنية قبل إطلاق أي حملة.'
+          ],
+          includes: [
+            'تحليل السوق والمنافسين بالتفصيل',
+            'وضع استراتيجية تسويقية شاملة ومخصصة',
+            'إنشاء وإدارة الحملات الإعلانية المدفوعة',
+            'تحسين محركات البحث SEO',
+            'إدارة منصات التواصل الاجتماعي',
+            'إعداد تقارير أداء شهرية مفصلة',
+            'استشارات تسويقية دورية',
+            'دعم فني مستمر على مدار الساعة'
+          ],
+          subServices: [
+            'التسويق عبر محركات البحث (SEM)',
+            'التسويق عبر وسائل التواصل الاجتماعي',
+            'التسويق بالمحتوى',
+            'التسويق عبر البريد الإلكتروني',
+            'التسويق بالمؤثرين',
+            'تحسين معدل التحويل (CRO)',
+            'إعلانات جوجل وميتا'
+          ],
+          faq: [
+            { q: 'كم من الوقت يستغرق ظهور النتائج؟', a: 'تظهر النتائج الأولى في غضون 2-4 أسابيع للحملات المدفوعة، أما SEO فيستغرق 3-6 أشهر لنتائج ملموسة.' },
+            { q: 'هل تناسبكم الشركات الصغيرة؟', a: 'نعم، لدينا باقات مرنة تناسب جميع أحجام الأعمال بدءاً من المشاريع الناشئة.' },
+            { q: 'كيف تقيسون نجاح الحملة؟', a: 'نستخدم مؤشرات أداء دقيقة مثل معدل التحويل والعائد على الاستثمار وتكلفة الاكتساب.' },
+            { q: 'هل يمكنني متابعة الحملة بنفسي؟', a: 'بالطبع، نوفر لوحة تحكم شفافة ونقارير دورية تُطلعك على كل تفاصيل حملتك.' }
+          ]
+        },
+        {
+          id: 2, name: 'إدارة السوشيال ميديا',
+          icon: 'fas fa-share-alt',
+          heroDesc: 'حضور رقمي قوي ومتميز على جميع منصات التواصل الاجتماعي.',
+          description: 'إدارة احترافية لحساباتك على منصات التواصل الاجتماعي لبناء مجتمع قوي حول علامتك التجارية.',
+          fullDescription: [
+            'نتولى إدارة حساباتك على جميع منصات التواصل الاجتماعي (إنستغرام، فيسبوك، تيك توك، تويتر، سناب شات) بأسلوب احترافي يعكس هوية علامتك التجارية.',
+            'يقوم فريقنا الإبداعي بإنشاء محتوى جذاب ومتنوع يشمل الصور والفيديوهات والقصص التفاعلية، مع التفاعل الفعّال مع جمهورك.',
+            'نحرص على بناء مجتمع رقمي وفي حول علامتك التجارية يتحول إلى عملاء دائمين.'
+          ],
+          includes: [
+            'إدارة كاملة لجميع المنصات',
+            'إنشاء محتوى يومي إبداعي ومتوافق مع الهوية',
+            'تصميم جرافيك احترافي للمنشورات',
+            'التفاعل مع التعليقات والرسائل',
+            'إدارة الحملات الإعلانية المدفوعة',
+            'تقارير أداء أسبوعية وشهرية',
+            'بناء الجمهور المستهدف وزيادة المتابعين',
+            'إدارة الأزمات الرقمية'
+          ],
+          subServices: [
+            'إدارة إنستغرام',
+            'إدارة فيسبوك',
+            'إدارة تيك توك',
+            'إدارة تويتر / X',
+            'إدارة سناب شات',
+            'إدارة يوتيوب',
+            'إدارة لينكدإن'
+          ],
+          faq: [
+            { q: 'كم مرة يُنشر المحتوى أسبوعياً؟', a: 'حسب الباقة المختارة، من 3 إلى 7 منشورات أسبوعياً لكل منصة.' },
+            { q: 'من يكتب المحتوى؟', a: 'فريقنا المتخصص من كُتّاب المحتوى والمصممين المحترفين.' },
+            { q: 'هل يمكنني الموافقة على المحتوى قبل النشر؟', a: 'نعم، نرسل لك خطة المحتوى الشهرية مسبقاً لمراجعتها والموافقة عليها.' },
+            { q: 'هل تتكفلون بالرد على الرسائل؟', a: 'نعم، نرد على التعليقات والرسائل خلال 24 ساعة.' }
+          ]
+        },
+        {
+          id: 3, name: 'الإعلانات الممولة',
+          icon: 'fas fa-ad',
+          heroDesc: 'إعلانات ممولة تستهدف جمهورك بدقة لتحقيق أعلى عائد على استثمارك.',
+          description: 'إنشاء وإدارة حملات إعلانية مدفوعة عالية الأداء على جميع المنصات الرقمية.',
+          fullDescription: [
+            'نحن متخصصون في إنشاء وإدارة الإعلانات الممولة على منصات Meta وGoogle وTikTok وSnapchat بكفاءة عالية.',
+            'يتولى خبراؤنا المعتمدون تصميم الحملات الإعلانية وتحديد الجمهور المستهدف بدقة، مما يضمن وصول إعلانك لأكثر الأشخاص احتمالاً للتحويل.',
+            'نراقب الحملات يومياً ونُجري تحسينات مستمرة للحصول على أفضل النتائج بأقل تكلفة.'
+          ],
+          includes: [
+            'إعداد استراتيجية الإعلان المناسبة',
+            'تصميم الإعلانات بصرياً ونصياً',
+            'إعداد جمهور مستهدف دقيق',
+            'اختبار A/B للإعلانات',
+            'متابعة يومية وتحسين مستمر',
+            'إعداد تقارير أداء مفصلة',
+            'إعادة استهداف الزوار (Retargeting)',
+            'تتبع التحويلات والأهداف'
+          ],
+          subServices: [
+            'إعلانات ميتا (فيسبوك وإنستغرام)',
+            'إعلانات جوجل (Google Ads)',
+            'إعلانات تيك توك',
+            'إعلانات سناب شات',
+            'إعلانات تويتر / X',
+            'إعلانات يوتيوب',
+            'إعلانات لينكدإن'
+          ],
+          faq: [
+            { q: 'ما هو الحد الأدنى للميزانية الإعلانية؟', a: 'لا توجد ميزانية أدنى محددة، لكننا نوصي بـ 500 ريال شهرياً كحد أدنى لتحقيق نتائج ملموسة.' },
+            { q: 'من يدفع تكلفة الإعلانات؟', a: 'تكلفة الإعلانات تُدفع مباشرة للمنصة من قِبل العميل، ونحن نتقاضى رسوم الإدارة فقط.' },
+            { q: 'هل تضمنون نتائج معينة؟', a: 'لا يمكن ضمان نتائج محددة، لكننا نستخدم أحدث الأساليب لتحقيق أفضل النتائج الممكنة.' },
+            { q: 'كيف أعرف أين تُنفق ميزانيتي؟', a: 'نوفر تقارير شفافة كاملة توضح كيفية توزيع الميزانية والنتائج المحققة.' }
+          ]
+        },
+        {
+          id: 4, name: 'تصميم الجرافيك',
+          icon: 'fas fa-paint-brush',
+          heroDesc: 'تصاميم إبداعية تجعل علامتك التجارية تبرز وتُترك أثراً لا يُنسى.',
+          description: 'خدمات تصميم جرافيك شاملة لجميع احتياجاتك التسويقية والبصرية.',
+          fullDescription: [
+            'نقدم خدمات تصميم الجرافيك الاحترافي التي تشمل كل ما تحتاجه من مواد تسويقية بصرية تعكس قيم علامتك التجارية.',
+            'يمتلك فريقنا الإبداعي خبرة واسعة في التصميم للمنصات الرقمية والمطبوعات والإعلانات الخارجية.',
+            'نولي اهتماماً بالغاً لكل تفصيلة في التصميم، من الألوان والخطوط إلى التركيب البصري الشامل.'
+          ],
+          includes: [
+            'تصميم منشورات سوشيال ميديا',
+            'تصميم البنرات الإعلانية الرقمية',
+            'تصميم الملصقات واللافتات',
+            'تصميم البروشور والكتالوج',
+            'تصميم الإنفوجرافيك',
+            'تصميم مواد الطباعة',
+            'تعديلات غير محدودة حتى الرضا',
+            'تسليم الملفات بصيغ متعددة'
+          ],
+          subServices: [
+            'تصميم منشورات السوشيال ميديا',
+            'تصميم البنرات الإعلانية',
+            'تصميم الملصقات واللافتات',
+            'تصميم البروشور والكتالوج',
+            'تصميم الإنفوجرافيك',
+            'تصميم العروض التقديمية',
+            'تصميم مواد الطباعة'
+          ],
+          faq: [
+            { q: 'كم من الوقت يستغرق التصميم؟', a: 'يتراوح من 24 ساعة إلى 3 أيام حسب حجم ونوع التصميم المطلوب.' },
+            { q: 'هل تقدمون ملفات قابلة للتعديل؟', a: 'نعم، نوفر ملفات المصدر الأصلية (AI, PSD) عند الطلب.' },
+            { q: 'كم مرة يمكنني طلب التعديل؟', a: 'نقدم تعديلات مجانية حتى تصل لرضاك الكامل.' },
+            { q: 'هل تراعون هوية علامتي التجارية؟', a: 'بالتأكيد، ندرس هويتك البصرية الحالية ونلتزم بها في جميع تصاميمنا.' }
+          ]
+        },
+        {
+          id: 5, name: 'تصميم الهوية التجارية',
+          icon: 'fas fa-fingerprint',
+          heroDesc: 'هوية بصرية فريدة تميزك عن منافسيك وترسخ مكانتك في السوق.',
+          description: 'تصميم هوية تجارية متكاملة تعكس قيم علامتك التجارية وتميزها في السوق.',
+          fullDescription: [
+            'الهوية التجارية هي الانطباع الأول الذي يتركه عملك على العالم. نحن نبني هويات تجارية متكاملة وقوية تعكس روح علامتك.',
+            'نبدأ بدراسة معمقة لرؤيتك ومنافسيك وجمهورك المستهدف، ثم نبتكر تصميماً يحكي قصة علامتك بشكل بصري مميز.',
+            'نسلم الهوية التجارية الكاملة مع دليل الاستخدام (Brand Guidelines) لضمان الاتساق في كل مكان.'
+          ],
+          includes: [
+            'تصميم الشعار (Logo) بنسخ متعددة',
+            'تحديد الألوان الرسمية للعلامة',
+            'اختيار الخطوط الرسمية',
+            'تصميم بطاقة العمل',
+            'تصميم ورق الرسائل والمطبوعات',
+            'تصميم الختم والبصمة الرسمية',
+            'دليل الهوية (Brand Guidelines)',
+            'تطبيق الهوية على القرطاسية كاملة'
+          ],
+          subServices: [
+            'تصميم الشعار (Logo)',
+            'هوية تجارية كاملة',
+            'Brand Guidelines دليل العلامة',
+            'تصميم بطاقة العمل',
+            'تصميم القرطاسية الرسمية',
+            'هوية بصرية للسوشيال ميديا',
+            'هوية للمتاجر والأكشاك'
+          ],
+          faq: [
+            { q: 'كم مدة تصميم الهوية الكاملة؟', a: 'تستغرق الهوية التجارية الكاملة من 7 إلى 14 يوم عمل.' },
+            { q: 'هل أحصل على حقوق الملكية الكاملة؟', a: 'نعم، عند الاستلام النهائي تنتقل جميع حقوق الملكية إليك بالكامل.' },
+            { q: 'ماذا يشمل دليل الهوية؟', a: 'يشمل قواعد استخدام الشعار والألوان والخطوط وتطبيقاتها على مختلف المواد.' },
+            { q: 'هل يمكنني تعديل الهوية لاحقاً؟', a: 'نوفر خدمة التعديل والتطوير مستقبلاً حسب احتياجاتك.' }
+          ]
+        },
+        {
+          id: 6, name: 'تصميم المواقع',
+          icon: 'fas fa-laptop-code',
+          heroDesc: 'مواقع احترافية سريعة ومتجاوبة تحول زوارك إلى عملاء دائمين.',
+          description: 'تصميم وتطوير مواقع الويب الاحترافية المتجاوبة مع جميع الأجهزة.',
+          fullDescription: [
+            'نصمم ونطور مواقع إلكترونية احترافية تجمع بين الجمال البصري والوظيفية العالية وتجربة المستخدم المثالية.',
+            'تتميز مواقعنا بسرعة التحميل والتوافق مع جميع الأجهزة والمتصفحات وتحسينها لمحركات البحث.',
+            'نستخدم أحدث التقنيات والإطارات البرمجية لضمان موقع آمن وقابل للتطوير والتوسع.'
+          ],
+          includes: [
+            'تصميم واجهة المستخدم UI/UX',
+            'تطوير كامل للموقع',
+            'استجابة كاملة لجميع الأجهزة',
+            'لوحة تحكم سهلة الاستخدام',
+            'تحسين SEO أساسي',
+            'ربط وسائل التواصل الاجتماعي',
+            'نظام النماذج والتواصل',
+            'تدريب على الإدارة الذاتية'
+          ],
+          subServices: [
+            'موقع شركات ومؤسسات',
+            'موقع خدمات وأعمال حرة',
+            'موقع معرض أعمال Portfolio',
+            'موقع مدونة وأخبار',
+            'موقع حجوزات وخدمات',
+            'Landing Page صفحة هبوط',
+            'إعادة تصميم موقع قائم'
+          ],
+          faq: [
+            { q: 'كم يستغرق تطوير الموقع؟', a: 'يستغرق المشروع النموذجي من 2 إلى 6 أسابيع حسب التعقيد.' },
+            { q: 'هل تدعمون اللغة العربية والإنجليزية؟', a: 'نعم، نبني مواقع متعددة اللغات بشكل احترافي.' },
+            { q: 'من يوفر الاستضافة والدومين؟', a: 'يمكننا مساعدتك في اختيار وشراء الاستضافة والدومين المناسبين.' },
+            { q: 'هل تقدمون صيانة الموقع بعد الإطلاق؟', a: 'نعم، لدينا باقات صيانة شهرية لضمان عمل موقعك بشكل دائم.' }
+          ]
+        },
+        {
+          id: 7, name: 'المتاجر الإلكترونية',
+          icon: 'fas fa-shopping-cart',
+          heroDesc: 'متجر إلكتروني احترافي يعمل على مدار الساعة ويزيد مبيعاتك.',
+          description: 'تصميم وتطوير متاجر إلكترونية متكاملة بجميع خيارات الدفع والشحن.',
+          fullDescription: [
+            'نبني متاجر إلكترونية متكاملة تمنح عملاءك تجربة تسوق سلسة وممتعة، مع دعم كامل لوسائل الدفع المختلفة وخيارات الشحن.',
+            'يتضمن المتجر لوحة تحكم متكاملة لإدارة المنتجات والطلبات والعملاء بكل سهولة.',
+            'نحرص على تحسين تجربة المستخدم وسرعة التحميل وأمان المتجر لضمان أعلى معدلات التحويل.'
+          ],
+          includes: [
+            'تصميم متجر احترافي متجاوب',
+            'ربط بوابات الدفع الإلكترونية',
+            'نظام إدارة المنتجات',
+            'نظام تتبع الطلبات',
+            'ربط شركات الشحن',
+            'نظام الخصومات والكوبونات',
+            'لوحة تحكم متكاملة',
+            'شهادة SSL وحماية المعاملات'
+          ],
+          subServices: [
+            'متجر Shopify',
+            'متجر WooCommerce',
+            'متجر مخصص (Custom)',
+            'متجر منتجات رقمية',
+            'متجر خدمات احترافية',
+            'ربط بوابات الدفع',
+            'تطوير متجر قائم'
+          ],
+          faq: [
+            { q: 'هل يمكن للعميل إدارة المتجر بنفسه؟', a: 'نعم، نوفر لوحة تحكم سهلة ونقدم تدريباً كاملاً عليها.' },
+            { q: 'ما وسائل الدفع التي تدعمونها؟', a: 'ندعم مدى وVisa وMasterCard وApple Pay وSTC Pay وغيرها.' },
+            { q: 'هل المتجر آمن لإجراء المدفوعات؟', a: 'نعم، نستخدم بروتوكولات SSL وأنظمة حماية عالية المستوى.' },
+            { q: 'هل يمكن ربط المتجر بمنصات التسويق؟', a: 'بالطبع، نربط المتجر بجوجل وميتا وأدوات التحليل.' }
+          ]
+        },
+        {
+          id: 8, name: 'إنتاج الفيديو',
+          icon: 'fas fa-video',
+          heroDesc: 'فيديوهات احترافية تحكي قصة علامتك وتأسر قلوب جمهورك.',
+          description: 'إنتاج فيديو إعلاني ومؤسسي احترافي بمعدات وتقنيات عالية الجودة.',
+          fullDescription: [
+            'نقدم خدمات إنتاج الفيديو الاحترافي الكاملة من الفكرة والسيناريو حتى التصوير والمونتاج والتسليم النهائي.',
+            'يمتلك فريقنا أحدث معدات التصوير والإضاءة والصوت، مما يضمن جودة بصرية استثنائية.',
+            'سواء كنت تحتاج فيديو إعلانياً أو مؤسسياً أو للسوشيال ميديا، نحن هنا لتحقيق رؤيتك.'
+          ],
+          includes: [
+            'كتابة السيناريو والقصة',
+            'التصوير بكاميرات 4K احترافية',
+            'الإضاءة الاحترافية',
+            'تسجيل الصوت عالي الجودة',
+            'مونتاج احترافي',
+            'تعليق صوتي احترافي',
+            'موسيقى وملاحظات صوتية',
+            'تسليم بصيغ متعددة'
+          ],
+          subServices: [
+            'فيديو إعلاني تجاري',
+            'فيديو مؤسسي (Corporate)',
+            'فيديو سوشيال ميديا',
+            'فيديو منتجات وBrand',
+            'فيديو تعليمي وتدريبي',
+            'فيديو حفلات وفعاليات',
+            'Reel إنستغرام وتيك توك'
+          ],
+          faq: [
+            { q: 'هل تشمل الخدمة كتابة السيناريو؟', a: 'نعم، يقوم فريقنا بكتابة السيناريو الكامل أو تطوير أفكارك.' },
+            { q: 'ما مدة إنتاج الفيديو؟', a: 'يستغرق الفيديو القصير 3-5 أيام، والمشاريع الكبيرة أسبوعين.' },
+            { q: 'هل تتوفر لديكم طاقم تمثيل؟', a: 'نعم، لدينا شبكة من الممثلين المحترفين والمذيعين.' },
+            { q: 'كم عدد المراجعات المتاحة؟', a: 'نقدم 3 مراجعات مجانية على الفيديو قبل التسليم النهائي.' }
+          ]
+        },
+        {
+          id: 9, name: 'الموشن جرافيك',
+          icon: 'fas fa-magic',
+          heroDesc: 'رسوم متحركة إبداعية تجعل رسالتك تنبض بالحياة وتبهر جمهورك.',
+          description: 'تصميم وإنتاج فيديوهات الموشن جرافيك الاحترافية والجذابة.',
+          fullDescription: [
+            'نصمم وننتج فيديوهات موشن جرافيك احترافية تحول الأفكار المعقدة إلى محتوى مرئي جذاب وسهل الفهم.',
+            'من الشعارات المتحركة إلى الفيديوهات التوضيحية الكاملة، يقدم فريقنا أعمالاً إبداعية بمعايير عالمية.',
+            'نستخدم أحدث برامج الأنيميشن لإنتاج محتوى مميز يترك انطباعاً لا يُنسى.'
+          ],
+          includes: [
+            'كتابة السيناريو والـ Script',
+            'تصميم الشخصيات والعناصر',
+            'الرسوم المتحركة الاحترافية',
+            'الموسيقى والمؤثرات الصوتية',
+            'تعليق صوتي احترافي',
+            'ألوان متوافقة مع الهوية',
+            'تسليم بجميع الصيغ',
+            'مراجعات متعددة'
+          ],
+          subServices: [
+            'شعار متحرك (Logo Animation)',
+            'فيديو تعريفي (Explainer Video)',
+            'إنفوجرافيك متحرك',
+            'فيديو إعلاني أنيميشن',
+            'مقدمة فيديو (Intro)',
+            'Kinetic Typography',
+            '2D & 3D Animation'
+          ],
+          faq: [
+            { q: 'كم مدة إنتاج الموشن جرافيك؟', a: 'تتراوح من 5 أيام لفيديو قصير إلى 3 أسابيع لمشروع كامل.' },
+            { q: 'ما برامج الإنتاج التي تستخدمونها؟', a: 'نستخدم After Effects وCinema 4D وAdobe Animate وغيرها.' },
+            { q: 'هل يمكنني تعديل الموشن لاحقاً؟', a: 'نحتفظ بملفات المشروع ويمكن التعديل مقابل رسوم رمزية.' },
+            { q: 'هل تقدمون النسخة العربية والإنجليزية؟', a: 'نعم، ننتج الفيديو باللغتين مع مراعاة اتجاه النص في كل لغة.' }
+          ]
+        },
+        {
+          id: 10, name: 'التصوير الاحترافي',
+          icon: 'fas fa-camera',
+          heroDesc: 'صور احترافية تعكس جمال منتجاتك وتعلو بصورة علامتك التجارية.',
+          description: 'خدمات تصوير احترافي شاملة للمنتجات والفعاليات والتصوير المؤسسي.',
+          fullDescription: [
+            'نقدم خدمات التصوير الاحترافي الشاملة بمعدات وأجهزة من أعلى مستوى، لضمان صور عالية الجودة تعكس الجمال الحقيقي لمنتجاتك أو علامتك.',
+            'يعمل فريقنا على تحديد الإضاءة والزوايا والخلفيات المثالية لكل نوع تصوير.',
+            'نوفر جلسات تصوير استوديو وخارجي مع معالجة احترافية كاملة للصور.'
+          ],
+          includes: [
+            'تصوير بكاميرات احترافية عالية الدقة',
+            'إضاءة استوديو احترافية',
+            'معالجة ألوان وريتوش احترافي',
+            'تصوير منتجات على خلفيات متعددة',
+            'تسليم صور بدقة عالية',
+            'حقوق استخدام كاملة',
+            'أرشفة رقمية للصور',
+            'نسخ لمختلف منصات التواصل'
+          ],
+          subServices: [
+            'تصوير المنتجات',
+            'تصوير الطعام والمشروبات',
+            'تصوير الفعاليات والمناسبات',
+            'تصوير بورتريه احترافي',
+            'تصوير المقار والمكاتب',
+            'تصوير أزياء وملابس',
+            'التصوير الجوي (درون)'
+          ],
+          faq: [
+            { q: 'أين يتم التصوير؟', a: 'نوفر استوديو تصوير متكامل أو يمكننا القدوم لموقعك.' },
+            { q: 'كم صورة أحصل عليها؟', a: 'حسب الباقة، تتراوح الصور المعالجة بين 20 و100+ صورة.' },
+            { q: 'ما صيغ الصور المسلّمة؟', a: 'نسلم JPG بجودة عالية وRAW عند الطلب.' },
+            { q: 'كم يستغرق التسليم؟', a: 'يتم التسليم خلال 2-4 أيام من تاريخ جلسة التصوير.' }
+          ]
+        },
+        {
+          id: 11, name: 'صور الذكاء الاصطناعي',
+          icon: 'fas fa-brain',
+          heroDesc: 'صور مذهلة بتقنيات الذكاء الاصطناعي بتكلفة أقل وسرعة أكبر.',
+          description: 'إنشاء صور إبداعية واحترافية باستخدام أحدث تقنيات الذكاء الاصطناعي.',
+          fullDescription: [
+            'نستخدم أحدث نماذج الذكاء الاصطناعي لإنشاء صور إبداعية مذهلة تتجاوز حدود الخيال بتكلفة أقل وبيانات أسرع.',
+            'سواء كنت تحتاج صور منتجات أو مشاهد إعلانية أو محتوى بصري فريد، الذكاء الاصطناعي يفتح أمامك آفاقاً لا محدودة.',
+            'نجمع بين الإبداع البشري وقوة الذكاء الاصطناعي لإنتاج محتوى بصري استثنائي يتناسب مع هويتك.'
+          ],
+          includes: [
+            'إنشاء صور بالذكاء الاصطناعي',
+            'تعديل وتحسين الصور',
+            'صور منتجات في بيئات خيالية',
+            'صور شخصيات وأفاتار',
+            'خلفيات وقوالب إبداعية',
+            'صور إعلانية مبتكرة',
+            'تسليم بدقة عالية',
+            'حقوق استخدام تجاري'
+          ],
+          subServices: [
+            'صور منتجات AI',
+            'صور إعلانية بالذكاء الاصطناعي',
+            'أفاتار احترافي AI',
+            'خلفيات ومشاهد AI',
+            'شخصيات وهويات افتراضية',
+            'صور حملات AI',
+            'معالجة وتحسين الصور بـ AI'
+          ],
+          faq: [
+            { q: 'هل الصور المنتجة حقوقها لي؟', a: 'نعم، تحصل على حقوق استخدام تجاري كاملة للصور المنتجة.' },
+            { q: 'ما جودة الصور الناتجة؟', a: 'نسلم صوراً بدقة تصل إلى 4K مناسبة للطباعة والنشر الرقمي.' },
+            { q: 'كم صورة أحصل عليها؟', a: 'حسب الطلب، ونوفر عدة خيارات لكل موضوع.' },
+            { q: 'هل يمكن تضمين شعاري في الصور؟', a: 'نعم، نضيف هويتك البصرية للصور عند الحاجة.' }
+          ]
+        },
+        {
+          id: 12, name: 'فيديو الذكاء الاصطناعي',
+          icon: 'fas fa-robot',
+          heroDesc: 'فيديوهات AI مذهلة بتقنيات المستقبل بتكلفة تناسب ميزانيتك.',
+          description: 'إنتاج فيديوهات إبداعية واحترافية باستخدام تقنيات الذكاء الاصطناعي.',
+          fullDescription: [
+            'نستخدم أحدث تقنيات الذكاء الاصطناعي لإنتاج فيديوهات مبتكرة تبهر جمهورك بتكلفة أقل بكثير من الإنتاج التقليدي.',
+            'من فيديوهات الأنيميشن إلى الفيديوهات التوضيحية والإعلانية، الذكاء الاصطناعي يمنحنا قدرة إنتاجية لا محدودة.',
+            'نجمع خبرتنا الإبداعية مع قوة AI لإنتاج محتوى فيديو استثنائي يحقق أهدافك التسويقية.'
+          ],
+          includes: [
+            'إنتاج فيديو AI كامل',
+            'كتابة النص والسيناريو',
+            'تعليق صوتي AI احترافي',
+            'موسيقى ومؤثرات AI',
+            'ترجمة وترجمة تلقائية',
+            'تسليم بصيغ متعددة',
+            'مراجعات متعددة',
+            'حقوق استخدام كاملة'
+          ],
+          subServices: [
+            'فيديو إعلاني AI',
+            'فيديو تعليمي AI',
+            'Explainer Video بالذكاء الاصطناعي',
+            'أنيميشن AI',
+            'Avatar Video (مقدم افتراضي)',
+            'Text to Video',
+            'تحسين فيديوهات قائمة'
+          ],
+          faq: [
+            { q: 'هل جودة الفيديو مقبولة تجارياً؟', a: 'نعم، نستخدم أحدث النماذج التي تنتج فيديو بجودة عالية للاستخدام التجاري.' },
+            { q: 'كم مدة إنتاج الفيديو؟', a: 'الفيديو القصير يُسلّم خلال 24-48 ساعة، والمشاريع الكبيرة 3-5 أيام.' },
+            { q: 'هل يمكن تخصيص الشخصيات لتعكس هويتي؟', a: 'نعم، نخصص الشخصيات والبيئات والألوان وفق هويتك التجارية.' },
+            { q: 'ما اللغات المدعومة؟', a: 'ندعم العربية والإنجليزية وعشرات اللغات الأخرى.' }
+          ]
+        },
+        {
+          id: 13, name: 'إدارة الحملات',
+          icon: 'fas fa-tasks',
+          heroDesc: 'إدارة حملات تسويقية متكاملة تحقق أهدافك بكفاءة وفعالية.',
+          description: 'إدارة شاملة لحملاتك التسويقية الرقمية من التخطيط حتى التحليل.',
+          fullDescription: [
+            'نتولى الإدارة الكاملة لحملاتك التسويقية بدءاً من وضع الاستراتيجية وتحديد الأهداف، مروراً بالتنفيذ الدقيق وانتهاءً بالتحليل والتحسين.',
+            'يضمن فريقنا المتكامل تنسيقاً مثالياً بين جميع قنوات التسويق لتحقيق نتائج متسقة ومضاعفة.',
+            'نوفر لك تقارير شاملة وشفافة في كل مرحلة لتكون على اطلاع دائم بمسيرة حملتك.'
+          ],
+          includes: [
+            'وضع خطة حملة تسويقية شاملة',
+            'تحديد الجمهور المستهدف',
+            'إدارة الميزانية الإعلانية',
+            'تنسيق قنوات التسويق المتعددة',
+            'مراقبة يومية وتحسين مستمر',
+            'تقارير أداء تفصيلية',
+            'اختبار A/B للرسائل',
+            'تقييم العائد على الاستثمار'
+          ],
+          subServices: [
+            'حملة إطلاق منتج',
+            'حملة مبيعات وتخفيضات',
+            'حملة بناء الوعي بالعلامة',
+            'حملة توليد العملاء المحتملين',
+            'حملة ريادة الفكر',
+            'حملة الولاء وإعادة الاستهداف',
+            'حملة موسمية ومناسباتية'
+          ],
+          faq: [
+            { q: 'ما الفرق بين إدارة الحملة وإدارة الإعلانات؟', a: 'إدارة الحملة أشمل وتتضمن جميع قنوات التسويق، بينما إدارة الإعلانات تركز على الإعلانات المدفوعة فقط.' },
+            { q: 'كم تستغرق الحملة؟', a: 'تتراوح الحملات من أسبوع لحملة قصيرة إلى 3 أشهر للحملات الاستراتيجية.' },
+            { q: 'هل يمكنني تغيير توجه الحملة أثناء التنفيذ؟', a: 'نعم، نحن مرنون ونعدّل الاستراتيجية حسب النتائج والمستجدات.' },
+            { q: 'ما القنوات التي تديرونها؟', a: 'ندير جميع القنوات: سوشيال ميديا، جوجل، إيميل، SEO، إعلانات مدفوعة.' }
+          ]
+        },
+        {
+          id: 14, name: 'كتابة المحتوى',
+          icon: 'fas fa-pen-fancy',
+          heroDesc: 'محتوى إبداعي يصل إلى قلب جمهورك ويحوّل القرّاء إلى عملاء.',
+          description: 'كتابة محتوى تسويقي إبداعي ومتوافق مع SEO لجميع القنوات الرقمية.',
+          fullDescription: [
+            'نقدم خدمة كتابة المحتوى الرقمي الاحترافي التي تشمل مقالات المدونة والمحتوى التسويقي ومحتوى السوشيال ميديا وأكثر.',
+            'يجمع كُتّابنا المتخصصون بين الأسلوب الإبداعي الجذاب والتحسين لمحركات البحث لضمان وصول محتواك لأكبر جمهور.',
+            'نفهم جمهورك وصوت علامتك التجارية ونكتب محتوى يتحدث لغة عملائك ويحقق أهدافك التسويقية.'
+          ],
+          includes: [
+            'مقالات SEO متوافقة مع جوجل',
+            'محتوى منصات التواصل الاجتماعي',
+            'كتابة نصوص إعلانية (Copywriting)',
+            'كتابة محتوى المواقع',
+            'النشرات البريدية',
+            'أوصاف المنتجات',
+            'تقارير ودراسات الحالة',
+            'بحث وكتابة متخصصة'
+          ],
+          subServices: [
+            'مقالات ومدونات SEO',
+            'نصوص إعلانية Copywriting',
+            'محتوى سوشيال ميديا',
+            'محتوى موقع إلكتروني',
+            'نشرات بريد إلكتروني',
+            'أوصاف منتجات',
+            'سيناريوهات فيديو'
+          ],
+          faq: [
+            { q: 'من يكتب المحتوى؟', a: 'فريق من الكُتّاب المتخصصين في مجالات مختلفة مع خلفية تسويقية.' },
+            { q: 'هل المحتوى أصلي ومتفرد؟', a: 'نعم، كل محتوى يُكتب حصرياً لك ويُفحص ببرامج الكشف عن الانتحال.' },
+            { q: 'هل تراعون أسلوب علامتي؟', a: 'نعم، نُعد دليل الأسلوب (Style Guide) ونلتزم به في كل المحتوى.' },
+            { q: 'هل يمكنني التعديل على المحتوى؟', a: 'بالطبع، نقبل ملاحظاتك ونُجري التعديلات حتى تصل للنتيجة المثالية.' }
+          ]
+        },
+        {
+          id: 15, name: 'تحسين SEO',
+          icon: 'fas fa-search',
+          heroDesc: 'تصدّر نتائج جوجل وجلب الزوار العضويين المجانيين لموقعك.',
+          description: 'خدمات تحسين محركات البحث الشاملة لرفع ترتيب موقعك في نتائج البحث.',
+          fullDescription: [
+            'نقدم خدمات SEO متكاملة تهدف إلى تحسين ترتيب موقعك في نتائج محركات البحث وجلب زيارات عضوية مجانية ومستمرة.',
+            'نبدأ بتدقيق SEO شامل لموقعك، ثم وضع خطة عمل واضحة تشمل التحسين التقني والمحتوى وبناء الروابط.',
+            'نستخدم أحدث أدوات وتقنيات SEO ونواكب كل تحديثات خوارزميات جوجل لضمان نتائج طويلة الأمد.'
+          ],
+          includes: [
+            'تدقيق SEO شامل للموقع',
+            'بحث الكلمات المفتاحية',
+            'تحسين المحتوى وهيكل الصفحات',
+            'تحسين الجانب التقني (Technical SEO)',
+            'بناء الروابط الخارجية (Link Building)',
+            'تحسين سرعة الموقع',
+            'تقارير شهرية مفصلة',
+            'متابعة الترتيب والمنافسين'
+          ],
+          subServices: [
+            'On-Page SEO تحسين الصفحات',
+            'Technical SEO التحسين التقني',
+            'Off-Page SEO وبناء الروابط',
+            'Local SEO السيو المحلي',
+            'SEO للمتاجر الإلكترونية',
+            'محتوى SEO متخصص',
+            'تدقيق SEO Audit'
+          ],
+          faq: [
+            { q: 'متى تظهر نتائج SEO؟', a: 'تبدأ النتائج بالظهور خلال 3-6 أشهر، وتتراكم وتتحسن مع الوقت.' },
+            { q: 'هل تضمنون الصفحة الأولى في جوجل؟', a: 'لا أحد يضمن ترتيباً محدداً، لكننا نستخدم أفضل الممارسات لتحقيق أعلى ترتيب ممكن.' },
+            { q: 'هل تتوافق خدمتكم مع تحديثات جوجل؟', a: 'نعم، نواكب كل تحديثات خوارزميات جوجل ونعدّل الاستراتيجية وفقها.' },
+            { q: 'هل تشمل الخدمة كتابة المحتوى؟', a: 'يمكن إضافة كتابة المحتوى المتخصص ضمن الباقة أو بشكل منفصل.' }
+          ]
+        }
+      ];
+    }
+
+    function buildDefaultPortfolio(service) {
+      var palettes = [
+        { bg: 'linear-gradient(135deg,#667eea,#764ba2)', emoji: '🎨' },
+        { bg: 'linear-gradient(135deg,#f093fb,#f5576c)', emoji: '📱' },
+        { bg: 'linear-gradient(135deg,#4facfe,#00f2fe)', emoji: '💡' }
+      ];
+      return [
+        { title: 'مشروع ' + service.name + ' - نموذج 1', tag: service.name, bg: palettes[0].bg, emoji: palettes[0].emoji },
+        { title: 'مشروع ' + service.name + ' - نموذج 2', tag: service.name, bg: palettes[1].bg, emoji: palettes[1].emoji },
+        { title: 'مشروع ' + service.name + ' - نموذج 3', tag: service.name, bg: palettes[2].bg, emoji: palettes[2].emoji }
+      ];
+    }
+
+    /* Run init when DOM is ready */
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', init);
+    } else {
+      init();
+    }
+
+  })();
+  </script>
+<script src="vip-upgrade.js"></script>
+<script src="legal-system.js"></script>
+<script src="final-layout-fixes.js"></script>
+<script src="enterprise-security-forms-notifications.js"></script>
+<script src="vm-biometric-map-only.js"></script></body>
+</html>
